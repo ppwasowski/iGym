@@ -2,12 +2,14 @@
     "build": {
       "production": {
         "android": {
-          "buildType": "app-bundle"
+          "buildType": "app-bundle",
+          "image": "default"
         }
       },
       "development": {
         "android": {
-          "buildType": "apk"
+          "buildType": "apk",
+          "image": "default"
         }
       }
     },
