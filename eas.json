@@ -3,13 +3,13 @@
       "production": {
         "android": {
           "buildType": "app-bundle",
-          "image": "ubuntu-18.04-android-30-ndk-r19c"
+          "image": "stable"
         }
       },
       "development": {
         "android": {
           "buildType": "apk",
-          "image": "ubuntu-18.04-android-30-ndk-r19c"
+          "image": "stable"
         }
       }
     },
