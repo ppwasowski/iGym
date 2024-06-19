@@ -3,13 +3,13 @@
       "production": {
         "android": {
           "buildType": "app-bundle",
-          "image": "expo.android-ndk@latest"
+          "image": "latest"
         }
       },
       "development": {
         "android": {
           "buildType": "apk",
-          "image": "expo.android-ndk@latest"
+          "image": "latest"
         }
       }
     },
