@@ -1,24 +1,22 @@
 {
     "build": {
-      "production": {
+      "development": {
         "android": {
-          "buildType": "app-bundle",
+          "developmentClient": true,
+          "distribution": "internal",
           "image": "latest"
         }
       },
-      "development": {
+      "preview": {
         "android": {
-          "buildType": "apk",
+          "distribution": "internal",
           "image": "latest"
         }
-      }
-    },
-    "submit": {
-      "production": {
-        "android": {}
       },
-      "development": {
-        "android": {}
+      "production": {
+        "android": {
+          "image": "latest"
+        }
       }
     }
   }
