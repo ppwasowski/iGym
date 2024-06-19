@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "iGym_V2",
-    "slug": "iGym_V2",
+    "slug": "iGym",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,6 +22,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4a6f4ac5-7f46-4789-8cc6-e0866c21370b"
+      }
+    },
+    "owner": "xarsx"
   }
 }

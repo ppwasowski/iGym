@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import { FavoriteProvider } from './utility/FavoriteContext';
+import AuthStack from './components/AuthStack';
+import TabNavigator from './components/TabNavigator';
+import useSession from './hooks/useSession';
 
-export default function App() {
+const App = () => {
+  const session = useSession();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <FavoriteProvider>
+      <NavigationContainer>
+        {session ? (
+          <TabNavigator session={session} />
+        ) : (
+          <AuthStack />
+        )}
+        <Toast />
+      </NavigationContainer>
+    </FavoriteProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
