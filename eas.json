@@ -3,13 +3,15 @@
       "production": {
         "android": {
           "buildType": "app-bundle",
-          "image": "latest"
+          "image": "latest",
+          "javaVersion": 17
         }
       },
       "development": {
         "android": {
           "buildType": "apk",
-          "image": "latest"
+          "image": "latest",
+          "javaVersion": 17
         }
       }
     },
