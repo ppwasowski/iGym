@@ -3,11 +3,17 @@
       "production": {
         "android": {
           "buildType": "app-bundle"
+        },
+        "ios": {
+          "simulator": true
         }
       },
       "development": {
         "android": {
           "buildType": "apk"
+        },
+        "ios": {
+          "simulator": true
         }
       }
     }
