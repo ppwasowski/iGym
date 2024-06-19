@@ -3,13 +3,13 @@
       "production": {
         "android": {
           "buildType": "app-bundle",
-          "image": "stable"
+          "image": "default"
         }
       },
       "development": {
         "android": {
           "buildType": "apk",
-          "image": "stable"
+          "image": "default"
         }
       }
     },
