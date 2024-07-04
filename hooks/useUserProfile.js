@@ -1,83 +1,52 @@
+// useUserProfile.js
 import { useState, useEffect } from 'react';
 import { supabase } from '../utility/supabase';
 
-const useUserProfile = (session) => {
-  const [profile, setProfile] = useState({
-    firstName: '',
-    lastName: '',
-    age: '',
-    height: '',
-    weight: ''
-  });
-  const [loading, setLoading] = useState(false);
+export default function useUserProfile(session) {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (session) {
-      getProfile();
+      fetchProfile();
     }
   }, [session]);
 
-  const getProfile = async () => {
+  const fetchProfile = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
-
-      const { data, error, status } = await supabase
+      let { data, error } = await supabase
         .from('profiles')
-        .select('first_name, last_name, age, height, weight')
+        .select('*')
         .eq('id', session.user.id)
         .single();
 
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        setProfile({
-          firstName: data.first_name,
-          lastName: data.last_name,
-          age: data.age,
-          height: data.height,
-          weight: data.weight
-        });
-      }
+      if (error) throw error;
+      setProfile(data || {});
     } catch (error) {
       setError(error.message);
-      console.error('Error fetching profile:', error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateProfile = async (updatedProfile) => {
+  const updateProfile = async (profileData) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const { error } = await supabase
+      let { data, error } = await supabase
         .from('profiles')
-        .update({
-          first_name: updatedProfile.firstName,
-          last_name: updatedProfile.lastName,
-          age: updatedProfile.age,
-          height: updatedProfile.height,
-          weight: updatedProfile.weight,
-        })
+        .update(profileData)
         .eq('id', session.user.id);
 
-      if (error) {
-        throw error;
-      }
-
-      setProfile(updatedProfile);
+      if (error) throw error;
+      setProfile(data[0]);
     } catch (error) {
       setError(error.message);
-      console.error('Error updating profile:', error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return { profile, loading, error, updateProfile };
-};
-
-export default useUserProfile;
+}

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import ProfileForm from '../components/profileForm';
+import ProfileForm from '../components/ProfileForm';
 import useUserProfile from '../hooks/useUserProfile';
 import { supabase } from '../utility/supabase';
+import { Modal } from 'react-native';
 
 export default function Account({ session }) {
   const { profile, loading, error, updateProfile } = useUserProfile(session);
@@ -27,7 +28,7 @@ export default function Account({ session }) {
       <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('WorkoutHistory')}>
         <Text style={styles.optionText}>Workout History</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('FavoriteExercises')}>
+      <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('FavoriteExercises', { userId: session.user.id })}>
         <Text style={styles.optionText}>Favorite Exercises</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('PersonalRecords')}>
@@ -42,7 +43,7 @@ export default function Account({ session }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <ProfileForm profile={profile} loading={loading} updateProfile={updateProfile} />
+            {profile && <ProfileForm profile={profile} updateProfile={updateProfile} />}
             <Button title="Close" onPress={() => setModalVisible(false)} />
           </View>
         </View>

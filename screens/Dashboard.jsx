@@ -18,7 +18,7 @@ export default function HomeScreen({ session }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome back, {profile.firstName || 'Guest'}!</Text>
+      <Text style={styles.title}>Welcome back, {profile.first_name || 'Guest'}!</Text>
       <Text style={styles.quote}>
         “I never dreamed about success. I worked for it.” —Estée Lauder
       </Text>

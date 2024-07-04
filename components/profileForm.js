@@ -1,96 +1,100 @@
-import React, { useState } from 'react';
-import { Alert, Button, StyleSheet, View } from 'react-native';
-import { Input } from 'react-native-elements';
+// ProfileForm.js
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { Button } from 'react-native-elements';
 
-const ProfileForm = ({ profile, loading, updateProfile }) => {
-  const [formState, setFormState] = useState({
-    firstName: profile.firstName || '',
-    lastName: profile.lastName || '',
-    age: profile.age || '',
-    height: profile.height || '',
-    weight: profile.weight || '',
+export default function ProfileForm({ profile, updateProfile }) {
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    age: '',
+    height: '',
+    weight: ''
   });
 
-  const handleInputChange = (key, value) => {
-    setFormState({
-      ...formState,
-      [key]: value,
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        first_name: profile.first_name || '',
+        last_name: profile.last_name || '',
+        age: profile.age?.toString() || '',
+        height: profile.height?.toString() || '',
+        weight: profile.weight?.toString() || ''
+      });
+    }
+  }, [profile]);
+
+  const handleInputChange = (name, value) => {
+    setFormData({
+      ...formData,
+      [name]: value,
     });
   };
 
-  const handleUpdateProfile = async () => {
-    try {
-      await updateProfile(formState);
-      Alert.alert('Profile updated successfully');
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    }
+  const handleSubmit = () => {
+    const updatedProfile = {
+      ...formData,
+      age: formData.age ? parseInt(formData.age, 10) : null,
+      height: formData.height ? parseFloat(formData.height) : null,
+      weight: formData.weight ? parseFloat(formData.weight) : null
+    };
+    updateProfile(updatedProfile);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input
-          label="First Name"
-          value={formState.firstName}
-          onChangeText={(text) => handleInputChange('firstName', text)}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Last Name"
-          value={formState.lastName}
-          onChangeText={(text) => handleInputChange('lastName', text)}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Age"
-          value={formState.age}
-          onChangeText={(text) => handleInputChange('age', text)}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Height"
-          value={formState.height}
-          onChangeText={(text) => handleInputChange('height', text)}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Weight"
-          value={formState.weight}
-          onChangeText={(text) => handleInputChange('weight', text)}
-        />
-      </View>
-
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title={loading ? 'Loading ...' : 'Update'}
-          onPress={handleUpdateProfile}
-          disabled={loading}
-        />
-      </View>
+    <View style={styles.form}>
+      <Text style={styles.label}>First Name:</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.first_name}
+        onChangeText={(value) => handleInputChange('first_name', value)}
+      />
+      <Text style={styles.label}>Last Name:</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.last_name}
+        onChangeText={(value) => handleInputChange('last_name', value)}
+      />
+      <Text style={styles.label}>Age:</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.age}
+        onChangeText={(value) => handleInputChange('age', value)}
+        keyboardType="numeric"
+      />
+      <Text style={styles.label}>Height:</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.height}
+        onChangeText={(value) => handleInputChange('height', value)}
+        keyboardType="numeric"
+      />
+      <Text style={styles.label}>Weight:</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.weight}
+        onChangeText={(value) => handleInputChange('weight', value)}
+        keyboardType="numeric"
+      />
+      <Button title="Save" onPress={handleSubmit} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
+  form: {
+    width: '100%',
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
+  label: {
+    marginBottom: 5,
+    fontWeight: 'bold',
   },
-  mt20: {
-    marginTop: 20,
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 15,
+    paddingLeft: 10,
+    borderRadius: 5,
   },
 });
-
-export default ProfileForm;

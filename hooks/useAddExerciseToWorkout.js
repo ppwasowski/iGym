@@ -7,7 +7,15 @@ const useAddExerciseToWorkout = (workouts, setWorkouts) => {
 
   const addExerciseToWorkout = async (workoutId, exerciseId) => {
     try {
+      console.log('Workouts:', workouts);
       const existingWorkout = workouts.find(workout => workout.id === workoutId);
+
+      if (!existingWorkout) {
+        setError('Workout not found');
+        ToastShow('error', 'Error', 'Workout not found');
+        return;
+      }
+
       const isExerciseInWorkout = existingWorkout.workout_exercise.some(we => we.exercise_id === exerciseId);
 
       if (isExerciseInWorkout) {

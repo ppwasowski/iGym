@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Account from '../screens/Account';
 import WorkoutHistory from '../screens/WorkoutHistory';
-import FavoriteExercises from '../screens/FavoriteExercises.jsx';
+import FavoriteExercises from '../screens/FavoriteExercises';
 import PersonalRecords from '../screens/PersonalRecords';
 
 const Stack = createStackNavigator();
