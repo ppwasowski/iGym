@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import ProfileForm from '../components/ProfileForm';
 import useUserProfile from '../hooks/useUserProfile';
 import { supabase } from '../utility/supabase';
-import { Modal } from 'react-native';
 
-export default function Account({ session }) {
+const Account = ({ session }) => {
   const { profile, loading, error, updateProfile } = useUserProfile(session);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -28,7 +27,7 @@ export default function Account({ session }) {
       <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('WorkoutHistory')}>
         <Text style={styles.optionText}>Workout History</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('FavoriteExercises', { userId: session.user.id })}>
+      <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('FavoriteExercises')}>
         <Text style={styles.optionText}>Favorite Exercises</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('PersonalRecords')}>
@@ -54,7 +53,7 @@ export default function Account({ session }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -91,3 +90,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+export default Account;

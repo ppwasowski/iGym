@@ -6,14 +6,14 @@ import useAddSet from '../hooks/useAddSet';
 import useFinishExercise from '../hooks/useFinishExercise';
 
 const ExerciseWorkout = ({ route }) => {
-  const { exerciseId, exerciseName, sessionId, markExerciseCompleted } = route.params;
+  const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
   const { sets, setSets, error: fetchError } = useFetchExerciseProgress(sessionId, exerciseId);
   const { finishExercise, error: finishError } = useFinishExercise(sets, setSets);
   const { weight, setWeight, reps, setReps, addSet } = useAddSet(sets, setSets);
 
   const handleFinishExercise = async () => {
-    await finishExercise(sessionId, exerciseId, markExerciseCompleted, navigation);
+    await finishExercise(sessionId, exerciseId, session.user.id, markExerciseCompleted, navigation);
   };
 
   return (
@@ -45,7 +45,7 @@ const ExerciseWorkout = ({ route }) => {
         ))}
       </ScrollView>
 
-      <Button title="Finish Exercise" onPress={handleFinishExercise} disabled={sets.length === 0} />
+      <Button title="Finish Exercise" onPress={handleFinishExercise} />
     </View>
   );
 };

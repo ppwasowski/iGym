@@ -5,7 +5,7 @@ import { supabase } from '../utility/supabase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ExerciseSession = ({ route }) => {
-  const { workoutId, sessionId } = route.params;
+  const { workoutId, sessionId, session } = route.params;
   const [exercises, setExercises] = useState([]);
   const [completedExercises, setCompletedExercises] = useState([]);
   const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const ExerciseSession = ({ route }) => {
 
     const fetchExercises = async () => {
       try {
-        console.log('Fetching exercises for workoutId:', workoutId); // Log the workoutId
+        console.log('Fetching exercises for workoutId:', workoutId);
         const { data, error } = await supabase
           .from('workout_exercise')
           .select('*, exercises(name)')
@@ -29,18 +29,17 @@ const ExerciseSession = ({ route }) => {
         if (error) {
           throw error;
         } else {
-          console.log('Fetched Exercises:', data); // Log the fetched exercises
+          console.log('Fetched Exercises:', data);
           setExercises(data);
-          // Fetch completed exercises from the progress table
           const { data: progressData, error: progressError } = await supabase
             .from('workout_progress')
             .select('exercise_id')
-            .eq('workout_session_id', sessionId); // Use sessionId
+            .eq('workout_session_id', sessionId);
 
           if (progressError) {
             throw progressError;
           } else {
-            console.log('Fetched Completed Exercises:', progressData); // Log completed exercises
+            console.log('Fetched Completed Exercises:', progressData);
             setCompletedExercises(progressData.map(item => item.exercise_id));
           }
         }
@@ -58,11 +57,13 @@ const ExerciseSession = ({ route }) => {
   };
 
   const startExercise = (exerciseId, exerciseName) => {
+    console.log('Starting exercise:', exerciseId, exerciseName);
     navigation.navigate('ExerciseWorkout', {
       exerciseId,
       exerciseName,
-      sessionId, // Pass sessionId
+      sessionId,
       markExerciseCompleted,
+      session, // Ensure user session data is passed for userId
     });
   };
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../utility/supabase';
 import { useNavigation } from '@react-navigation/native';
 
-const useStartWorkout = (workoutId) => {
+const useStartWorkout = (workoutId, userId) => {
   const [error, setError] = useState(null);
   const navigation = useNavigation();
 
@@ -10,7 +10,7 @@ const useStartWorkout = (workoutId) => {
     try {
       const { data, error } = await supabase
         .from('workout_sessions')
-        .insert([{ workout_id: workoutId, session_date: new Date() }])
+        .insert([{ workout_id: workoutId, user_id: userId, session_date: new Date() }])
         .select('*')
         .single();
 

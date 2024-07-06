@@ -10,7 +10,6 @@ import ExerciseWorkout from '../screens/ExerciseWorkout';
 import WorkoutProgress from '../screens/WorkoutProgress';
 import WorkoutSelection from '../screens/WorkoutSelection';
 import AddWorkout from '../screens/AddWorkout';
-import FavoriteExercises from '../screens/FavoriteExercises';
 
 const Stack = createStackNavigator();
 
@@ -26,10 +25,10 @@ const CombinedStack = ({ route }) => {
       />
       <Stack.Screen
         name="WorkoutDetails"
-        component={WorkoutDetails}
         options={({ route }) => ({ title: route.params.workoutName })}
-        initialParams={{ session }}
-      />
+      >
+        {(props) => <WorkoutDetails {...props} session={session} />}
+      </Stack.Screen>
       <Stack.Screen
         name="Bodyparts"
         component={BodypartView}
@@ -69,11 +68,6 @@ const CombinedStack = ({ route }) => {
       <Stack.Screen
         name="AddWorkout"
         component={AddWorkout}
-        initialParams={{ session }}
-      />
-      <Stack.Screen
-        name="FavoriteExercises"  // Register FavoriteExercises screen
-        component={FavoriteExercises}
         initialParams={{ session }}
       />
     </Stack.Navigator>

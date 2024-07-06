@@ -4,17 +4,21 @@ import { useNavigation } from '@react-navigation/native';
 import useFetchWorkoutProgress from '../hooks/useFetchWorkoutProgress';
 
 const WorkoutProgress = ({ route }) => {
-  const { sessionId } = route.params; // Ensure sessionId is passed in route params
+  const { sessionId, from } = route.params; // Ensure sessionId and from are passed in route params
   const navigation = useNavigation();
   const { progress, error } = useFetchWorkoutProgress(sessionId);
+
+  const handleClose = () => {
+    if (from === 'WorkoutHistory') {
+      navigation.goBack();
+    } else {
+      navigation.navigate('Dashboard');
+    }
+  };
 
   if (error) {
     return <Text>{error}</Text>;
   }
-
-  const navigateToWorkoutList = () => {
-    navigation.navigate('WorkoutList'); // Navigate to the workout list to start a new workout
-  };
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
@@ -33,7 +37,7 @@ const WorkoutProgress = ({ route }) => {
           </View>
         )}
       />
-      <Button title="Finish" onPress={navigateToWorkoutList} />
+      <Button title="Close" onPress={handleClose} />
     </View>
   );
 };

@@ -4,12 +4,12 @@ import { supabase } from '../utility/supabase';
 const useFinishExercise = (sets, setSets) => {
   const [error, setError] = useState(null);
 
-  const finishExercise = async (sessionId, exerciseId, markExerciseCompleted, navigation) => {
+  const finishExercise = async (sessionId, exerciseId, userId, markExerciseCompleted, navigation) => {
     try {
       console.log('Inserting sets:', sets);
 
-      if (!sessionId || !exerciseId) {
-        console.error('sessionId or exerciseId is undefined');
+      if (!sessionId || !exerciseId || !userId) {
+        console.error('sessionId, exerciseId, or userId is undefined');
         return;
       }
 
@@ -34,8 +34,10 @@ const useFinishExercise = (sets, setSets) => {
 
       if (newSets.length === 0) {
         console.log('No new sets to insert.');
-        markExerciseCompleted(exerciseId);
-        navigation.goBack();
+        if (typeof markExerciseCompleted === 'function') {
+          markExerciseCompleted(exerciseId);
+        }
+        navigation.goBack(); // Ensure navigation back even if no new sets
         return;
       }
 
@@ -45,6 +47,7 @@ const useFinishExercise = (sets, setSets) => {
           newSets.map(set => ({
             workout_session_id: sessionId,
             exercise_id: exerciseId,
+            user_id: userId,
             sets: set.setNumber,
             reps: set.reps,
             weight: set.weight,
@@ -57,7 +60,9 @@ const useFinishExercise = (sets, setSets) => {
       } else {
         console.log('Exercise Finished!', data);
         setSets([]);
-        markExerciseCompleted(exerciseId); // Mark exercise as completed
+        if (typeof markExerciseCompleted === 'function') {
+          markExerciseCompleted(exerciseId);
+        }
         navigation.goBack(); // Navigate back to ExerciseSession screen
       }
     } catch (error) {

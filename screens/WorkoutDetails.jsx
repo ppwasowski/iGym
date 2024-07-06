@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Ensure Ionicons is imported
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
 import useRemoveExerciseFromWorkout from '../hooks/useRemoveExerciseFromWorkout';
 import useStartWorkout from '../hooks/useStartWorkout';
 
 const WorkoutDetails = ({ route, navigation }) => {
-  const { workoutId } = route.params;
+  const { workoutId, session } = route.params;
   const { data: exercises, error: fetchError, setData: setExercises, setError: setFetchError } = useFetchExercisesForContext({ workoutId });
   const { removeExerciseFromWorkout, error: removeError, setError: setRemoveError } = useRemoveExerciseFromWorkout(workoutId, exercises, setExercises);
   const { startWorkout, error: startError } = useStartWorkout(workoutId);
@@ -14,7 +14,7 @@ const WorkoutDetails = ({ route, navigation }) => {
   const handleStartWorkout = async () => {
     const data = await startWorkout();
     if (data) {
-      navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id });
+      navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id, session });
     }
   };
 
