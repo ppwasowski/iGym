@@ -3,7 +3,7 @@ import { View, Text, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../utility/supabase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useFavorites } from '../utility/FavoriteContext';
+import { useFavorites } from '../context/FavoriteContext';
 
 const ExerciseDetails = ({ route }) => {
   const { exerciseId, workoutId } = route.params;

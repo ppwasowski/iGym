@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TextInput, Button, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
-import useAddSet from '../hooks/useAddSet';
-import useFinishExercise from '../hooks/useFinishExercise';
+import useAddSet from '../services/useAddSet';
+import useFinishExercise from '../services/useFinishExercise';
 
 const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;

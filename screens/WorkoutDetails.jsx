@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
-import useRemoveExerciseFromWorkout from '../hooks/useRemoveExerciseFromWorkout';
-import useStartWorkout from '../hooks/useStartWorkout';
+import useRemoveExerciseFromWorkout from '../services/useRemoveExerciseFromWorkout';
+import useStartWorkout from '../services/useStartWorkout';
 import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
 
 const WorkoutDetails = ({ route, navigation }) => {

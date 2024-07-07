@@ -2,9 +2,9 @@ import React from 'react';
 import { FlatList, Pressable, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useFavorites } from '../utility/FavoriteContext';
+import { useFavorites } from '../context/FavoriteContext';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
-import useAddExerciseToWorkout from '../hooks/useAddExerciseToWorkout';
+import useAddExerciseToWorkout from '../services/useAddExerciseToWorkout';
 
 const ExercisesList = ({ route }) => {
   const { bodypartId, workoutId } = route.params;

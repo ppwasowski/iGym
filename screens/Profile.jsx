@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import ProfileForm from '../components/ProfileForm';
-import useUserProfile from '../hooks/useUserProfile';
+import { UserContext } from '../context/UserContext';
 import { supabase } from '../utility/supabase';
 
-const Account = ({ session }) => {
-  const { profile, loading, error, updateProfile } = useUserProfile(session);
-  const [modalVisible, setModalVisible] = useState(false);
+const Account = () => {
+  const { profile, loading, error } = useContext(UserContext);
   const navigation = useNavigation();
 
   if (loading) {
@@ -21,9 +20,7 @@ const Account = ({ session }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.optionButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.optionText}>Edit Personal Info</Text>
-      </TouchableOpacity>
+      <ProfileForm />
       <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('WorkoutHistory')}>
         <Text style={styles.optionText}>Workout History</Text>
       </TouchableOpacity>
@@ -33,21 +30,6 @@ const Account = ({ session }) => {
       <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('PersonalRecords')}>
         <Text style={styles.optionText}>Personal Records</Text>
       </TouchableOpacity>
-      
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {profile && <ProfileForm profile={profile} updateProfile={updateProfile} />}
-            <Button title="Close" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
-      
       <View style={styles.verticallySpaced}>
         <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
       </View>
@@ -64,19 +46,6 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     alignSelf: 'stretch',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
   },
   optionButton: {
     padding: 15,

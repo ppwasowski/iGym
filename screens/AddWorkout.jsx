@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import useAddWorkout from '../hooks/useAddWorkout';
+import useAddWorkout from '../services/useAddWorkout';
 
 const AddWorkout = ({ navigation, route }) => {
   const [workoutName, setWorkoutName] = useState('');

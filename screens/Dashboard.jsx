@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { supabase } from '../utility/supabase';
-import useUserProfile from '../hooks/useUserProfile';
+import { UserContext } from '../context/UserContext';
 
 export default function HomeScreen({ session }) {
-  
-  const { profile, loading, error } = useUserProfile(session);
+  const { profile, loading, error } = useContext(UserContext);
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -14,7 +12,6 @@ export default function HomeScreen({ session }) {
   if (error) {
     return <Text>Error: {error}</Text>;
   }
-
 
   return (
     <View style={styles.container}>

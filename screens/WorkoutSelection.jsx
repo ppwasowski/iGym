@@ -3,8 +3,8 @@ import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchWorkouts from '../hooks/useFetchWorkouts';
-import useAddExerciseToWorkout from '../hooks/useAddExerciseToWorkout';
-import useRemoveExerciseFromWorkout from '../hooks/useRemoveExerciseFromWorkout';
+import useAddExerciseToWorkout from '../services/useAddExerciseToWorkout';
+import useRemoveExerciseFromWorkout from '../services/useRemoveExerciseFromWorkout';
 import ToastShow from '../components/ToastShow';
 
 const WorkoutSelection = ({ route }) => {
