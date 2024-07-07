@@ -5,7 +5,7 @@ import { supabase } from '../utility/supabase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ExerciseSession = ({ route }) => {
-  const { workoutId, sessionId, session } = route.params;
+  const { workoutId, sessionId, session, refresh } = route.params;
   const [exercises, setExercises] = useState([]);
   const [completedExercises, setCompletedExercises] = useState([]);
   const [error, setError] = useState(null);
@@ -63,8 +63,13 @@ const ExerciseSession = ({ route }) => {
       exerciseName,
       sessionId,
       markExerciseCompleted,
-      session, // Ensure user session data is passed for userId
+      session,
     });
+  };
+
+  const handleFinishWorkout = () => {
+    if (refresh) refresh();
+    navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
   };
 
   return (
@@ -74,15 +79,9 @@ const ExerciseSession = ({ route }) => {
         data={exercises}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => startExercise(item.exercise_id, item.exercises.name)}>
+          <TouchableOpacity onPress={() => startExercise(item.exercise_id, item.exercises.name)}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  textDecorationLine: completedExercises.includes(item.exercise_id) ? 'line-through' : 'none',
-                }}
-              >
+              <Text style={{ fontSize: 18, textDecorationLine: completedExercises.includes(item.exercise_id) ? 'line-through' : 'none' }}>
                 {item.exercises.name}
               </Text>
               {completedExercises.includes(item.exercise_id) && (
@@ -92,7 +91,7 @@ const ExerciseSession = ({ route }) => {
           </TouchableOpacity>
         )}
       />
-      <Button title="Finish Workout" onPress={() => navigation.navigate('WorkoutProgress', { workoutId, sessionId })} />
+      <Button title="Finish Workout" onPress={handleFinishWorkout} />
     </View>
   );
 };

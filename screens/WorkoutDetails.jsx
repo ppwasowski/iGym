@@ -4,23 +4,26 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
 import useRemoveExerciseFromWorkout from '../hooks/useRemoveExerciseFromWorkout';
 import useStartWorkout from '../hooks/useStartWorkout';
+import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
 
 const WorkoutDetails = ({ route, navigation }) => {
   const { workoutId, session } = route.params;
+  const userId = session.user.id;
   const { data: exercises, error: fetchError, setData: setExercises, setError: setFetchError } = useFetchExercisesForContext({ workoutId });
   const { removeExerciseFromWorkout, error: removeError, setError: setRemoveError } = useRemoveExerciseFromWorkout(workoutId, exercises, setExercises);
-  const { startWorkout, error: startError } = useStartWorkout(workoutId);
+  const { workoutSessions, error: historyError, refresh } = useFetchWorkoutHistory(userId);
+  const { startWorkout, error: startError } = useStartWorkout(workoutId, userId);
 
   const handleStartWorkout = async () => {
     const data = await startWorkout();
     if (data) {
-      navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id, session });
+      navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id, session, refresh });
     }
   };
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
-      {(fetchError || removeError || startError) && <Text>Error: {fetchError || removeError || startError}</Text>}
+      {(fetchError || removeError || startError || historyError) && <Text>Error: {fetchError || removeError || startError || historyError}</Text>}
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.exercise_id.toString()}

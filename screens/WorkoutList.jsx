@@ -19,14 +19,15 @@ const WorkoutList = ({ route }) => {
         data={workouts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('WorkoutDetails', { workoutId: item.id, workoutName: item.name })}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('WorkoutDetails',{ workoutId: item.id, workoutName: item.name, userId })}>
             <View style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
               <Text style={{ fontSize: 18 }}>{item.name}</Text>
             </View>
           </TouchableOpacity>
         )}
       />
-      <Button title="Add Workout" onPress={() => navigation.navigate('AddWorkout')} />
+      <Button title="Add Workout" onPress={() => navigation.navigate('AddWorkout', { userId })} />
     </View>
   );
 };

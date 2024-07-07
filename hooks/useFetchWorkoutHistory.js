@@ -1,43 +1,54 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utility/supabase';
 
 const useFetchWorkoutHistory = (userId) => {
   const [workoutSessions, setWorkoutSessions] = useState([]);
   const [error, setError] = useState(null);
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
-  useEffect(() => {
+  const fetchWorkoutHistory = useCallback(async () => {
     if (!userId) {
       setError('User ID is missing');
       return;
     }
 
-    const fetchWorkoutHistory = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('workout_sessions')
-          .select('id, workout_id, session_date')
-          .eq('user_id', userId)
-          .order('session_date', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('workout_sessions')
+        .select(`
+          id,
+          workout_id,
+          session_date,
+          workout (
+            name
+          )
+        `)
+        .eq('user_id', userId)
+        .order('session_date', { ascending: false });
 
-        if (error) {
-          throw error;
-        }
-
-        const formattedData = data.map((session) => ({
-          workout_session_id: session.id,
-          date: new Date(session.session_date).toLocaleDateString(),
-        }));
-
-        setWorkoutSessions(formattedData);
-      } catch (error) {
-        setError(error.message);
+      if (error) {
+        throw error;
       }
-    };
 
-    fetchWorkoutHistory();
+      const formattedData = data.map((session) => ({
+        workout_session_id: session.id,
+        date: new Date(session.session_date).toLocaleDateString(),
+        workout_name: session.workout ? session.workout.name : 'Unknown Workout',
+      }));
+
+      setWorkoutSessions(formattedData);
+    } catch (error) {
+      setError(error.message);
+    }
   }, [userId]);
 
-  return { workoutSessions, error };
+  useEffect(() => {
+    fetchWorkoutHistory();
+  }, [userId, refreshFlag, fetchWorkoutHistory]);
+
+  const refresh = () => setRefreshFlag((prev) => !prev);
+
+  return { workoutSessions, error, refresh };
 };
 
 export default useFetchWorkoutHistory;

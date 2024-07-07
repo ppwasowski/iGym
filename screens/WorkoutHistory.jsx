@@ -24,7 +24,7 @@ const WorkoutHistory = ({ session }) => {
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigateToWorkoutProgress(item.workout_session_id)}>
             <View style={styles.sessionItem}>
-              <Text style={styles.sessionText}>Workout Date: {item.date}</Text>
+              <Text style={styles.sessionText}>"{item.workout_name}" {item.date}</Text>
             </View>
           </TouchableOpacity>
         )}

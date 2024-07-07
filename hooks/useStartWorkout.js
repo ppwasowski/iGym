@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 const useStartWorkout = (workoutId, userId) => {
   const [error, setError] = useState(null);
   const navigation = useNavigation();
+  
 
   const startWorkout = async () => {
     try {

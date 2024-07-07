@@ -15,6 +15,7 @@ const Stack = createStackNavigator();
 
 const CombinedStack = ({ route }) => {
   const { session, initialRouteName } = route.params;
+  const userId = session.user.id;
 
   return (
     <Stack.Navigator initialRouteName={initialRouteName}>
@@ -25,10 +26,10 @@ const CombinedStack = ({ route }) => {
       />
       <Stack.Screen
         name="WorkoutDetails"
+        component={WorkoutDetails}
         options={({ route }) => ({ title: route.params.workoutName })}
-      >
-        {(props) => <WorkoutDetails {...props} session={session} />}
-      </Stack.Screen>
+        initialParams={{ session, userId }}
+      />
       <Stack.Screen
         name="Bodyparts"
         component={BodypartView}
