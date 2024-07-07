@@ -32,6 +32,6 @@ You need to create Virtual Device via Android Studio.
 To deploy this project run
 
 ```bash
-  yarn run android
+  yarn run start
 ```
-
+Then select "a" to run on android
