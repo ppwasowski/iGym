@@ -7,11 +7,15 @@ const WorkoutList = ({ route }) => {
   const { session } = route.params;
   const userId = session?.user?.id;
   const navigation = useNavigation();
-  const { data: workouts, error } = useFetchExercisesForContext({ userId });
+  const { data: workouts, error, refresh } = useFetchExercisesForContext({ userId });
 
   if (error) {
     return <Text>Error: {error}</Text>;
   }
+
+  const refreshWorkouts = async () => {
+    await refresh();
+  };
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
@@ -20,14 +24,14 @@ const WorkoutList = ({ route }) => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate('WorkoutDetails',{ workoutId: item.id, workoutName: item.name, userId })}>
+            onPress={() => navigation.navigate('WorkoutDetails', { workoutId: item.id, workoutName: item.name, userId })}>
             <View style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
               <Text style={{ fontSize: 18 }}>{item.name}</Text>
             </View>
           </TouchableOpacity>
         )}
       />
-      <Button title="Add Workout" onPress={() => navigation.navigate('AddWorkout', { userId })} />
+      <Button title="Add Workout" onPress={() => navigation.navigate('AddWorkout', { userId, refreshWorkouts })} />
     </View>
   );
 };

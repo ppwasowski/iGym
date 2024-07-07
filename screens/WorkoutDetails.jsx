@@ -9,15 +9,17 @@ import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
 const WorkoutDetails = ({ route, navigation }) => {
   const { workoutId, session } = route.params;
   const userId = session.user.id;
-  const { data: exercises, error: fetchError, setData: setExercises, setError: setFetchError } = useFetchExercisesForContext({ workoutId });
+  const { data: exercises, error: fetchError, setData: setExercises, setError: setFetchError, refresh: refreshExercises } = useFetchExercisesForContext({ workoutId });
   const { removeExerciseFromWorkout, error: removeError, setError: setRemoveError } = useRemoveExerciseFromWorkout(workoutId, exercises, setExercises);
-  const { workoutSessions, error: historyError, refresh } = useFetchWorkoutHistory(userId);
+  const { workoutSessions, error: historyError, refresh: refreshHistory } = useFetchWorkoutHistory(userId);
   const { startWorkout, error: startError } = useStartWorkout(workoutId, userId);
 
   const handleStartWorkout = async () => {
     const data = await startWorkout();
     if (data) {
-      navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id, session, refresh });
+      refreshExercises(); // Refresh the exercises list
+      refreshHistory(); // Refresh the workout history
+      navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id, session, refresh: refreshExercises });
     }
   };
 

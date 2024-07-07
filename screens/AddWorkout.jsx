@@ -9,7 +9,7 @@ const AddWorkout = ({ navigation, route }) => {
 
   const handleAddWorkout = async () => {
     await addWorkout(workoutName, refreshWorkouts);
-    navigation.navigate('WorkoutList'); // Navigate back to the workout list
+    navigation.goBack(); // Navigate back to the previous screen
   };
 
   return (

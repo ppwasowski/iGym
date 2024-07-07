@@ -15,9 +15,7 @@ const useAddWorkout = () => {
 
       const { data, error } = await supabase
         .from('workout')
-        .insert([
-          { name: workoutName, user_id: user.id },
-        ])
+        .insert([{ name: workoutName, user_id: user.id }])
         .single();
 
       if (error) {
@@ -25,7 +23,9 @@ const useAddWorkout = () => {
       }
 
       console.log('Workout added:', data);
-      refreshWorkouts(); // Refresh the workouts list
+      if (refreshWorkouts) {
+        refreshWorkouts(); // Call the refresh function
+      }
     } catch (error) {
       console.error('Error adding workout:', error);
       setError(error.message);
