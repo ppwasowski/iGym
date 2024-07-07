@@ -23,6 +23,10 @@ Install dependencies
 ```bash
   yarn install
 ```
+
+https://docs.expo.dev/workflow/android-studio-emulator/
+
+You need to create Virtual Device via Android Studio.
 ## Deployment
 
 To deploy this project run
