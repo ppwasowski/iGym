@@ -1,17 +1,27 @@
 import React, { useContext } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { UserContext } from '../context/UserContext';
+import useWorkoutSessions from '../hooks/useWorkoutSessions';
+import getWorkoutMessage from '../components/getWorkoutMessage';
 
-export default function HomeScreen({ session }) {
-  const { profile, loading, error } = useContext(UserContext);
+export default function HomeScreen() {
+  const { profile, loading: profileLoading, error: profileError } = useContext(UserContext);
+  const { sessions, loading: sessionsLoading, error: sessionsError } = useWorkoutSessions();
 
-  if (loading) {
-    return <Text>Loading...</Text>;
+  if (profileLoading || sessionsLoading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  if (error) {
-    return <Text>Error: {error}</Text>;
+  if (profileError) {
+    return <Text>Error: {profileError}</Text>;
   }
+
+  if (sessionsError) {
+    return <Text>Error: {sessionsError}</Text>;
+  }
+
+  const lastWorkoutDate = sessions.length > 0 ? sessions[0].session_date : null;
+  const message = lastWorkoutDate ? getWorkoutMessage(lastWorkoutDate) : "You haven't started a workout yet.";
 
   return (
     <View style={styles.container}>
@@ -19,10 +29,11 @@ export default function HomeScreen({ session }) {
       <Text style={styles.quote}>
         “I never dreamed about success. I worked for it.” —Estée Lauder
       </Text>
+      <Text style={styles.message}>{message}</Text>
       <View style={styles.optionsContainer}>
         <Text style={styles.option}>Last workout</Text>
         <Text style={styles.option}>Graphs</Text>
-        <Button title="log" onPress={() => console.log(session.user)} />
+        <Button title="Log" onPress={() => console.log(profile)} />
       </View>
     </View>
   );
@@ -30,6 +41,7 @@ export default function HomeScreen({ session }) {
 
 const styles = StyleSheet.create({
   container: {
+    margin: 10,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -43,6 +55,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
+  },
+  message: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 20,
+    color: 'green',
   },
   optionsContainer: {
     flexDirection: 'row',
