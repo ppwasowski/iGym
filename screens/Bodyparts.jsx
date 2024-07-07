@@ -45,10 +45,11 @@ const BodypartView = ({ session, workoutId }) => {
             <Pressable
               style={{
                 backgroundColor: 'white',
-                height: 40,
-                width: 100,
-                padding: 3,
+                height: 100,
+                width: 190,
                 margin: 1,
+                marginTop: 10,
+                marginRight: 5,
                 borderRadius: 10,
                 justifyContent: 'center',
                 alignItems: 'center',
