@@ -51,7 +51,7 @@ export default function ProfileForm() {
         text1: 'Success',
         text2: 'User updated successfully'
       });
-      setModalVisible(false); // Close modal on successful update
+      setModalVisible(false);
     } catch (error) {
       Toast.show({
         type: 'error',
