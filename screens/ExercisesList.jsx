@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Pressable, View, Text } from 'react-native';
+import { FlatList, Pressable, View, Text, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useFavorites } from '../context/FavoriteContext';
@@ -9,12 +9,12 @@ import useAddExerciseToWorkout from '../services/useAddExerciseToWorkout';
 const ExercisesList = ({ route }) => {
   const { bodypartId, workoutId } = route.params;
   const navigation = useNavigation();
-  const { data: exercises, error } = useFetchExercisesForContext({ bodypartId, workoutId });
+  const { data: exercises, loading, error } = useFetchExercisesForContext({ bodypartId, workoutId });
   const { addExerciseToWorkout, error: addError } = useAddExerciseToWorkout();
   const { favorites, toggleFavorite } = useFavorites();
 
   const renderItem = ({ item }) => {
-    const isFavorite = favorites.includes(item.id);
+    const isFavorite = favorites.some(fav => fav.exercise_id === item.id);
 
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
@@ -32,6 +32,10 @@ const ExercisesList = ({ route }) => {
       </View>
     );
   };
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
 
   if (error || addError) {
     return <Text>Error: {error || addError}</Text>;

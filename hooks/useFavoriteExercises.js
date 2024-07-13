@@ -1,25 +1,24 @@
-// FavoriteContext.js
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// hooks/useFavoriteExercises.js
+import { useState, useEffect, useContext } from 'react';
 import { supabase } from '../utility/supabase';
-import Toast from 'react-native-toast-message';
-import { UserContext } from './UserContext';
+import { UserContext } from '../context/UserContext';
 
-const FavoriteContext = createContext();
-
-export const FavoriteProvider = ({ children }) => {
+const useFavoriteExercises = () => {
   const { profile } = useContext(UserContext);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchFavorites = async () => {
+    const fetchFavoriteExercises = async () => {
       if (!profile) {
         setLoading(false);
         return;
       }
 
       try {
+        console.log('Fetching favorite exercises for user ID:', profile.id);
+
         const { data, error } = await supabase
           .from('favorites')
           .select(`
@@ -30,33 +29,35 @@ export const FavoriteProvider = ({ children }) => {
             )
           `)
           .eq('user_id', profile.id);
-
+          
         if (error) {
           throw error;
         }
 
         setFavorites(data);
       } catch (error) {
-        console.error('Error fetching favorites:', error);
+        console.error('Error fetching favorite exercises:', error);
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFavorites();
+    fetchFavoriteExercises();
+    
   }, [profile]);
 
   const toggleFavorite = async (exerciseId) => {
-    if (!profile) {
-      console.error('No user profile found');
-      return;
-    }
-
     try {
+      if (!profile) {
+        console.error('No user ID found');
+        return;
+      }
+
       const existingFavorite = favorites.find(fav => fav.exercise_id === exerciseId);
 
       if (existingFavorite) {
+        // Remove from favorites
         const { error } = await supabase
           .from('favorites')
           .delete()
@@ -68,46 +69,26 @@ export const FavoriteProvider = ({ children }) => {
         }
 
         setFavorites(favorites.filter(fav => fav.exercise_id !== exerciseId));
-        Toast.show({
-          type: 'error',
-          text1: 'Exercise removed from favorites',
-        });
+        ToastShow('error','Exercise removed from favorites');
       } else {
-        const { error } = await supabase.from('favorites').insert([
-          { user_id: profile.id, exercise_id: exerciseId },
+        // Add to favorites
+        const { data, error } = await supabase.from('favorites').insert([
+          { user_id: profile.id, exercise_id: exerciseId }
         ]);
 
         if (error) {
           throw error;
         }
 
-        const { data: exerciseData } = await supabase
-          .from('exercises')
-          .select('id, name')
-          .eq('id', exerciseId)
-          .single();
-
-        setFavorites([...favorites, { exercise_id: exerciseId, exercises: exerciseData }]);
-        Toast.show({
-          type: 'success',
-          text1: 'Exercise added to favorites',
-        });
+        setFavorites([...favorites, { exercise_id: exerciseId, exercises: data[0] }]);
+        ToastShow('success','Exercise added to favorites');
       }
     } catch (error) {
       console.error('Error toggling exercise favorite:', error.message);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error.message,
-      });
     }
   };
 
-  return (
-    <FavoriteContext.Provider value={{ favorites, toggleFavorite, loading, error }}>
-      {children}
-    </FavoriteContext.Provider>
-  );
+  return { favorites, loading, error, toggleFavorite };
 };
 
-export const useFavorites = () => useContext(FavoriteContext);
+export default useFavoriteExercises;

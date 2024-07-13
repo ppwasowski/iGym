@@ -1,11 +1,7 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useFavorites } from '../context/FavoriteContext';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 
-const FavoriteExercises = () => {
-  const { favorites, toggleFavorite, loading, error } = useFavorites();
-
+const FavoriteExercisesList = ({ favorites, loading, error }) => {
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -16,6 +12,7 @@ const FavoriteExercises = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Favorite Exercises</Text>
       {favorites.length === 0 ? (
         <Text>No favorite exercises found.</Text>
       ) : (
@@ -25,9 +22,6 @@ const FavoriteExercises = () => {
           renderItem={({ item }) => (
             <View style={styles.item}>
               <Text style={styles.itemText}>{item.exercises.name}</Text>
-              <TouchableOpacity onPress={() => toggleFavorite(item.exercise_id)}>
-                <Ionicons name="heart" size={24} color="black" />
-              </TouchableOpacity>
             </View>
           )}
         />
@@ -53,12 +47,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '100%',
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   itemText: {
     fontSize: 16,
   },
 });
 
-export default FavoriteExercises;
+export default FavoriteExercisesList;

@@ -1,18 +1,9 @@
+// services/favoriteService.js
 import { supabase } from '../utility/supabase';
 import ToastShow from '../components/ToastShow';
 
-export const getUserId = async () => {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error) {
-    console.error('Error getting session:', error.message);
-    return null;
-  }
-  return session ? session.user.id : null;
-};
-
-export const toggleFavorite = async (exerciseId) => {
+export const toggleFavorite = async (exerciseId, userId) => {
   try {
-    const userId = await getUserId();
     if (!userId) {
       console.error('No user ID found');
       return;
@@ -59,9 +50,8 @@ export const toggleFavorite = async (exerciseId) => {
   }
 };
 
-export const isFavorite = async (exerciseId) => {
+export const isFavorite = async (exerciseId, userId) => {
   try {
-    const userId = await getUserId();
     if (!userId) {
       return false;
     }
