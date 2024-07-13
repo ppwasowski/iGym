@@ -2,9 +2,9 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Account from '../screens/Profile';
 import WorkoutHistory from '../screens/WorkoutHistory';
-import FavoriteExercises from '../screens/FavoriteExercises'; // Assume this screen exists
-import PersonalRecords from '../screens/PersonalRecords'; // Assume this screen exists
-import WorkoutProgress from '../screens/WorkoutProgress'; // Assume this screen exists
+import FavoriteExercises from '../screens/FavoriteExercises';
+import PersonalRecords from '../screens/PersonalRecords';
+import WorkoutProgress from '../screens/WorkoutProgress';
 
 const Stack = createStackNavigator();
 
