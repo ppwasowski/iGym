@@ -66,7 +66,6 @@ export default function SignIn({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
     padding: 12,
   },
   verticallySpaced: {

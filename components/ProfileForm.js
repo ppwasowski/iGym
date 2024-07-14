@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, StyleSheet, Text, Modal, ActivityIndicator } from 'react-native';
+import { View, TextInput, StyleSheet, Text, Modal, ActivityIndicator, FlatList } from 'react-native';
 import { Button } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { UserContext } from '../context/UserContext';
 
 export default function ProfileForm() {
@@ -11,10 +12,13 @@ export default function ProfileForm() {
     last_name: '',
     age: '',
     height: '',
-    weight: ''
+    weight: '',
+    gender: '',
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [gender, setGender] = useState(formData.gender);
 
   useEffect(() => {
     if (profile) {
@@ -23,8 +27,10 @@ export default function ProfileForm() {
         last_name: profile.last_name || '',
         age: profile.age?.toString() || '',
         height: profile.height?.toString() || '',
-        weight: profile.weight?.toString() || ''
+        weight: profile.weight?.toString() || '',
+        gender: profile.gender || '',
       });
+      setGender(profile.gender || '');
     }
   }, [profile]);
 
@@ -40,7 +46,8 @@ export default function ProfileForm() {
       ...formData,
       age: formData.age ? parseInt(formData.age, 10) : null,
       height: formData.height ? parseFloat(formData.height) : null,
-      weight: formData.weight ? parseFloat(formData.weight) : null
+      weight: formData.weight ? parseFloat(formData.weight) : null,
+      gender: gender,
     };
 
     setLoading(true);
@@ -49,19 +56,40 @@ export default function ProfileForm() {
       Toast.show({
         type: 'success',
         text1: 'Success',
-        text2: 'User updated successfully'
+        text2: 'User updated successfully',
       });
       setModalVisible(false);
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Update failed',
-        text2: error.message
+        text2: error.message,
       });
     } finally {
       setLoading(false);
     }
   };
+
+  const formFields = [
+    { label: 'First Name', value: formData.first_name, setValue: (value) => handleInputChange('first_name', value), placeholder: 'First Name' },
+    { label: 'Last Name', value: formData.last_name, setValue: (value) => handleInputChange('last_name', value), placeholder: 'Last Name' },
+    { label: 'Age', value: formData.age, setValue: (value) => handleInputChange('age', value), placeholder: 'Age', keyboardType: 'numeric' },
+    { label: 'Height', value: formData.height, setValue: (value) => handleInputChange('height', value), placeholder: 'Height', keyboardType: 'numeric' },
+    { label: 'Weight', value: formData.weight, setValue: (value) => handleInputChange('weight', value), placeholder: 'Weight', keyboardType: 'numeric' },
+  ];
+
+  const renderItem = ({ item }) => (
+    <View style={styles.verticallySpaced}>
+      <Text style={styles.label}>{item.label}:</Text>
+      <TextInput
+        style={styles.input}
+        value={item.value}
+        onChangeText={item.setValue}
+        placeholder={item.placeholder}
+        keyboardType={item.keyboardType}
+      />
+    </View>
+  );
 
   return (
     <>
@@ -77,45 +105,39 @@ export default function ProfileForm() {
             {loading ? (
               <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-              <View style={styles.form}>
-                {error && <Text style={{ color: 'red' }}>{error}</Text>}
-                <Text style={styles.label}>First Name:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.first_name}
-                  onChangeText={(value) => handleInputChange('first_name', value)}
-                />
-                <Text style={styles.label}>Last Name:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.last_name}
-                  onChangeText={(value) => handleInputChange('last_name', value)}
-                />
-                <Text style={styles.label}>Age:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.age}
-                  onChangeText={(value) => handleInputChange('age', value)}
-                  keyboardType="numeric"
-                />
-                <Text style={styles.label}>Height:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.height}
-                  onChangeText={(value) => handleInputChange('height', value)}
-                  keyboardType="numeric"
-                />
-                <Text style={styles.label}>Weight:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.weight}
-                  onChangeText={(value) => handleInputChange('weight', value)}
-                  keyboardType="numeric"
-                />
-                <Button title="Save" onPress={handleSubmit} />
-              </View>
+              <FlatList
+                data={formFields}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.label}
+                ListFooterComponent={() => (
+                  <View>
+                    <View style={styles.verticallySpaced}>
+                      <Text style={styles.label}>Gender</Text>
+                      <DropDownPicker
+                        open={open}
+                        value={gender}
+                        items={[
+                          { label: 'Male', value: 'male' },
+                          { label: 'Female', value: 'female' },
+                        ]}
+                        setOpen={setOpen}
+                        setValue={setGender}
+                        placeholder="Select Gender"
+                        style={styles.picker}
+                        dropDownContainerStyle={styles.dropDownContainer}
+                      />
+                    </View>
+                    <View style={[styles.verticallySpaced, styles.mt20]}>
+                      <Button title="Save" onPress={handleSubmit} />
+                      <Button title="Close" onPress={() => setModalVisible(false)} />
+                      <Toast />
+                      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+                    </View>
+                  </View>
+                )}
+                contentContainerStyle={styles.flatListContent}
+              />
             )}
-            {!loading && <Button title="Close" onPress={() => setModalVisible(false)} />}
           </View>
         </View>
       </Modal>
@@ -151,5 +173,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     alignItems: 'center',
+  },
+  picker: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  dropDownContainer: {
+    borderColor: 'gray',
+    backgroundColor: 'white',
+  },
+  verticallySpaced: {
+    paddingTop: 4,
+    paddingBottom: 4,
+    alignSelf: 'stretch',
+  },
+  mt20: {
+    marginTop: 20,
+  },
+  flatListContent: {
+    padding: 12,
+    flexGrow: 1,
+    justifyContent: 'center',
   },
 });

@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 const AccountStack = ({ session }) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Account" options={{ headerShown: false }}>
+      <Stack.Screen name="Account">
         {(props) => <Account {...props} session={session} />}
       </Stack.Screen>
       <Stack.Screen name="WorkoutHistory">

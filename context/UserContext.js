@@ -10,23 +10,26 @@ export const UserProvider = ({ children, session }) => {
 
   useEffect(() => {
     if (session) {
-      fetchProfile();
+      fetchProfile(session.user.id);
+    } else {
+      setLoading(false);
     }
   }, [session]);
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (userId) => {
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', session.user.id)
+        .eq('id', userId)
         .single();
 
       if (error) throw error;
       setProfile(data || {});
     } catch (error) {
       setError(error.message);
+      console.error('Error fetching profile:', error.message);
     } finally {
       setLoading(false);
     }
@@ -38,24 +41,28 @@ export const UserProvider = ({ children, session }) => {
       const { data, error } = await supabase
         .from('profiles')
         .update(profileData)
-        .eq('id', session.user.id)
+        .eq('id', profileData.id)
         .select()
         .single();
 
       if (error) throw error;
 
-      // Merge the updated fields into the current profile
       setProfile(prevProfile => ({ ...prevProfile, ...data }));
     } catch (error) {
       setError(error.message);
+      console.error('Error updating profile:', error.message);
       throw error; // rethrow the error to be caught in the component
     } finally {
       setLoading(false);
     }
   };
 
+  const refreshProfile = async (userId) => {
+    await fetchProfile(userId);
+  };
+
   return (
-    <UserContext.Provider value={{ profile, loading, error, updateProfile }}>
+    <UserContext.Provider value={{ profile, loading, error, updateProfile, refreshProfile }}>
       {children}
     </UserContext.Provider>
   );
