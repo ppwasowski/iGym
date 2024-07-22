@@ -10,6 +10,7 @@ import ExerciseWorkout from '../screens/ExerciseWorkout';
 import WorkoutProgress from '../screens/WorkoutProgress';
 import WorkoutSelection from '../screens/WorkoutSelection';
 import AddWorkout from '../screens/AddWorkout';
+import CustomHeader from '../components/CustomHeader';
 
 const Stack = createStackNavigator();
 
@@ -18,7 +19,12 @@ const CombinedStack = ({ route }) => {
   const userId = session.user.id;
 
   return (
-    <Stack.Navigator initialRouteName={initialRouteName}>
+    <Stack.Navigator
+      initialRouteName={initialRouteName}
+      screenOptions={({ route }) => ({
+        header: () => <CustomHeader title={route.name} />,
+      })}
+    >
       <Stack.Screen
         name="WorkoutList"
         component={WorkoutList}

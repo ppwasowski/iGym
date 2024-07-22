@@ -5,12 +5,17 @@ import WorkoutHistory from '../screens/WorkoutHistory';
 import FavoriteExercises from '../screens/FavoriteExercises';
 import PersonalRecords from '../screens/PersonalRecords';
 import WorkoutProgress from '../screens/WorkoutProgress';
+import CustomHeader from './CustomHeader';  // Ensure this is the correct path to your CustomHeader
 
 const Stack = createStackNavigator();
 
 const AccountStack = ({ session }) => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={({ route }) => ({
+        header: () => <CustomHeader title={route.name} />,
+      })}
+    >
       <Stack.Screen name="Account">
         {(props) => <Account {...props} session={session} />}
       </Stack.Screen>

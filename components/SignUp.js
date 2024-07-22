@@ -1,10 +1,16 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, View, ActivityIndicator, KeyboardAvoidingView, Platform, FlatList } from 'react-native';
-import { Button, Input, Text } from 'react-native-elements';
+import { View, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Text, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { supabase } from '../utility/supabase';
 import { UserContext } from '../context/UserContext';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+
+const FormItem = styled(View, 'py-1');
+const Label = styled(Text, 'text-Text font-bold');
 
 export default function SignUp() {
   const { refreshProfile } = useContext(UserContext);
@@ -41,7 +47,17 @@ export default function SignUp() {
         return;
       }
 
-      const userId = data.user.id;
+      const userId = data.user?.id;
+
+      if (!userId) {
+        Toast.show({
+          type: 'error',
+          text1: 'Sign up error',
+          text2: 'User ID not found after sign up.',
+        });
+        setLoading(false);
+        return;
+      }
 
       const { data: existingProfile, error: profileError } = await supabase
         .from('profiles')
@@ -117,7 +133,7 @@ export default function SignUp() {
   }
 
   const formFields = [
-    { label: 'Email', value: email, setValue: setEmail, placeholder: 'email@address.com', icon: 'envelope', keyboardType: 'default' },
+    { label: 'Email', value: email, setValue: setEmail, placeholder: 'Email@address.com', icon: 'envelope', keyboardType: 'default' },
     { label: 'Password', value: password, setValue: setPassword, placeholder: 'Password', icon: 'lock', secureTextEntry: true, keyboardType: 'default' },
     { label: 'First Name', value: firstName, setValue: setFirstName, placeholder: 'First Name', icon: 'user', keyboardType: 'default' },
     { label: 'Last Name', value: lastName, setValue: setLastName, placeholder: 'Last Name', icon: 'user', keyboardType: 'default' },
@@ -127,10 +143,9 @@ export default function SignUp() {
   ];
 
   const renderItem = ({ item }) => (
-    <View style={styles.verticallySpaced}>
+    <FormItem>
+      <Label>{item.label}</Label>
       <Input
-        label={item.label}
-        leftIcon={{ type: 'font-awesome', name: item.icon }}
         onChangeText={item.setValue}
         value={item.value}
         placeholder={item.placeholder}
@@ -138,76 +153,77 @@ export default function SignUp() {
         autoCapitalize="none"
         keyboardType={item.keyboardType}
       />
-    </View>
+    </FormItem>
   );
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
+      className="flex-1 bg-background"
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <FlatList
-        data={formFields}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.label}
-        ListFooterComponent={() => (
-          <View>
-            <View style={styles.verticallySpaced}>
-              <Text style={styles.label}>Gender</Text>
-              <DropDownPicker
-                open={open}
-                value={gender}
-                items={items}
-                setOpen={setOpen}
-                setValue={setGender}
-                setItems={setItems}
-                placeholder="Select Gender"
-                style={styles.picker}
-                dropDownContainerStyle={styles.dropDownContainer}
-              />
-            </View>
-            <View style={[styles.verticallySpaced, styles.mt20]}>
-              <Button title="Sign up" disabled={loading} onPress={signUpWithEmail} />
-              <Toast />
-              {loading && <ActivityIndicator size="large" color="#0000ff" />}
-            </View>
-          </View>
-        )}
-        contentContainerStyle={styles.flatListContent}
-      />
+      <Container>
+        <FlatList
+          data={formFields}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.label}
+          ListFooterComponent={() => (
+            <>
+              <FormItem>
+                <Label>Gender</Label>
+                <DropDownPicker
+                  open={open}
+                  value={gender}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setGender}
+                  setItems={setItems}
+                  placeholder="Select Gender"
+                  style={styles.picker}
+                  textStyle={styles.textPicker}
+                  dropDownContainerStyle={styles.dropDownContainer}
+                  selectedItemLabelStyle={styles.selectedItemLabel}
+                  dropdownIconRippleColor="#FFFFFF"
+                  arrowIconStyle={styles.arrowIcon}
+                  tickIconStyle={styles.tickIcon}
+                />
+              </FormItem>
+              <FormItem>
+                <Button title="Sign up" disabled={loading} onPress={signUpWithEmail} />
+                <Toast />
+                {loading && <ActivityIndicator size="large" color="#0000ff" />}
+              </FormItem>
+            </>
+          )}
+          contentContainerStyle="p-3 flex-grow justify-center"
+        />
+      </Container>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  keyboardAvoidingView: {
-    flex: 1,
-  },
-  flatListContent: {
-    padding: 12,
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-  },
-  mt20: {
-    marginTop: 20,
-  },
-  label: {
-    fontWeight: 'bold',
-  },
   picker: {
     height: 50,
     borderColor: 'gray',
+    backgroundColor: '#232323',
     borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 15,
+    marginBottom: 25,
+  },
+  textPicker: {
+    color: '#FFFFFF', // Text color for dropdown items
   },
   dropDownContainer: {
-    borderColor: 'gray',
-    backgroundColor: 'white',
+    borderColor: '#2a2a2a',
+    backgroundColor: '#232323',
+  },
+  selectedItemLabel: {
+    color: '#FFFFFF', // Selected item text color
+  },
+  arrowIcon: {
+    tintColor: '#FFFFFF', // Arrow icon color
+  },
+  tickIcon: {
+    tintColor: '#FFFFFF', // Tick icon color
   },
 });

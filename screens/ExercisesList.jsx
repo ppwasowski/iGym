@@ -5,6 +5,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useFavorites } from '../context/FavoriteContext';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
 import useAddExerciseToWorkout from '../services/useAddExerciseToWorkout';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+
+const ExerciseItem = styled(View, 'flex-row justify-between items-center p-4 border-b border-gray-400');
+const ExerciseText = styled(Text, 'capitalize text-lg text-white');
+const AddText = styled(Text, 'text-Primary');
 
 const ExercisesList = ({ route }) => {
   const { bodypartId, workoutId } = route.params;
@@ -17,19 +23,19 @@ const ExercisesList = ({ route }) => {
     const isFavorite = favorites.some(fav => fav.exercise_id === item.id);
 
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+      <ExerciseItem>
         <Pressable onPress={() => navigation.navigate('ExerciseDetails', { exerciseId: item.id, workoutId })}>
-          <Text style={{ fontSize: 18 }}>{item.name}</Text>
+          <ExerciseText>{item.name}</ExerciseText>
         </Pressable>
         {workoutId && (
           <Pressable onPress={() => addExerciseToWorkout(workoutId, item.id, navigation)}>
-            <Text>Add to Workout</Text>
+            <AddText>Add to Workout</AddText>
           </Pressable>
         )}
         <Pressable onPress={() => toggleFavorite(item.id)}>
-          <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color="black" />
+          <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color="white" />
         </Pressable>
-      </View>
+      </ExerciseItem>
     );
   };
 
@@ -42,13 +48,13 @@ const ExercisesList = ({ route }) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <Container>
       <FlatList
         data={exercises}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
-    </View>
+    </Container>
   );
 };
 

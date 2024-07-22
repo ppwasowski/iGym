@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, StyleSheet, View, AppState } from 'react-native';
+import { Alert, AppState, View } from 'react-native';
 import { supabase } from '../utility/supabase';
-import { Button, Input } from 'react-native-elements';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+
+const FormItem = styled(View, 'py-1');
+const FormContainer = styled(Container, 'flex-1 p-4');
 
 export default function SignIn({ navigation }) {
   const [email, setEmail] = useState('');
@@ -17,7 +23,11 @@ export default function SignIn({ navigation }) {
       }
     };
 
-    AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   async function signInWithEmail() {
@@ -32,48 +42,32 @@ export default function SignIn({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+    <FormContainer>
+      <FormItem>
         <Input
           label="Email"
-          leftIcon={{ type: 'font-awesome', name: 'envelope' }}
+          placeholder="email@address.com"
           onChangeText={(text) => setEmail(text)}
           value={email}
-          placeholder="email@address.com"
           autoCapitalize="none"
         />
-      </View>
-      <View style={styles.verticallySpaced}>
+      </FormItem>
+      <FormItem>
         <Input
           label="Password"
-          leftIcon={{ type: 'font-awesome', name: 'lock' }}
+          placeholder="Password"
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
-          placeholder="Password"
           autoCapitalize="none"
         />
-      </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+      </FormItem>
+      <FormItem className="mt-5">
         <Button title="Sign in" disabled={loading} onPress={signInWithEmail} />
-      </View>
-      <View style={styles.verticallySpaced}>
+      </FormItem>
+      <FormItem>
         <Button title="Sign up" disabled={loading} onPress={() => navigation.navigate('SignUp')} />
-      </View>
-    </View>
+      </FormItem>
+    </FormContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-  },
-  mt20: {
-    marginTop: 20,
-  },
-});

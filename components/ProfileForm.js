@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, TextInput, StyleSheet, Text, Modal, ActivityIndicator, FlatList } from 'react-native';
-import { Button } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { UserContext } from '../context/UserContext';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+
+const FormItem = styled(View, 'py-2');
+const Label = styled(Text, 'text-Text font-bold mb-2');
 
 export default function ProfileForm() {
   const { profile, updateProfile, error } = useContext(UserContext);
@@ -23,6 +29,7 @@ export default function ProfileForm() {
   useEffect(() => {
     if (profile) {
       setFormData({
+        id: profile.id || '', // Add id to formData
         first_name: profile.first_name || '',
         last_name: profile.last_name || '',
         age: profile.age?.toString() || '',
@@ -79,16 +86,18 @@ export default function ProfileForm() {
   ];
 
   const renderItem = ({ item }) => (
-    <View style={styles.verticallySpaced}>
-      <Text style={styles.label}>{item.label}:</Text>
-      <TextInput
-        style={styles.input}
-        value={item.value}
+    <FormItem>
+      <Label>{item.label}:</Label>
+      <Input
         onChangeText={item.setValue}
+        value={item.value}
         placeholder={item.placeholder}
+        secureTextEntry={item.secureTextEntry}
+        autoCapitalize="none"
         keyboardType={item.keyboardType}
+        className="border border-Secondary bg-background text-Text rounded-md px-4 py-2"
       />
-    </View>
+    </FormItem>
   );
 
   return (
@@ -100,8 +109,8 @@ export default function ProfileForm() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+        <View className="flex-1 justify-center items-center bg-blend-darken">
+          <View className="w-4/5 p-6 bg-background rounded-lg items-center">
             {loading ? (
               <ActivityIndicator size="large" color="#0000ff" />
             ) : (
@@ -110,9 +119,9 @@ export default function ProfileForm() {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.label}
                 ListFooterComponent={() => (
-                  <View>
-                    <View style={styles.verticallySpaced}>
-                      <Text style={styles.label}>Gender</Text>
+                  <>
+                    <FormItem>
+                      <Label>Gender</Label>
                       <DropDownPicker
                         open={open}
                         value={gender}
@@ -124,18 +133,23 @@ export default function ProfileForm() {
                         setValue={setGender}
                         placeholder="Select Gender"
                         style={styles.picker}
+                        textStyle={styles.textPicker}
                         dropDownContainerStyle={styles.dropDownContainer}
+                        selectedItemLabelStyle={styles.selectedItemLabel}
+                        dropdownIconRippleColor="#FFFFFF"
+                        arrowIconStyle={styles.arrowIcon}
+                        tickIconStyle={styles.tickIcon}
                       />
-                    </View>
-                    <View style={[styles.verticallySpaced, styles.mt20]}>
+                    </FormItem>
+                    <FormItem className="mt-4">
                       <Button title="Save" onPress={handleSubmit} />
                       <Button title="Close" onPress={() => setModalVisible(false)} />
                       <Toast />
                       {loading && <ActivityIndicator size="large" color="#0000ff" />}
-                    </View>
-                  </View>
+                    </FormItem>
+                  </>
                 )}
-                contentContainerStyle={styles.flatListContent}
+                contentContainerStyle="p-3 flex-grow justify-center"
               />
             )}
           </View>
@@ -146,56 +160,28 @@ export default function ProfileForm() {
 }
 
 const styles = StyleSheet.create({
-  form: {
-    width: '100%',
-  },
-  label: {
-    marginBottom: 5,
-    fontWeight: 'bold',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 15,
-    paddingLeft: 10,
-    borderRadius: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
   picker: {
     height: 50,
     borderColor: 'gray',
+    backgroundColor: '#232323',
     borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 15,
+    marginBottom: 25,
+  },
+  textPicker: {
+    color: '#FFFFFF', // Text color for dropdown items
   },
   dropDownContainer: {
-    borderColor: 'gray',
-    backgroundColor: 'white',
+    borderColor: '#2a2a2a',
+    backgroundColor: '#232323',
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
+  selectedItemLabel: {
+    color: '#FFFFFF', // Selected item text color
   },
-  mt20: {
-    marginTop: 20,
+  arrowIcon: {
+    tintColor: '#FFFFFF', // Arrow icon color
   },
-  flatListContent: {
-    padding: 12,
-    flexGrow: 1,
-    justifyContent: 'center',
+  tickIcon: {
+    tintColor: '#FFFFFF', // Tick icon color
   },
 });

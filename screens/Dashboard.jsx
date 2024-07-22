@@ -1,8 +1,16 @@
 import React, { useContext } from 'react';
-import { Button, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, Button, Image } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import useWorkoutSessions from '../hooks/useWorkoutSessions';
 import getWorkoutMessage from '../components/getWorkoutMessage';
+import { styled } from 'nativewind';
+import Container from '../components/Container'; // Ensure correct import
+
+const Title = styled(Text, 'text-Text text-3xl font-bold mb-2');
+const Quote = styled(Text, 'text-Secondary text-base text-center mb-5');
+const Message = styled(Text, 'text-Text text-lg text-center my-5 text-Primary');
+const OptionsContainer = styled(View, 'flex-row justify-between items-center w-4/5');
+const Option = styled(Text, 'text-base text-center border border-gray-400 p-2 rounded-md w-1/3');
 
 export default function HomeScreen() {
   const { profile, loading: profileLoading, error: profileError } = useContext(UserContext);
@@ -24,56 +32,21 @@ export default function HomeScreen() {
   const message = lastWorkoutDate ? getWorkoutMessage(lastWorkoutDate) : "You haven't started a workout yet.";
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome back, {profile.first_name || 'Guest'}!</Text>
-      <Text style={styles.quote}>
+    <Container className="justify-center items-center">
+      <Image
+        source={require('../assets/images/logo.png')}
+        style={{ width: 250, height: 100, marginBottom: 20 }}
+      />
+      <Title>Welcome back, {profile.first_name || 'Guest'}!</Title>
+      <Quote>
         “I never dreamed about success. I worked for it.” —Estée Lauder
-      </Text>
-      <Text style={styles.message}>{message}</Text>
-      <View style={styles.optionsContainer}>
-        <Text style={styles.option}>Last workout</Text>
-        <Text style={styles.option}>Graphs</Text>
+      </Quote>
+      <Message>{message}</Message>
+      <OptionsContainer>
+        <Option>Last workout</Option>
+        <Option>Graphs</Option>
         <Button title="Log" onPress={() => console.log(profile)} />
-      </View>
-    </View>
+      </OptionsContainer>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    margin: 10,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  quote: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  message: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginVertical: 20,
-    color: 'green',
-  },
-  optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '80%',
-  },
-  option: {
-    fontSize: 16,
-    textAlign: 'center',
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-    width: '30%',
-  },
-});

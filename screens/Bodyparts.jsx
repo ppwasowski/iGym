@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../utility/supabase';
+import Container from '../components/Container';
+import CustomPressable from '../components/Pressable'; // Import the new Pressable component
+import { styled } from 'nativewind';
+
+const StyledText = styled(Text);
 
 const BodypartView = ({ session, workoutId }) => {
   const [bodyparts, setBodyparts] = useState([]);
@@ -26,49 +31,29 @@ const BodypartView = ({ session, workoutId }) => {
   }, []);
 
   const handlePress = (bodypartId) => {
-    const handlePress = (bodypartId) => {
-      console.log('Navigating to ExercisesList with bodypartId:', bodypartId, 'and workoutId:', workoutId);
-      navigation.navigate('ExercisesList', { bodypartId, workoutId });
-    };
-    
+    console.log('Navigating to ExercisesList with bodypartId:', bodypartId, 'and workoutId:', workoutId);
     navigation.navigate('ExercisesList', { bodypartId, workoutId });
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
+    <Container className="items-center">
       {error ? (
-        <Text>Error: {error}</Text>
+        <StyledText className="text-red-500">{`Error: ${error}`}</StyledText>
       ) : (
         <FlatList
           data={bodyparts}
           renderItem={({ item }) => (
-            <Pressable
-              style={{
-                backgroundColor: 'white',
-                height: 100,
-                width: 190,
-                margin: 1,
-                marginTop: 10,
-                marginRight: 5,
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.8,
-                shadowRadius: 2,
-                elevation: 1,
-              }}
+            <CustomPressable
               onPress={() => handlePress(item.id)}
-            >
-              <Text style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'capitalize' }}>{item.name}</Text>
-            </Pressable>
+              title={item.name}
+            />
           )}
           numColumns={2}
           keyExtractor={item => item.id.toString()}
+          contentContainerStyle={{ alignItems: 'center' }}
         />
       )}
-    </View>
+    </Container>
   );
 };
 
