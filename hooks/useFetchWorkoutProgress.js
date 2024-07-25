@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../utility/supabase';
+import Toast from 'react-native-toast-message';
 
 const useFetchWorkoutProgress = (sessionId) => {
   const [progress, setProgress] = useState([]);
@@ -8,7 +9,11 @@ const useFetchWorkoutProgress = (sessionId) => {
   useEffect(() => {
     const fetchProgress = async () => {
       try {
-        console.log('Fetching progress for sessionId:', sessionId);
+        Toast.show({
+          type: 'info',
+          text1: 'Fetching',
+          text2: `Fetching progress for sessionId: ${sessionId}`,
+        });
 
         if (!sessionId) {
           throw new Error('sessionId is undefined');
@@ -35,10 +40,19 @@ const useFetchWorkoutProgress = (sessionId) => {
           throw error;
         }
 
-        console.log('Fetched Progress:', data);
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Progress fetched successfully',
+        });
+
         setProgress(data);
       } catch (error) {
-        console.error('Error fetching progress:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching progress',
+          text2: error.message,
+        });
         setError(error.message);
       }
     };

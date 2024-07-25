@@ -1,52 +1,47 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
+import Container from '../components/Container';
+import Toast from 'react-native-toast-message';
+import { styled } from 'nativewind';
+
+const SessionItem = styled(View, 'py-3 px-4 my-2 bg-Secondary rounded-md');
+const SessionText = styled(Text, 'text-Text text-base');
 
 const WorkoutHistory = ({ session }) => {
   const { workoutSessions, error } = useFetchWorkoutHistory(session.user.id);
   const navigation = useNavigation();
 
   const navigateToWorkoutProgress = (sessionId) => {
-    console.log('Navigating to WorkoutProgress from WorkoutHistory with sessionId:', sessionId);
     navigation.navigate('WorkoutProgress', { sessionId, from: 'WorkoutHistory' });
   };
 
   if (error) {
-    return <Text>Error: {error}</Text>;
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: error,
+    });
+    return null;
   }
 
   return (
-    <View style={styles.container}>
+    <Container className="flex-1 p-5">
       <FlatList
         data={workoutSessions}
         keyExtractor={(item) => item.workout_session_id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigateToWorkoutProgress(item.workout_session_id)}>
-            <View style={styles.sessionItem}>
-              <Text style={styles.sessionText}>"{item.workout_name}" {item.date}</Text>
-            </View>
+            <SessionItem>
+              <SessionText>"{item.workout_name}" {item.date}</SessionText>
+            </SessionItem>
           </TouchableOpacity>
         )}
       />
-    </View>
+      <Toast />
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  sessionItem: {
-    padding: 15,
-    marginVertical: 5,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 5,
-  },
-  sessionText: {
-    fontSize: 16,
-  },
-});
 
 export default WorkoutHistory;

@@ -19,8 +19,8 @@ const App = () => {
           ) : (
             <AuthStack />
           )}
-          <Toast />
         </NavigationContainer>
+        <Toast />
       </FavoriteProvider>
     </UserProvider>
   );

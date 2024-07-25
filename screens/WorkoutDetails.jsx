@@ -1,10 +1,18 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
 import useRemoveExerciseFromWorkout from '../services/useRemoveExerciseFromWorkout';
 import useStartWorkout from '../services/useStartWorkout';
 import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
+import ToastShow from '../components/ToastShow';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+
+const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
+const ExerciseName = styled(Text, 'text-Text text-lg');
+const IconButton = styled(Ionicons, 'text-2xl');
 
 const WorkoutDetails = ({ route, navigation }) => {
   const { workoutId, session } = route.params;
@@ -24,22 +32,26 @@ const WorkoutDetails = ({ route, navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      {(fetchError || removeError || startError || historyError) && <Text>Error: {fetchError || removeError || startError || historyError}</Text>}
+    <Container className="flex-1 p-4">
+      {(fetchError || removeError || startError || historyError) && (
+        <ToastShow type="error" text1="Error" text2={fetchError || removeError || startError || historyError} />
+      )}
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.exercise_id.toString()}
         renderItem={({ item }) => (
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-            <Text style={{ fontSize: 18 }}>{item.exercises.name}</Text>
-            <TouchableOpacity onPress={() => removeExerciseFromWorkout(item.exercise_id)}>
-              <Ionicons name="remove-circle" size={24} color="red" />
-            </TouchableOpacity>
-          </View>
+          <ExerciseItem>
+            <ExerciseName>{item.exercises.name}</ExerciseName>
+            <IconButton
+              name="remove-circle"
+              onPress={() => removeExerciseFromWorkout(item.exercise_id)}
+              color="red"
+            />
+          </ExerciseItem>
         )}
       />
       <Button title="Start Workout" onPress={handleStartWorkout} />
-    </View>
+    </Container>
   );
 };
 

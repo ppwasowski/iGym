@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Dimensions, ActivityIndicator, Button } from 'react-native';
+import { View, Text, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { useRoute, useNavigation, CommonActions } from '@react-navigation/native';
 import useFetchWorkoutProgress from '../hooks/useFetchWorkoutProgress';
+import Container from '../components/Container';
+import Button from '../components/Button';
+import Toast from 'react-native-toast-message';
+import { styled } from 'nativewind';
 
 const screenWidth = Dimensions.get('window').width;
+
+const StyledText = styled(Text, 'text-Text text-lg mb-2');
+const ChartContainer = styled(View, 'mb-5');
+const ChartTitle = styled(Text, 'text-Text text-lg mb-2');
 
 const WorkoutProgress = () => {
   const route = useRoute();
@@ -37,7 +45,12 @@ const WorkoutProgress = () => {
   }
 
   if (error) {
-    return <Text>Error: {error}</Text>;
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: error,
+    });
+    return null;
   }
 
   const groupedData = progress.reduce((acc, item) => {
@@ -53,13 +66,13 @@ const WorkoutProgress = () => {
   }, {});
 
   return (
-    <ScrollView>
-      <View style={{ flex: 1, padding: 20 }}>
+    <Container>
+      <ScrollView className="flex-1 p-4">
         {Object.keys(groupedData).map((exerciseId) => {
           const exercise = progress.find((item) => item.exercise_id === parseInt(exerciseId));
           return (
-            <View key={exerciseId} style={{ marginBottom: 20 }}>
-              <Text style={{ fontSize: 18, marginBottom: 10 }}>{exercise.exercises.name}</Text>
+            <ChartContainer key={exerciseId}>
+              <ChartTitle>{exercise.exercises.name}</ChartTitle>
               <LineChart
                 data={groupedData[exerciseId]}
                 width={screenWidth - 40}
@@ -81,12 +94,13 @@ const WorkoutProgress = () => {
                   </View>
                 )}
               />
-            </View>
+            </ChartContainer>
           );
         })}
         <Button title="Close" onPress={handleClose} />
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <Toast />
+    </Container>
   );
 };
 

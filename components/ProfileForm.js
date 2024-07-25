@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, StyleSheet, Text, Modal, ActivityIndicator, FlatList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, FlatList, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { UserContext } from '../context/UserContext';
@@ -10,8 +10,9 @@ import { styled } from 'nativewind';
 
 const FormItem = styled(View, 'py-2');
 const Label = styled(Text, 'text-Text font-bold mb-2');
+const ButtonContainer = styled(View, 'mt-4 flex-row justify-between w-full');
 
-export default function ProfileForm() {
+export default function ProfileForm({ onClose }) {
   const { profile, updateProfile, error } = useContext(UserContext);
   const [formData, setFormData] = useState({
     first_name: '',
@@ -21,7 +22,6 @@ export default function ProfileForm() {
     weight: '',
     gender: '',
   });
-  const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [gender, setGender] = useState(formData.gender);
@@ -65,7 +65,7 @@ export default function ProfileForm() {
         text1: 'Success',
         text2: 'User updated successfully',
       });
-      setModalVisible(false);
+      if (onClose) onClose();
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -101,61 +101,51 @@ export default function ProfileForm() {
   );
 
   return (
-    <>
-      <Button title="Edit Personal Info" onPress={() => setModalVisible(true)} />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-blend-darken">
-          <View className="w-4/5 p-6 bg-background rounded-lg items-center">
-            {loading ? (
-              <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-              <FlatList
-                data={formFields}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.label}
-                ListFooterComponent={() => (
-                  <>
-                    <FormItem>
-                      <Label>Gender</Label>
-                      <DropDownPicker
-                        open={open}
-                        value={gender}
-                        items={[
-                          { label: 'Male', value: 'male' },
-                          { label: 'Female', value: 'female' },
-                        ]}
-                        setOpen={setOpen}
-                        setValue={setGender}
-                        placeholder="Select Gender"
-                        style={styles.picker}
-                        textStyle={styles.textPicker}
-                        dropDownContainerStyle={styles.dropDownContainer}
-                        selectedItemLabelStyle={styles.selectedItemLabel}
-                        dropdownIconRippleColor="#FFFFFF"
-                        arrowIconStyle={styles.arrowIcon}
-                        tickIconStyle={styles.tickIcon}
-                      />
-                    </FormItem>
-                    <FormItem className="mt-4">
-                      <Button title="Save" onPress={handleSubmit} />
-                      <Button title="Close" onPress={() => setModalVisible(false)} />
-                      <Toast />
-                      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-                    </FormItem>
-                  </>
-                )}
-                contentContainerStyle="p-3 flex-grow justify-center"
-              />
+    <View className="flex-1 justify-center items-center">
+      <View className="w-4/5 p-6 bg-background rounded-lg items-center">
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <FlatList
+            data={formFields}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.label}
+            ListFooterComponent={() => (
+              <>
+                <FormItem>
+                  <Label>Gender</Label>
+                  <DropDownPicker
+                    open={open}
+                    value={gender}
+                    items={[
+                      { label: 'Male', value: 'male' },
+                      { label: 'Female', value: 'female' },
+                    ]}
+                    setOpen={setOpen}
+                    setValue={setGender}
+                    placeholder="Select Gender"
+                    style={styles.picker}
+                    textStyle={styles.textPicker}
+                    dropDownContainerStyle={styles.dropDownContainer}
+                    selectedItemLabelStyle={styles.selectedItemLabel}
+                    dropdownIconRippleColor="#FFFFFF"
+                    arrowIconStyle={styles.arrowIcon}
+                    tickIconStyle={styles.tickIcon}
+                  />
+                </FormItem>
+                <ButtonContainer>
+                  <Button title="Save" onPress={handleSubmit} />
+                  <Button title="Close" onPress={onClose} />
+                </ButtonContainer>
+                <Toast />
+                {loading && <ActivityIndicator size="large" color="#0000ff" />}
+              </>
             )}
-          </View>
-        </View>
-      </Modal>
-    </>
+            contentContainerStyle="p-3 flex-grow justify-center"
+          />
+        )}
+      </View>
+    </View>
   );
 }
 

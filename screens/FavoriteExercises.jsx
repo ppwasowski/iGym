@@ -1,7 +1,14 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFavorites } from '../context/FavoriteContext';
+import Container from '../components/Container';
+import Toast from 'react-native-toast-message';
+import { styled } from 'nativewind';
+
+const Item = styled(TouchableOpacity, 'flex-row justify-between text-capitalize items-center p-4 my-2 border-b border-gray-400 bg-background rounded-md w-full');
+const ItemText = styled(Text, 'text-Text text-base');
+const NoFavoritesText = styled(Text, 'text-Text text-center mt-4');
 
 const FavoriteExercises = () => {
   const { favorites, toggleFavorite, loading, error } = useFavorites();
@@ -11,54 +18,33 @@ const FavoriteExercises = () => {
   }
 
   if (error) {
-    return <Text>Error: {error}</Text>;
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: error,
+    });
+    return null;
   }
 
   return (
-    <View style={styles.container}>
+    <Container className="p-4 items-center">
       {favorites.length === 0 ? (
-        <Text>No favorite exercises found.</Text>
+        <NoFavoritesText>No favorite exercises found.</NoFavoritesText>
       ) : (
         <FlatList
           data={favorites}
           keyExtractor={(item) => item.exercise_id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.itemText}>{item.exercises.name}</Text>
-              <TouchableOpacity onPress={() => toggleFavorite(item.exercise_id)}>
-                <Ionicons name="heart" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
+            <Item onPress={() => toggleFavorite(item.exercise_id)}>
+              <ItemText>{item.exercises.name}</ItemText>
+              <Ionicons name="heart" size={24} color="white" />
+            </Item>
           )}
         />
       )}
-    </View>
+      <Toast />
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
-  item: {
-    padding: 10,
-    marginVertical: 5,
-    borderWidth: 1,
-    borderRadius: 5,
-    width: '100%',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  itemText: {
-    fontSize: 16,
-  },
-});
 
 export default FavoriteExercises;

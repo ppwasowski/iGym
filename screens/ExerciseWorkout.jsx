@@ -1,9 +1,18 @@
 import React from 'react';
-import { View, Text, TextInput, Button, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
 import useAddSet from '../services/useAddSet';
 import useFinishExercise from '../services/useFinishExercise';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import Input from '../components/Input';
+import Toast from 'react-native-toast-message';
+import { styled } from 'nativewind';
+
+const StyledText = styled(Text, 'justify-center text-Text text-lg mb-2 text-capitalize ');
+const SetContainer = styled(View, 'justify-center flex-row mb-4 border-b border-gray-400');
+const CenteredText = styled(Text, 'text-center text-Text text-lg mb-2 text-capitalize');
 
 const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
@@ -17,36 +26,43 @@ const ExerciseWorkout = ({ route }) => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20, marginTop: 50 }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>Enter Set Details for {exerciseName}:</Text>
-      {(fetchError || finishError) && <Text style={{ color: 'red' }}>{fetchError || finishError}</Text>}
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 5 }}
+    <Container className="flex-1 p-4">
+      <CenteredText>{exerciseName}:</CenteredText>
+      {(fetchError || finishError) && (
+        <Toast 
+          type="error" 
+          text1="Error" 
+          text2={fetchError || finishError} 
+        />
+      )}
+      <Input
         placeholder="Weight (kg)"
         keyboardType="numeric"
         value={weight}
         onChangeText={(text) => setWeight(text)}
+        className="mb-4"
       />
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 5 }}
+      <Input
         placeholder="Reps"
         keyboardType="numeric"
         value={reps}
         onChangeText={(text) => setReps(text)}
+        className="mb-4"
       />
-      <Button title="Add Set" onPress={addSet} />
-      
-      <ScrollView style={{ flex: 1, marginTop: 20 }}>
+      <Button title="Add Set" onPress={addSet} className="mb-4" />
+
+      <ScrollView className="flex-1 mt-5">
         {sets.map((set, index) => (
-          <View key={index} style={{ flexDirection: 'row', marginBottom: 10 }}>
-            <Text style={{ marginRight: 10 }}>Set {set.setNumber}:</Text>
-            <Text>Weight: {set.weight} kg, Reps: {set.reps}</Text>
-          </View>
+          <SetContainer key={index}>
+            <StyledText className="font-bold mr-3">Set {set.setNumber}:</StyledText>
+            <StyledText>Weight: {set.weight} kg, Reps: {set.reps}</StyledText>
+          </SetContainer>
         ))}
       </ScrollView>
 
       <Button title="Finish Exercise" onPress={handleFinishExercise} />
-    </View>
+      <Toast />
+    </Container>
   );
 };
 

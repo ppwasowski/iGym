@@ -1,11 +1,19 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchWorkouts from '../hooks/useFetchWorkouts';
 import useAddExerciseToWorkout from '../services/useAddExerciseToWorkout';
 import useRemoveExerciseFromWorkout from '../services/useRemoveExerciseFromWorkout';
 import ToastShow from '../components/ToastShow';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+
+const Title = styled(Text, 'text-Text text-xl mb-4');
+const WorkoutItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
+const WorkoutName = styled(Text, 'text-Text text-lg');
+const IconButton = styled(Ionicons, 'text-2xl');
 
 const WorkoutSelection = ({ route }) => {
   const { exerciseId, session } = route.params;
@@ -16,32 +24,38 @@ const WorkoutSelection = ({ route }) => {
   const { removeExerciseFromWorkout, error: removeError } = useRemoveExerciseFromWorkout(workouts, setWorkouts);
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      {(fetchError || addError || removeError) && <Text>Error: {fetchError || addError || removeError}</Text>}
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>Select Workout to Add/Remove Exercise</Text>
+    <Container className="flex-1 p-4">
+      {(fetchError || addError || removeError) && (
+        <ToastShow type="error" text1="Error" text2={fetchError || addError || removeError} />
+      )}
+      <Title>Select Workout to Add/Remove Exercise</Title>
       <FlatList
         data={workouts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => {
           const isExerciseInWorkout = item.workout_exercise.some(we => we.exercise_id === exerciseId);
           return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-              <Text style={{ fontSize: 18 }}>{item.name}</Text>
+            <WorkoutItem>
+              <WorkoutName>{item.name}</WorkoutName>
               {isExerciseInWorkout ? (
-                <TouchableOpacity onPress={() => removeExerciseFromWorkout(item.id, exerciseId)}>
-                  <Ionicons name="remove-circle" size={24} color="red" />
-                </TouchableOpacity>
+                <IconButton
+                  name="remove-circle"
+                  onPress={() => removeExerciseFromWorkout(item.id, exerciseId)}
+                  color="red"
+                />
               ) : (
-                <TouchableOpacity onPress={() => addExerciseToWorkout(item.id, exerciseId)}>
-                  <Ionicons name="add-circle" size={24} color="green" />
-                </TouchableOpacity>
+                <IconButton
+                  name="add-circle"
+                  onPress={() => addExerciseToWorkout(item.id, exerciseId)}
+                  color="green"
+                />
               )}
-            </View>
+            </WorkoutItem>
           );
         }}
       />
       <Button title="Cancel" onPress={() => navigation.goBack()} />
-    </View>
+    </Container>
   );
 };
 

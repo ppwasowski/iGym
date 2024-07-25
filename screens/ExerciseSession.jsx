@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../utility/supabase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import Toast from 'react-native-toast-message';
+import { styled } from 'nativewind';
+
+const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
+const ExerciseName = styled(Text, 'text-Text text-lg');
+const IconButton = styled(Ionicons, 'text-2xl');
 
 const ExerciseSession = ({ route }) => {
   const { workoutId, sessionId, session, refresh } = route.params;
@@ -13,14 +21,17 @@ const ExerciseSession = ({ route }) => {
 
   useEffect(() => {
     if (!workoutId || !sessionId) {
-      console.error('Workout ID or Session ID is missing');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Workout ID or Session ID is missing',
+      });
       setError('Workout ID or Session ID is missing');
       return;
     }
 
     const fetchExercises = async () => {
       try {
-        console.log('Fetching exercises for workoutId:', workoutId);
         const { data, error } = await supabase
           .from('workout_exercise')
           .select('*, exercises(name)')
@@ -29,7 +40,6 @@ const ExerciseSession = ({ route }) => {
         if (error) {
           throw error;
         } else {
-          console.log('Fetched Exercises:', data);
           setExercises(data);
           const { data: progressData, error: progressError } = await supabase
             .from('workout_progress')
@@ -39,12 +49,15 @@ const ExerciseSession = ({ route }) => {
           if (progressError) {
             throw progressError;
           } else {
-            console.log('Fetched Completed Exercises:', progressData);
             setCompletedExercises(progressData.map(item => item.exercise_id));
           }
         }
       } catch (error) {
-        console.error('Error fetching exercises:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching exercises',
+          text2: error.message,
+        });
         setError(error.message);
       }
     };
@@ -57,7 +70,6 @@ const ExerciseSession = ({ route }) => {
   };
 
   const startExercise = (exerciseId, exerciseName) => {
-    console.log('Starting exercise:', exerciseId, exerciseName);
     navigation.navigate('ExerciseWorkout', {
       exerciseId,
       exerciseName,
@@ -73,26 +85,27 @@ const ExerciseSession = ({ route }) => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      {error && <Text>Error: {error}</Text>}
+    <Container className="flex-1 p-4">
+      {error && <Toast />}
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => startExercise(item.exercise_id, item.exercises.name)}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-              <Text style={{ fontSize: 18, textDecorationLine: completedExercises.includes(item.exercise_id) ? 'line-through' : 'none' }}>
+            <ExerciseItem>
+              <ExerciseName style={{ textDecorationLine: completedExercises.includes(item.exercise_id) ? 'line-through' : 'none' }}>
                 {item.exercises.name}
-              </Text>
+              </ExerciseName>
               {completedExercises.includes(item.exercise_id) && (
-                <Ionicons name="checkmark-circle" size={24} color="green" />
+                <IconButton name="checkmark-circle" color="green" />
               )}
-            </View>
+            </ExerciseItem>
           </TouchableOpacity>
         )}
       />
       <Button title="Finish Workout" onPress={handleFinishWorkout} />
-    </View>
+      <Toast />
+    </Container>
   );
 };
 
