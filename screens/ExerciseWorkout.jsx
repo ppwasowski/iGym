@@ -10,14 +10,14 @@ import Input from '../components/Input';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 
-const StyledText = styled(Text, 'justify-center text-Text text-lg mb-2 text-capitalize ');
+const StyledText = styled(Text, 'justify-center text-Text text-lg mb-2 text-capitalize');
 const SetContainer = styled(View, 'justify-center flex-row mb-4 border-b border-gray-400');
 const CenteredText = styled(Text, 'text-center text-Text text-lg mb-2 text-capitalize');
 
 const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
-  const { sets, setSets, error: fetchError } = useFetchExerciseProgress(sessionId, exerciseId);
+  const { sets = [], setSets, error: fetchError } = useFetchExerciseProgress(sessionId, exerciseId);
   const { finishExercise, error: finishError } = useFinishExercise(sets, setSets);
   const { weight, setWeight, reps, setReps, addSet } = useAddSet(sets, setSets);
 
@@ -52,12 +52,16 @@ const ExerciseWorkout = ({ route }) => {
       <Button title="Add Set" onPress={addSet} className="mb-4" />
 
       <ScrollView className="flex-1 mt-5">
-        {sets.map((set, index) => (
-          <SetContainer key={index}>
-            <StyledText className="font-bold mr-3">Set {set.setNumber}:</StyledText>
-            <StyledText>Weight: {set.weight} kg, Reps: {set.reps}</StyledText>
-          </SetContainer>
-        ))}
+        {sets.length > 0 ? (
+          sets.map((set, index) => (
+            <SetContainer key={index}>
+              <StyledText className="font-bold mr-3">Set {set.setNumber}:</StyledText>
+              <StyledText>Weight: {set.weight} kg, Reps: {set.reps}</StyledText>
+            </SetContainer>
+          ))
+        ) : (
+          <CenteredText>No sets recorded yet.</CenteredText>
+        )}
       </ScrollView>
 
       <Button title="Finish Exercise" onPress={handleFinishExercise} />
