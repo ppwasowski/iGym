@@ -1,7 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native';
 import usePersonalRecords from '../hooks/usePersonalRecords';
 import RecordTable from '../components/RecordTable';
+import Container from '../components/Container';
+import { styled } from 'nativewind';
+import Toast from 'react-native-toast-message';
+
+const NoRecordsText = styled(Text, 'text-Text text-center mt-4');
 
 const PersonalRecords = () => {
   const { records, loading, error } = usePersonalRecords();
@@ -11,32 +16,24 @@ const PersonalRecords = () => {
   }
 
   if (error) {
-    return <Text>Error: {error}</Text>;
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: error,
+    });
+    return null;
   }
 
-  console.log('Personal records to be displayed:', records);
-
   return (
-    <View style={styles.container}>
+    <Container className="p-4 items-center">
       {records.length === 0 ? (
-        <Text>No personal records found.</Text>
+        <NoRecordsText>No personal records found.</NoRecordsText>
       ) : (
         <RecordTable items={records} />
       )}
-    </View>
+      <Toast />
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
-});
 
 export default PersonalRecords;

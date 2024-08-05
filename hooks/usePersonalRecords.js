@@ -11,13 +11,11 @@ const usePersonalRecords = () => {
   useEffect(() => {
     const fetchPersonalRecords = async () => {
       if (!profile) {
-        console.log('No user context found');
         setLoading(false);
         return;
       }
 
       try {
-        console.log('Fetching personal records for user ID:', profile.id);
         const { data, error } = await supabase
           .from('workout_progress')
           .select(`
@@ -34,8 +32,6 @@ const usePersonalRecords = () => {
         if (error) {
           throw error;
         }
-
-        console.log('Fetched workout progress data:', data);
         const maxWeightRecords = data.reduce((acc, record) => {
           const existingRecord = acc.find(r => r.exercise_id === record.exercise_id);
           if (!existingRecord || record.weight > existingRecord.weight) {
@@ -46,8 +42,6 @@ const usePersonalRecords = () => {
         }, []);
 
         maxWeightRecords.sort((a, b) => b.weight - a.weight);
-
-        console.log('Max weight records:', maxWeightRecords);
         setRecords(maxWeightRecords);
       } catch (error) {
         console.error('Error fetching personal records:', error);

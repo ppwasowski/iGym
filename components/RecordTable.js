@@ -1,47 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { styled } from 'nativewind';
+
+const Table = styled(View, 'w-full');
+const TableHeader = styled(View, 'flex-row justify-around bg-Secondary p-2');
+const TableHeaderText = styled(Text, 'text-Text font-bold text-lg');
+const TableRow = styled(View, 'flex-row justify-around p-2 border-b border-Separator');
+const TableText = styled(Text, 'text-Text text-base');
 
 const RecordTable = ({ items }) => (
-  <View style={styles.table}>
-    <View style={styles.tableHeader}>
-      <Text style={styles.tableHeaderText}>Exercise</Text>
-      <Text style={styles.tableHeaderText}>Max Weight (kg)</Text>
-      <Text style={styles.tableHeaderText}>Date</Text>
-    </View>
+  <Table>
+    <TableHeader>
+      <TableHeaderText>Exercise</TableHeaderText>
+      <TableHeaderText>Max Weight (kg)</TableHeaderText>
+      <TableHeaderText>Date</TableHeaderText>
+    </TableHeader>
     {items.map((item) => (
-      <View key={item.exercise_id} style={styles.tableRow}>
-        <Text style={styles.tableText}>{item.exercises.name}</Text>
-        <Text style={styles.tableText}>{item.weight}</Text>
-        <Text style={styles.tableText}>{new Date(item.completed_at).toLocaleDateString()}</Text>
-      </View>
+      <TableRow key={item.exercise_id}>
+        <TableText>{item.exercises.name}</TableText>
+        <TableText>{item.weight}</TableText>
+        <TableText>{new Date(item.completed_at).toLocaleDateString()}</TableText>
+      </TableRow>
     ))}
-  </View>
+  </Table>
 );
-
-const styles = StyleSheet.create({
-  table: {
-    width: '100%',
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#ddd',
-    padding: 10,
-  },
-  tableHeaderText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  tableText: {
-    fontSize: 14,
-  },
-});
 
 export default RecordTable;

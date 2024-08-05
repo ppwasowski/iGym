@@ -26,11 +26,11 @@ const useFetchExercisesForContext = ({ userId, bodypartId, workoutId }) => {
           .select('*, workout_exercise(exercise_id)')
           .eq('user_id', userId);
       } else {
-        const errorMessage = 'Either userId, bodypartId, or workoutId must be provided';
+        setError('Either userId, bodypartId, or workoutId must be provided');
         Toast.show({
           type: 'error',
           text1: 'Error',
-          text2: errorMessage,
+          text2: 'Either userId, bodypartId, or workoutId must be provided',
         });
         return;
       }
@@ -41,12 +41,14 @@ const useFetchExercisesForContext = ({ userId, bodypartId, workoutId }) => {
         throw error;
       } else {
         setData(data);
+        setError(null); // Clear previous error, if any
       }
-    } catch (error) {
+    } catch (err) {
+      setError(err.message);
       Toast.show({
         type: 'error',
         text1: 'Error fetching data',
-        text2: error.message,
+        text2: err.message,
       });
     }
   };

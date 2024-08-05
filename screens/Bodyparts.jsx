@@ -31,12 +31,11 @@ const BodypartView = ({ session, workoutId }) => {
   }, []);
 
   const handlePress = (bodypartId) => {
-    console.log('Navigating to ExercisesList with bodypartId:', bodypartId, 'and workoutId:', workoutId);
     navigation.navigate('ExercisesList', { bodypartId, workoutId });
   };
 
   return (
-    <Container className="items-center">
+    <Container className="items-center, w-50">
       {error ? (
         <StyledText className="text-red-500">{`Error: ${error}`}</StyledText>
       ) : (

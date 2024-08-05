@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text } from 'react-native';
+import { styled } from 'nativewind';
 import useAddWorkout from '../services/useAddWorkout';
+import Button from '../components/Button';
+import Input from '../components/Input'; // Import your custom Input component
+
+const Container = styled(View, 'flex-1 p-5 bg-background');
+const Title = styled(Text, 'text-3xl text-Text mb-4');
 
 const AddWorkout = ({ navigation, route }) => {
   const [workoutName, setWorkoutName] = useState('');
@@ -13,17 +19,16 @@ const AddWorkout = ({ navigation, route }) => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>Add New Workout</Text>
-      {error && <Text style={{ color: 'red' }}>{error}</Text>}
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 5 }}
+    <Container>
+      {error && <Title className="text-red-500">{error}</Title>}
+      <Input
         placeholder="Workout Name"
         value={workoutName}
         onChangeText={setWorkoutName}
+        className="mb-5"
       />
       <Button title="Add Workout" onPress={handleAddWorkout} />
-    </View>
+    </Container>
   );
 };
 

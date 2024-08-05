@@ -22,9 +22,8 @@ const useAddWorkout = () => {
         throw error;
       }
 
-      console.log('Workout added:', data);
       if (refreshWorkouts) {
-        refreshWorkouts(); // Call the refresh function
+        refreshWorkouts(data);
       }
     } catch (error) {
       console.error('Error adding workout:', error);

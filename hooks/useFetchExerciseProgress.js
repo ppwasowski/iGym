@@ -1,48 +1,69 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../utility/supabase';
+import Toast from 'react-native-toast-message';
 
-const useFetchExerciseProgress = (sessionId, exerciseId) => {
-  const [sets, setSets] = useState([]);
+const useFetchWorkoutProgress = (sessionId) => {
+  const [progress, setProgress] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchExerciseProgress = async () => {
+    const fetchProgress = async () => {
       try {
-        console.log(`Fetching progress for sessionId: ${sessionId}, exerciseId: ${exerciseId}`);
+        Toast.show({
+          type: 'info',
+          text1: 'Fetching',
+          text2: `Fetching progress for sessionId: ${sessionId}`,
+        });
 
-        if (!sessionId || !exerciseId) {
-          console.error('sessionId or exerciseId is undefined');
-          return;
+        if (!sessionId) {
+          throw new Error('sessionId is undefined');
         }
 
         const { data, error } = await supabase
           .from('workout_progress')
-          .select('*')
-          .eq('workout_session_id', sessionId)
-          .eq('exercise_id', exerciseId);
+          .select(`
+            id,
+            workout_session_id,
+            exercise_id,
+            sets,
+            reps,
+            weight,
+            completed_at,
+            exercises (
+              id,
+              name
+            )
+          `)
+          .eq('workout_session_id', sessionId);
 
         if (error) {
-          console.error('Error fetching exercise progress:', error);
-          setError(error.message);
-        } else {
-          console.log('Fetched Progress:', data);
-          setSets(data.map(item => ({
-            id: item.id,
-            setNumber: item.sets,
-            weight: item.weight,
-            reps: item.reps,
-          })));
+          throw error;
         }
+
+        setProgress(data);
+
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Progress fetched successfully',
+        });
       } catch (error) {
-        console.error('Error fetching exercise progress:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching progress',
+          text2: error.message,
+        });
         setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchExerciseProgress();
-  }, [exerciseId, sessionId]);
+    fetchProgress();
+  }, [sessionId]);
 
-  return { sets, setSets, error };
+  return { progress, error, loading };
 };
 
-export default useFetchExerciseProgress;
+export default useFetchWorkoutProgress;

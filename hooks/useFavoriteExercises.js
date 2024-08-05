@@ -17,8 +17,6 @@ const useFavoriteExercises = () => {
       }
 
       try {
-        console.log('Fetching favorite exercises for user ID:', profile.id);
-
         const { data, error } = await supabase
           .from('favorites')
           .select(`
@@ -57,7 +55,6 @@ const useFavoriteExercises = () => {
       const existingFavorite = favorites.find(fav => fav.exercise_id === exerciseId);
 
       if (existingFavorite) {
-        // Remove from favorites
         const { error } = await supabase
           .from('favorites')
           .delete()
@@ -71,7 +68,6 @@ const useFavoriteExercises = () => {
         setFavorites(favorites.filter(fav => fav.exercise_id !== exerciseId));
         ToastShow('error','Exercise removed from favorites');
       } else {
-        // Add to favorites
         const { data, error } = await supabase.from('favorites').insert([
           { user_id: profile.id, exercise_id: exerciseId }
         ]);
