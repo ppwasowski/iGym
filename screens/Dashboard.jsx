@@ -6,10 +6,10 @@ import useStats from '../hooks/useStats';
 import getWorkoutMessage from '../components/getWorkoutMessage';
 import { styled } from 'nativewind';
 import Container from '../components/Container';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
+// Styled components using nativewind
 const Title = styled(Text, 'text-Text text-3xl font-bold mb-2');
-const Quote = styled(Text, 'text-Secondary text-base text-center mb-5');
 const Message = styled(Text, 'text-Text text-lg text-center my-5 text-Primary');
 const StatsContainer = styled(View, 'flex-wrap flex-row justify-between items-center w-full');
 const StatBlock = styled(TouchableOpacity, 'bg-background p-4 m-2 rounded-md w-[47%] items-left');
@@ -21,7 +21,7 @@ export default function HomeScreen() {
   const { profile, loading: profileLoading, error: profileError } = useContext(UserContext);
   const { sessions, loading: sessionsLoading, error: sessionsError } = useWorkoutSessions();
   const { stats, loading: statsLoading, error: statsError } = useStats(profile?.id);
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const isLoading = profileLoading || sessionsLoading || statsLoading;
   const hasError = profileError || sessionsError || statsError;
@@ -29,13 +29,14 @@ export default function HomeScreen() {
   const lastWorkoutDate = sessions?.length > 0 ? sessions[0].session_date : null;
   const message = lastWorkoutDate ? getWorkoutMessage(lastWorkoutDate) : "You haven't started a workout yet.";
 
-  // const handleNavigation = (sessionId) => {
-  //   if (sessionId) {
-  //     navigation.navigate('WorkoutProgress', { sessionId });
-  //   } else {
-  //     console.warn("Invalid sessionId passed to handleNavigation:", sessionId);
-  //   }
-  // };
+  const handleNavigation = (sessionId) => {
+    if (sessionId) {
+      navigation.navigate('WorkoutProgress', { sessionId });
+    } else {
+      console.warn("Invalid sessionId passed to handleNavigation:", sessionId);
+    }
+  };
+
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -51,14 +52,11 @@ export default function HomeScreen() {
         style={{ width: 250, height: 100, marginBottom: 20 }}
       />
       <Title>Welcome back, {profile?.first_name || 'Guest'}!</Title>
-      <Quote>
-        “I never dreamed about success. I worked for it.” —Estée Lauder
-      </Quote>
       <Message>{message}</Message>
       <Separator />
       <StatsContainer>
         <View className="flex-row w-full justify-between">
-          <StatBlock onPress={() => /*handleNavigation(stats?.maxWeightSessionId)*/ {}}>
+          <StatBlock onPress={() => handleNavigation(stats?.maxWeightSessionId)}>
             <StatTitle>Max Weight</StatTitle>
             <StatText>{stats?.maxCarriedWeight ? `${stats.maxCarriedWeight} kg` : 'N/A'}</StatText>
           </StatBlock>
@@ -69,7 +67,7 @@ export default function HomeScreen() {
         </View>
         <Separator />
         <View className="flex-row w-full justify-between">
-          <StatBlock onPress={() => /*handleNavigation(stats?.maxRepsSessionId)*/ {}}>
+          <StatBlock onPress={() => handleNavigation(stats?.maxRepsSessionId)}>
             <StatTitle>Max Reps</StatTitle>
             <StatText>{stats?.maxRepsDone ?? 'N/A'}</StatText>
           </StatBlock>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Dimensions, ActivityIndicator, Text } from 'react-native'; // Import Text from 'react-native'
+import { View, ScrollView, Dimensions, ActivityIndicator, Text } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
-import { useRoute, useNavigation, CommonActions } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import useFetchWorkoutProgress from '../hooks/useFetchWorkoutProgress';
 import Container from '../components/Container';
 import Button from '../components/Button';
@@ -10,11 +10,11 @@ import { styled } from 'nativewind';
 
 const screenWidth = Dimensions.get('window').width;
 
-const StyledText = styled(Text, 'text-Text text-lg mb-2'); // Correct usage of Text component
+const StyledText = styled(Text, 'text-Text text-lg mb-2'); 
 const ChartContainer = styled(View, 'mb-5');
-const ChartTitle = styled(Text, 'text-Text text-lg mb-2 font-bold text-center'); // Correct usage of Text component
+const ChartTitle = styled(Text, 'text-Text text-lg mb-2 font-bold text-center'); 
 const Loader = styled(ActivityIndicator, 'flex-1 justify-center items-center');
-const NoRecordsText = styled(Text, 'text-Text text-center mt-10'); // Correct usage of Text component
+const NoRecordsText = styled(Text, 'text-Text text-center mt-10');
 
 const WorkoutProgress = () => {
   const route = useRoute();
@@ -30,16 +30,7 @@ const WorkoutProgress = () => {
   }, [progress, error]);
 
   const handleClose = () => {
-    if (from === 'WorkoutHistory') {
-      navigation.goBack();
-    } else {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Dashboard' }],
-        })
-      );
-    }
+    navigation.goBack();
   };
 
   if (loading) {

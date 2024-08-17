@@ -29,6 +29,9 @@
         "projectId": "4a6f4ac5-7f46-4789-8cc6-e0866c21370b"
       }
     },
-    "owner": "xarsx"
+    "owner": "xarsx",
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
