@@ -6,12 +6,12 @@ const useFinishExercise = (sets, setSets) => {
 
   const finishExercise = async (sessionId, exerciseId, userId, markExerciseCompleted, navigation) => {
     try {
-      console.log('Inserting sets:', sets);
+      console.log('Finish Exercise Inputs:', { sessionId, exerciseId, userId });
+      console.log('Sets to insert:', sets);
 
-      if (!sessionId || !exerciseId || !userId) {
-        console.error('sessionId, exerciseId, or userId is undefined');
-        return;
-      }
+      if (!sessionId) throw new Error('Session ID is required');
+      if (!exerciseId) throw new Error('Exercise ID is required');
+      if (!userId) throw new Error('User ID is required');
 
       const { data: existingSets, error: existingSetsError } = await supabase
         .from('workout_progress')
@@ -19,25 +19,24 @@ const useFinishExercise = (sets, setSets) => {
         .eq('workout_session_id', sessionId)
         .eq('exercise_id', exerciseId);
 
-      if (existingSetsError) {
-        console.error('Error fetching existing sets:', existingSetsError);
-        return;
-      }
+      if (existingSetsError) throw new Error('Error fetching existing sets: ' + existingSetsError.message);
 
       const newSets = sets.filter(set => 
         !existingSets.some(existingSet => 
-          existingSet.sets === set.setNumber && 
+          existingSet.sets === set.sets &&  // Corrected to set.sets
           existingSet.reps === set.reps && 
           existingSet.weight === set.weight
         )
       );
+
+      console.log('New sets to insert:', newSets);
 
       if (newSets.length === 0) {
         console.log('No new sets to insert.');
         if (typeof markExerciseCompleted === 'function') {
           markExerciseCompleted(exerciseId);
         }
-        navigation.goBack(); // Ensure navigation back even if no new sets
+        navigation.navigate('ExerciseSession', { sessionId }); // Navigate to the ExerciseSession screen
         return;
       }
 
@@ -48,25 +47,23 @@ const useFinishExercise = (sets, setSets) => {
             workout_session_id: sessionId,
             exercise_id: exerciseId,
             user_id: userId,
-            sets: set.setNumber,
+            sets: set.sets,  // Corrected to set.sets
             reps: set.reps,
             weight: set.weight,
             completed_at: new Date(),
           }))
         );
 
-      if (error) {
-        console.error('Error finishing exercise:', error.details || error.message || error);
-      } else {
-        console.log('Exercise Finished!', data);
-        setSets([]);
-        if (typeof markExerciseCompleted === 'function') {
-          markExerciseCompleted(exerciseId);
-        }
-        navigation.goBack(); // Navigate back to ExerciseSession screen
+      if (error) throw new Error('Error inserting sets: ' + error.message);
+
+      console.log('Exercise Finished!', data);
+      setSets([]);
+      if (typeof markExerciseCompleted === 'function') {
+        markExerciseCompleted(exerciseId);
       }
+      navigation.navigate('ExerciseSession', { sessionId }); // Navigate to the ExerciseSession screen
     } catch (error) {
-      console.error('Error finishing exercise (catch block):', error.details || error.message || error);
+      console.error('Error in finishExercise:', error.message);
       setError(error.message || 'Error finishing exercise');
     }
   };

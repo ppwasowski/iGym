@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
@@ -10,52 +10,86 @@ import Input from '../components/Input';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 
-const StyledText = styled(Text, 'justify-center text-Text text-lg mb-2 text-capitalize');
-const SetContainer = styled(View, 'justify-center flex-row mb-4 border-b border-gray-400');
+const StyledText = styled(Text, 'text-Text text-lg mb-2 text-capitalize');
+const SetContainer = styled(View, 'flex-row justify-between mb-4 border-b border-gray-400 pb-2');
 const CenteredText = styled(Text, 'text-center text-Text text-lg mb-2 text-capitalize');
 
 const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
-  const { sets = [], setSets, error: fetchError } = useFetchExerciseProgress(sessionId, exerciseId);
+
+  const { sets = [], setSets, error: fetchError, refresh: refreshProgress } = useFetchExerciseProgress(sessionId, exerciseId);
   const { finishExercise, error: finishError } = useFinishExercise(sets, setSets);
-  const { weight, setWeight, reps, setReps, addSet } = useAddSet(sets, setSets);
+  const { weight, setWeight, reps, setReps, addSet, error: addSetError } = useAddSet(sessionId, exerciseId, sets, setSets);
+
+  useEffect(() => {
+    if (!sessionId) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Session ID is missing.',
+      });
+      navigation.goBack();
+    }
+  }, [sessionId, navigation]);
+
+  const handleAddSet = async () => {
+    const newSet = { weight: parseFloat(weight), reps: parseInt(reps, 10) };
+    setSets((prevSets) => [...prevSets, newSet]);
+    setWeight(''); // Reset to empty string
+    setReps(''); // Reset to empty string
+    const success = await addSet(newSet);
+    if (success) {
+      refreshProgress(); // Fetch the latest progress after adding a set
+    }
+  };
 
   const handleFinishExercise = async () => {
-    await finishExercise(sessionId, exerciseId, session.user.id, markExerciseCompleted, navigation);
+    if (sessionId) {
+      await finishExercise(sessionId, exerciseId, session.user.id, markExerciseCompleted, navigation);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Cannot finish exercise without a session ID.',
+      });
+    }
   };
+
+  useEffect(() => {
+    if (fetchError || finishError || addSetError) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: fetchError || finishError || addSetError,
+      });
+    }
+  }, [fetchError, finishError, addSetError]);
 
   return (
     <Container className="flex-1 p-4">
       <CenteredText>{exerciseName}:</CenteredText>
-      {(fetchError || finishError) && (
-        <Toast 
-          type="error" 
-          text1="Error" 
-          text2={fetchError || finishError} 
-        />
-      )}
       <Input
         placeholder="Weight (kg)"
         keyboardType="numeric"
         value={weight}
-        onChangeText={(text) => setWeight(text)}
+        onChangeText={setWeight}
         className="mb-4"
       />
       <Input
         placeholder="Reps"
         keyboardType="numeric"
         value={reps}
-        onChangeText={(text) => setReps(text)}
+        onChangeText={setReps}
         className="mb-4"
       />
-      <Button title="Add Set" onPress={addSet} className="mb-4" />
+      <Button title="Add Set" onPress={handleAddSet} className="mb-4" />
 
       <ScrollView className="flex-1 mt-5">
         {sets.length > 0 ? (
           sets.map((set, index) => (
             <SetContainer key={index}>
-              <StyledText className="font-bold mr-3">Set {set.setNumber}:</StyledText>
+              <StyledText className="font-bold mr-3">Set {index + 1}:</StyledText>
               <StyledText>Weight: {set.weight} kg, Reps: {set.reps}</StyledText>
             </SetContainer>
           ))

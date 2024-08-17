@@ -17,7 +17,7 @@ const IconButton = styled(Ionicons, 'text-2xl');
 
 const WorkoutSelection = ({ route }) => {
   const { exerciseId, session } = route.params;
-  const userId = session.user.id; // Ensure this is correctly set
+  const userId = session.user.id;
   const navigation = useNavigation();
   const { workouts, error: fetchError, setWorkouts } = useFetchWorkouts(userId);
   const { addExerciseToWorkout, error: addError } = useAddExerciseToWorkout(workouts, setWorkouts);
