@@ -10,9 +10,9 @@ import Input from '../components/Input';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 
-const StyledText = styled(Text, 'text-Text text-lg mb-2 text-capitalize');
+const StyledText = styled(Text, 'text-Text text-lg px-3 mb-2 capitalize');
 const SetContainer = styled(View, 'flex-row justify-between mb-4 border-b border-gray-400 pb-2');
-const CenteredText = styled(Text, 'text-center text-Text text-lg mb-2 text-capitalize');
+const CenteredText = styled(Text, 'text-center text-Text text-lg mb-2 capitalize');
 
 const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
