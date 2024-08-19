@@ -4,8 +4,7 @@ import Account from '../screens/Profile';
 import WorkoutHistory from '../screens/WorkoutHistory';
 import FavoriteExercises from '../screens/FavoriteExercises';
 import PersonalRecords from '../screens/PersonalRecords';
-import WorkoutProgress from '../screens/WorkoutProgress';
-import CustomHeader from './CustomHeader';
+import CustomHeader from '../components/CustomHeader';
 
 const Stack = createStackNavigator();
 
@@ -27,9 +26,6 @@ const AccountStack = ({ session }) => {
       </Stack.Screen>
       <Stack.Screen name="PersonalRecords">
         {(props) => <PersonalRecords {...props} session={session} />}
-      </Stack.Screen>
-      <Stack.Screen name="WorkoutProgress">
-        {(props) => <WorkoutProgress {...props} session={session} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

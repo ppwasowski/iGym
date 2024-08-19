@@ -1,11 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Dashboard from '../screens/Dashboard';
-import Account from '../screens/Profile';
-import WorkoutHistory from '../screens/WorkoutHistory';
-import FavoriteExercises from '../screens/FavoriteExercises';
-import PersonalRecords from '../screens/PersonalRecords';
-import WorkoutProgress from '../screens/WorkoutProgress';
 import WorkoutList from '../screens/WorkoutList';
 import WorkoutDetails from '../screens/WorkoutDetails';
 import BodypartView from '../screens/Bodyparts';
@@ -14,6 +9,7 @@ import ExerciseDetails from '../screens/ExerciseDetails';
 import ExerciseSession from '../screens/ExerciseSession';
 import ExerciseWorkout from '../screens/ExerciseWorkout';
 import ExerciseProgress from '../screens/ExerciseProgress';
+import WorkoutProgress from '../screens/WorkoutProgress';
 import WorkoutSelection from '../screens/WorkoutSelection';
 import AddWorkout from '../screens/AddWorkout';
 import CustomHeader from '../components/CustomHeader';
@@ -21,36 +17,18 @@ import CustomHeader from '../components/CustomHeader';
 const Stack = createStackNavigator();
 
 const CombinedStack = ({ route }) => {
-  const { session, initialRouteName } = route?.params || {}; // Handle undefined route.params gracefully
-  const userId = session?.user?.id;
+  const { session, initialRouteName } = route?.params || {};
 
   return (
     <Stack.Navigator
-      initialRouteName={initialRouteName || "Dashboard"} // Default to "Dashboard" if initialRouteName is not provided
+      initialRouteName={initialRouteName || "Dashboard"}
       screenOptions={({ route }) => ({
         header: () => <CustomHeader title={route.name} />,
       })}
     >
-      {/* Dashboard Screen */}
       <Stack.Screen name="Dashboard">
         {(props) => <Dashboard {...props} session={session} />}
       </Stack.Screen>
-
-      {/* Account related screens */}
-      <Stack.Screen name="Account">
-        {(props) => <Account {...props} session={session} />}
-      </Stack.Screen>
-      <Stack.Screen name="WorkoutHistory">
-        {(props) => <WorkoutHistory {...props} session={session} />}
-      </Stack.Screen>
-      <Stack.Screen name="FavoriteExercises">
-        {(props) => <FavoriteExercises {...props} session={session} />}
-      </Stack.Screen>
-      <Stack.Screen name="PersonalRecords">
-        {(props) => <PersonalRecords {...props} session={session} />}
-      </Stack.Screen>
-
-      {/* Workout related screens */}
       <Stack.Screen
         name="WorkoutList"
         component={WorkoutList}
@@ -60,7 +38,7 @@ const CombinedStack = ({ route }) => {
         name="WorkoutDetails"
         component={WorkoutDetails}
         options={({ route }) => ({ title: route.params.workoutName })}
-        initialParams={{ session, userId }}
+        initialParams={{ session }}
       />
       <Stack.Screen
         name="Bodyparts"
