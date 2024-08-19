@@ -10,9 +10,9 @@ import { styled } from 'nativewind';
 
 const screenWidth = Dimensions.get('window').width;
 
-const StyledText = styled(Text, 'text-Text text-lg mb-2');
+const StyledText = styled(Text, 'text-center text-Text text-lg font-bold mb-5 capitalize');
 const ChartContainer = styled(View, 'mb-5');
-const ChartTitle = styled(Text, 'text-Text text-lg mb-2');
+const ChartTitle = styled(Text, 'text-center text-Text text-lg mb-2');
 
 const ExerciseProgress = () => {
   const route = useRoute();
@@ -64,11 +64,11 @@ const ExerciseProgress = () => {
   const chartWidth = Math.max(screenWidth - 40, numberOfSets * 100);
 
   return (
-    <Container>
-      <ScrollView className="flex-1 p-4">
-        <ChartTitle>{exerciseName}</ChartTitle>
-        
-        <ScrollView horizontal>
+    <Container className="flex-1">
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="flex-1 p-4">
+        <StyledText>{exerciseName}</StyledText>
+        <ChartTitle>Weight</ChartTitle>
+        <ScrollView className='mb-10' horizontal>
           <LineChart
             data={weightData}
             width={chartWidth}
@@ -88,8 +88,9 @@ const ExerciseProgress = () => {
             )}
           />
         </ScrollView>
-        
+        <ChartTitle>Reps</ChartTitle>
         <ScrollView horizontal>
+
           <LineChart
             data={repsData}
             width={chartWidth}
@@ -111,12 +112,14 @@ const ExerciseProgress = () => {
             )}
           />
         </ScrollView>
-
+      </ScrollView>
+      {/* Place the button at the bottom of the screen */}
+      <View style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
         <Button
           title="Close"
           onPress={() => navigation.navigate('WorkoutProgress', { sessionId, from: 'ExerciseProgress' })}
         />
-      </ScrollView>
+      </View>
       <Toast />
     </Container>
   );
