@@ -13,8 +13,9 @@ const WorkoutHistory = ({ session }) => {
   const { workoutSessions, error } = useFetchWorkoutHistory(session.user.id);
   const navigation = useNavigation();
 
-  const navigateToWorkoutProgress = (sessionId) => {
-    navigation.navigate('WorkoutProgress', { sessionId, from: 'WorkoutHistory' });
+  const navigateToWorkoutProgress = (sessionId, workoutName) => {
+    // Passing both sessionId and workoutName to WorkoutProgress
+    navigation.navigate('WorkoutProgress', { sessionId, workoutName, from: 'WorkoutHistory' });
   };
 
   if (error) {
@@ -32,7 +33,9 @@ const WorkoutHistory = ({ session }) => {
         data={workoutSessions}
         keyExtractor={(item) => item.workout_session_id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigateToWorkoutProgress(item.workout_session_id)}>
+          <TouchableOpacity
+            onPress={() => navigateToWorkoutProgress(item.workout_session_id, item.workout_name)}
+          >
             <SessionItem>
               <SessionText>"{item.workout_name}" {item.date}</SessionText>
             </SessionItem>

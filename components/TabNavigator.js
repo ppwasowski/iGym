@@ -2,10 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Image } from 'react-native';
-import Dashboard from '../screens/Dashboard';
-import Profile from '../screens/Profile';
 import CombinedStack from './CombinedStack';
-import AccountStack from '../components/AccountStack';
 import CustomHeader from '../components/CustomHeader';
 
 const Tab = createBottomTabNavigator();
@@ -48,27 +45,43 @@ const TabNavigator = ({ session }) => {
     >
       <Tab.Screen
         name="Dashboard"
-        options={{ headerTitle: () => <LogoTitle />, headerTitleAlign: 'center' }}
+        options={{ headerShown: false }} // Hide header since it's part of CombinedStack now
       >
-        {() => <Dashboard session={session} />}
+        {() => (
+          <CombinedStack
+            route={{ params: { session, initialRouteName: 'DashboardScreen' } }}
+          />
+        )}
       </Tab.Screen>
       <Tab.Screen
-        options={{ headerShown: false }}
         name="Exercises"
-        component={CombinedStack}
-        initialParams={{ session, initialRouteName: 'Bodyparts' }}
-      />
-      <Tab.Screen
         options={{ headerShown: false }}
-        name="Workouts"
-        component={CombinedStack}
-        initialParams={{ session, initialRouteName: 'WorkoutList' }}
-      />
-      <Tab.Screen
-        options={{ headerShown: false }}
-        name="Profile"
       >
-        {props => <AccountStack {...props} session={session} />}
+        {() => (
+          <CombinedStack
+            route={{ params: { session, initialRouteName: 'Bodyparts' } }}
+          />
+        )}
+      </Tab.Screen>
+      <Tab.Screen
+        name="Workouts"
+        options={{ headerShown: false }}
+      >
+        {() => (
+          <CombinedStack
+            route={{ params: { session, initialRouteName: 'WorkoutList' } }}
+          />
+        )}
+      </Tab.Screen>
+      <Tab.Screen
+        name="Profile"
+        options={{ headerShown: false }}
+      >
+        {() => (
+          <CombinedStack
+            route={{ params: { session, initialRouteName: 'AccountScreen' } }}
+          />
+        )}
       </Tab.Screen>
     </Tab.Navigator>
   );
