@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +22,8 @@ const WorkoutList = () => {
   const { data: workouts, error, loading: workoutsLoading, refresh } = useFetchExercisesForContext({ userId });
   const { deleteWorkout, error: deleteError } = useDeleteWorkout();
 
+  const [deleteMode, setDeleteMode] = useState(false);
+
   const handleDeleteWorkout = async (workoutId) => {
     try {
       // Perform a soft delete by setting the 'deleted' column to true
@@ -39,6 +41,10 @@ const WorkoutList = () => {
         text2: error.message,
       });
     }
+  };
+
+  const toggleDeleteMode = () => {
+    setDeleteMode(!deleteMode);
   };
 
   if (userLoading || workoutsLoading) {
@@ -60,6 +66,8 @@ const WorkoutList = () => {
 
   return (
     <Container className="flex-1">
+     
+
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {workouts && workouts.length > 0 ? (
           <FlatList
@@ -73,9 +81,11 @@ const WorkoutList = () => {
                 >
                   <ItemText>{item.name}</ItemText>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteWorkout(item.id)}>
-                  <Ionicons name="trash" size={24} color="red" />
-                </TouchableOpacity>
+                {deleteMode && (
+                  <TouchableOpacity onPress={() => handleDeleteWorkout(item.id)}>
+                    <Ionicons name="trash" size={24} color="red" />
+                  </TouchableOpacity>
+                )}
               </ListContainer>
             )}
           />
@@ -83,7 +93,20 @@ const WorkoutList = () => {
           <EmptyText>No workouts found. Please add a new workout.</EmptyText>
         )}
       </ScrollView>
-      <Button title="Add Workout" onPress={() => navigation.navigate('AddWorkout', { userId, refreshWorkouts: refresh })} />
+      {!deleteMode && (
+        <View className="mb-4">
+          <Button
+            title="Add New Workout"
+            onPress={() => navigation.navigate('AddWorkout', { userId, refreshWorkouts: refresh })}
+          />
+        </View>
+      )}
+      <View>
+        <Button
+          title={deleteMode ? "Confirm" : "Delete Workouts"}
+          onPress={toggleDeleteMode}
+        />
+      </View>
     </Container>
   );
 };
