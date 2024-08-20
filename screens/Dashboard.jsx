@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Text, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ActivityIndicator, Image } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import useWorkoutSessions from '../hooks/useWorkoutSessions';
 import useStats from '../hooks/useStats';
@@ -7,14 +7,13 @@ import getWorkoutMessage from '../components/getWorkoutMessage';
 import { styled } from 'nativewind';
 import Container from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
+import StatsSection from '../components/StatsSection';
+import LoadingScreen from '../components/LoadingScreen';
+
 
 // Styled components using nativewind
 const Title = styled(Text, 'text-Text text-3xl font-bold mb-2');
 const Message = styled(Text, 'text-Text text-lg text-center my-5 text-Primary');
-const StatsContainer = styled(View, 'flex-wrap flex-row justify-between items-center w-full');
-const StatBlock = styled(TouchableOpacity, 'bg-background p-4 m-2 rounded-md w-[47%] items-left');
-const StatTitle = styled(Text, 'text-lg text-Primary font-bold');
-const StatText = styled(Text, 'text-lg text-white font-bold');
 const Separator = styled(View, 'bg-Separator h-[1px] w-full my-4');
 
 export default function HomeScreen() {
@@ -38,7 +37,7 @@ export default function HomeScreen() {
   };
 
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <LoadingScreen message="Loading..." />;
   }
 
   if (hasError) {
@@ -54,29 +53,7 @@ export default function HomeScreen() {
       <Title>Welcome back, {profile?.first_name || 'Guest'}!</Title>
       <Message>{message}</Message>
       <Separator />
-      <StatsContainer>
-        <View className="flex-row w-full justify-between">
-          <StatBlock onPress={() => handleNavigation(stats?.maxWeightSessionId)}>
-            <StatTitle>Max Weight</StatTitle>
-            <StatText>{stats?.maxCarriedWeight ? `${stats.maxCarriedWeight} kg` : 'N/A'}</StatText>
-          </StatBlock>
-          <StatBlock>
-            <StatTitle>Total Weight</StatTitle>
-            <StatText>{stats?.totalWeightCarried ? `${stats.totalWeightCarried} kg` : 'N/A'}</StatText>
-          </StatBlock>
-        </View>
-        <Separator />
-        <View className="flex-row w-full justify-between">
-          <StatBlock onPress={() => handleNavigation(stats?.maxRepsSessionId)}>
-            <StatTitle>Max Reps</StatTitle>
-            <StatText>{stats?.maxRepsDone ?? 'N/A'}</StatText>
-          </StatBlock>
-          <StatBlock>
-            <StatTitle>Workouts Done</StatTitle>
-            <StatText>{stats?.numberOfWorkouts ?? 'N/A'}</StatText>
-          </StatBlock>
-        </View>
-      </StatsContainer>
+      <StatsSection stats={stats} handleNavigation={handleNavigation} />
     </Container>
   );
 }

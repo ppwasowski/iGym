@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
 import useAddSet from '../services/useAddSet';
@@ -18,9 +18,9 @@ const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
 
-  const { sets = [], setSets, error: fetchError, refresh: refreshProgress } = useFetchExerciseProgress(sessionId, exerciseId);
-  const { finishExercise, error: finishError } = useFinishExercise(sets, setSets);
-  const { weight, setWeight, reps, setReps, addSet, error: addSetError } = useAddSet(sessionId, exerciseId, sets, setSets);
+  const { sets, setSets, error: fetchError, loading: fetchLoading, refresh: refreshProgress } = useFetchExerciseProgress(sessionId, exerciseId);
+  const { finishExercise, error: finishError, loading: finishLoading } = useFinishExercise(sets, setSets);
+  const { weight, setWeight, reps, setReps, addSet, error: addSetError, loading: addSetLoading } = useAddSet(sessionId, exerciseId, sets, setSets);
 
   useEffect(() => {
     if (!sessionId) {
@@ -65,6 +65,15 @@ const ExerciseWorkout = ({ route }) => {
       });
     }
   }, [fetchError, finishError, addSetError]);
+
+  if (fetchLoading || addSetLoading || finishLoading) {
+    return (
+      <Container className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="text-Text text-base mt-4">Processing...</Text>
+      </Container>
+    );
+  }
 
   return (
     <Container className="flex-1 p-4">

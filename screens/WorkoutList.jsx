@@ -9,6 +9,7 @@ import Button from '../components/Button';
 import { styled } from 'nativewind';
 import Container from '../components/Container';
 import { UserContext } from '../context/UserContext';
+import LoadingScreen from '../components/LoadingScreen';
 
 const ListContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
 const ItemText = styled(Text, 'text-Text text-lg');
@@ -18,7 +19,7 @@ const WorkoutList = () => {
   const { profile, loading: userLoading, error: userError } = useContext(UserContext);
   const userId = profile?.id;
   const navigation = useNavigation();
-  const { data: workouts, error, refresh } = useFetchExercisesForContext({ userId });
+  const { data: workouts, error, loading: workoutsLoading, refresh } = useFetchExercisesForContext({ userId });
   const { deleteWorkout, error: deleteError } = useDeleteWorkout();
 
   const handleDeleteWorkout = async (workoutId) => {
@@ -39,8 +40,9 @@ const WorkoutList = () => {
     }
   };
 
-  if (userLoading) {
-    return <Text>Loading user data...</Text>;
+  // Display the loading screen if user data or workouts are still loading
+  if (userLoading || workoutsLoading) {
+    return <LoadingScreen message="Loading workouts..." />;
   }
 
   if (userError) {

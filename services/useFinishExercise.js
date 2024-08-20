@@ -3,8 +3,12 @@ import { supabase } from '../utility/supabase';
 
 const useFinishExercise = (sets, setSets) => {
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const finishExercise = async (sessionId, exerciseId, userId, markExerciseCompleted, navigation) => {
+    setLoading(true);
+    setError(null);
+
     try {
       console.log('Finish Exercise Inputs:', { sessionId, exerciseId, userId });
       console.log('Sets to insert:', sets);
@@ -23,7 +27,7 @@ const useFinishExercise = (sets, setSets) => {
 
       const newSets = sets.filter(set => 
         !existingSets.some(existingSet => 
-          existingSet.sets === set.sets &&  // Corrected to set.sets
+          existingSet.sets === set.sets && 
           existingSet.reps === set.reps && 
           existingSet.weight === set.weight
         )
@@ -36,7 +40,7 @@ const useFinishExercise = (sets, setSets) => {
         if (typeof markExerciseCompleted === 'function') {
           markExerciseCompleted(exerciseId);
         }
-        navigation.navigate('ExerciseSession', { sessionId }); // Navigate to the ExerciseSession screen
+        navigation.navigate('ExerciseSession', { sessionId });
         return;
       }
 
@@ -47,7 +51,7 @@ const useFinishExercise = (sets, setSets) => {
             workout_session_id: sessionId,
             exercise_id: exerciseId,
             user_id: userId,
-            sets: set.sets,  // Corrected to set.sets
+            sets: set.sets,
             reps: set.reps,
             weight: set.weight,
             completed_at: new Date(),
@@ -61,14 +65,16 @@ const useFinishExercise = (sets, setSets) => {
       if (typeof markExerciseCompleted === 'function') {
         markExerciseCompleted(exerciseId);
       }
-      navigation.navigate('ExerciseSession', { sessionId }); // Navigate to the ExerciseSession screen
+      navigation.navigate('ExerciseSession', { sessionId });
     } catch (error) {
       console.error('Error in finishExercise:', error.message);
       setError(error.message || 'Error finishing exercise');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { finishExercise, error, setError };
+  return { finishExercise, error, loading, setError };
 };
 
 export default useFinishExercise;

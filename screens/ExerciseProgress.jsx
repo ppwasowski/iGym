@@ -7,11 +7,12 @@ import Container from '../components/Container';
 import Button from '../components/Button';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
+import ExerciseStatsSection from '../components/ExerciseStatsSection';
+import LoadingScreen from '../components/LoadingScreen';
 
 const screenWidth = Dimensions.get('window').width;
 
 const StyledText = styled(Text, 'text-center text-Text text-lg font-bold mb-5 capitalize');
-const ChartContainer = styled(View, 'mb-5');
 const ChartTitle = styled(Text, 'text-center text-Text text-lg mb-2');
 
 const ExerciseProgress = () => {
@@ -28,7 +29,7 @@ const ExerciseProgress = () => {
   }, [progress, error]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <LoadingScreen message="Fetching workout data..." />;
   }
 
   if (error) {
@@ -90,7 +91,6 @@ const ExerciseProgress = () => {
         </ScrollView>
         <ChartTitle>Reps</ChartTitle>
         <ScrollView horizontal>
-
           <LineChart
             data={repsData}
             width={chartWidth}
@@ -112,8 +112,12 @@ const ExerciseProgress = () => {
             )}
           />
         </ScrollView>
+        <ExerciseStatsSection 
+          maxReps={maxReps} 
+          maxWeight={maxWeight} 
+          numberOfSets={numberOfSets} 
+        />
       </ScrollView>
-      {/* Place the button at the bottom of the screen */}
       <View style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
         <Button
           title="Close"

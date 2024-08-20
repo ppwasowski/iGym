@@ -3,14 +3,16 @@ import { FlatList, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../utility/supabase';
 import Container from '../components/Container';
-import CustomPressable from '../components/Pressable'; // Import the new Pressable component
+import CustomPressable from '../components/Pressable';
 import { styled } from 'nativewind';
+import LoadingScreen from '../components/LoadingScreen';
 
 const StyledText = styled(Text);
 
 const BodypartView = ({ session, workoutId }) => {
   const [bodyparts, setBodyparts] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -24,7 +26,11 @@ const BodypartView = ({ session, workoutId }) => {
         }
       } catch (error) {
         setError(error.message);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
+      
+      
     };
 
     fetchBodyparts();
@@ -33,6 +39,9 @@ const BodypartView = ({ session, workoutId }) => {
   const handlePress = (bodypartId) => {
     navigation.navigate('ExercisesList', { bodypartId, workoutId });
   };
+  if (loading) {
+    return <LoadingScreen message="Loading body parts..." />;
+  }
 
   return (
     <Container className="items-center, w-50">

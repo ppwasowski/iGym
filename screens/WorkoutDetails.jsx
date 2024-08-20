@@ -8,6 +8,7 @@ import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
 import ToastShow from '../components/ToastShow';
 import Button from '../components/Button';
 import Container from '../components/Container';
+import LoadingScreen from '../components/LoadingScreen';
 import { styled } from 'nativewind';
 
 const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
@@ -17,19 +18,45 @@ const IconButton = styled(Ionicons, 'text-2xl');
 const WorkoutDetails = ({ route, navigation }) => {
   const { workoutId, session } = route.params;
   const userId = session.user.id;
-  const { data: exercises, error: fetchError, setData: setExercises, setError: setFetchError, refresh: refreshExercises } = useFetchExercisesForContext({ workoutId });
-  const { removeExerciseFromWorkout, error: removeError, setError: setRemoveError } = useRemoveExerciseFromWorkout(workoutId, exercises, setExercises);
-  const { workoutSessions, error: historyError, refresh: refreshHistory } = useFetchWorkoutHistory(userId);
-  const { startWorkout, error: startError } = useStartWorkout(workoutId, userId);
+
+  const {
+    data: exercises,
+    error: fetchError,
+    loading: exercisesLoading,
+    setData: setExercises,
+    setError: setFetchError,
+    refresh: refreshExercises,
+  } = useFetchExercisesForContext({ workoutId });
+
+  const {
+    removeExerciseFromWorkout,
+    error: removeError,
+    loading: removeLoading,
+    setError: setRemoveError,
+  } = useRemoveExerciseFromWorkout(workoutId, exercises, setExercises);
+
+  const {
+    workoutSessions,
+    error: historyError,
+    loading: historyLoading,
+    refresh: refreshHistory,
+  } = useFetchWorkoutHistory(userId);
+
+  const { startWorkout, error: startError, loading: startLoading } = useStartWorkout(workoutId, userId);
 
   const handleStartWorkout = async () => {
     const data = await startWorkout();
     if (data) {
-      refreshExercises(); // Refresh the exercises list
-      refreshHistory(); // Refresh the workout history
+      refreshExercises();
+      refreshHistory();
       navigation.navigate('ExerciseSession', { workoutId: data.workout_id, sessionId: data.id, session, refresh: refreshExercises });
     }
   };
+
+  // Check if any of the hooks are loading and display the LoadingScreen
+  if (exercisesLoading || removeLoading || historyLoading || startLoading) {
+    return <LoadingScreen message="Loading workout details..." />;
+  }
 
   return (
     <Container className="flex-1 p-4">

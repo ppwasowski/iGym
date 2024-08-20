@@ -4,10 +4,13 @@ import Toast from 'react-native-toast-message';
 
 const useFetchExerciseProgress = (sessionId, exerciseId) => {
   const [sets, setSets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchProgress = async () => {
     try {
+      setLoading(true);
+
       const { data, error } = await supabase
         .from('workout_progress')
         .select('id, sets, reps, weight')
@@ -25,6 +28,8 @@ const useFetchExerciseProgress = (sessionId, exerciseId) => {
         text1: 'Error fetching progress',
         text2: error.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,7 +39,7 @@ const useFetchExerciseProgress = (sessionId, exerciseId) => {
     }
   }, [sessionId, exerciseId]);
 
-  return { sets, setSets, error, refresh: fetchProgress };
+  return { sets, setSets, loading, error, refresh: fetchProgress };
 };
 
 export default useFetchExerciseProgress;

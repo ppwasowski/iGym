@@ -5,6 +5,7 @@ import RecordTable from '../components/RecordTable';
 import Container from '../components/Container';
 import { styled } from 'nativewind';
 import Toast from 'react-native-toast-message';
+import LoadingScreen from '../components/LoadingScreen';
 
 const NoRecordsText = styled(Text, 'text-Text text-center mt-4');
 
@@ -12,7 +13,7 @@ const PersonalRecords = () => {
   const { records, loading, error } = usePersonalRecords();
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <LoadingScreen message="Loading records..." />;
   }
 
   if (error) {

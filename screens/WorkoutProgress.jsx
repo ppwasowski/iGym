@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import { useRoute, useNavigation, CommonActions } from '@react-navigation/native';
 import useFetchWorkoutProgress from '../hooks/useFetchWorkoutProgress';
 import Container from '../components/Container';
 import Button from '../components/Button';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
+import LoadingScreen from '@/components/LoadingScreen';
 
-const StyledText = styled(Text, 'text-Text text-lg mb-2 ');
+
+const StyledText = styled(Text, 'text-Text text-lg mb-2 capitalize');
 const ExerciseItem = styled(Pressable, 'flex-row justify-between items-center p-4 border-b border-gray-400');
 
 const WorkoutProgress = () => {
@@ -41,7 +43,9 @@ const WorkoutProgress = () => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <LoadingScreen message="Fetching workout data..." />
+    );
   }
 
   if (error) {
@@ -64,7 +68,7 @@ const WorkoutProgress = () => {
             <ExerciseItem
               key={index}
               onPress={() => navigateToExerciseProgress(exerciseId, exerciseName)}>
-              <StyledText className='text-capitalize'>{exerciseName}</StyledText>
+              <StyledText>{exerciseName}</StyledText>
             </ExerciseItem>
           ))
         ) : (
@@ -72,7 +76,6 @@ const WorkoutProgress = () => {
         )}
       </ScrollView>
       
-      {/* The button is placed within a View that's placed at the bottom */}
       <View className="mb-4">
         <Button title="Close" onPress={handleClose} />
       </View>

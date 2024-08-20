@@ -3,16 +3,20 @@ import { supabase } from '../utility/supabase';
 
 const useFetchWorkoutHistory = (userId) => {
   const [workoutSessions, setWorkoutSessions] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const [error, setError] = useState(null);
   const [refreshFlag, setRefreshFlag] = useState(false);
 
   const fetchWorkoutHistory = useCallback(async () => {
     if (!userId) {
       setError('User ID is missing');
+      setLoading(false);
       return;
     }
 
     try {
+      setLoading(true);
+
       const { data, error } = await supabase
         .from('workout_sessions')
         .select(`
@@ -39,6 +43,8 @@ const useFetchWorkoutHistory = (userId) => {
       setWorkoutSessions(formattedData);
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }, [userId]);
 
@@ -48,7 +54,7 @@ const useFetchWorkoutHistory = (userId) => {
 
   const refresh = () => setRefreshFlag((prev) => !prev);
 
-  return { workoutSessions, error, refresh };
+  return { workoutSessions, loading, error, refresh };
 };
 
 export default useFetchWorkoutHistory;

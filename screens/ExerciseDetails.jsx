@@ -5,9 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useFavorites } from '../context/FavoriteContext';
 import useExerciseDetails from '../hooks/useExerciseDetails';
-import Container from '../components/Container'; // Ensure correct import
+import Container from '../components/Container';
 import Button from '../components/Button';
 import { styled } from 'nativewind';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Title = styled(Text, 'text-Text font-bold text-lg mb-3');
 const FavoriteContainer = styled(View, 'flex-row items-center mb-2');
@@ -52,7 +53,7 @@ const ExerciseDetails = ({ route }) => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <LoadingScreen message="Loading exercise..." />;
   }
 
   if (error) {

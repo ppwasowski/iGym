@@ -5,9 +5,10 @@ import ProfileForm from '../components/ProfileForm';
 import { UserContext } from '../context/UserContext';
 import { supabase } from '../utility/supabase';
 import Button from '../components/Button';
-import Container from '../components/Container'; // Adjusted import path
+import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
+import LoadingScreen from '../components/LoadingScreen';
 
 const ButtonView = styled(View, 'm-2');
 
@@ -17,7 +18,7 @@ const Account = () => {
   const [showProfileForm, setShowProfileForm] = useState(false);
 
   if (loading) {
-    return <Text className="text-Text">Loading...</Text>;
+    return <LoadingScreen message="Loading profile..." />;
   }
 
   if (error) {

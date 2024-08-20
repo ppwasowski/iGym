@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { supabase } from '../utility/supabase';
 
 const useAddWorkout = () => {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const addWorkout = async (workoutName, refreshWorkouts) => {
+    setLoading(true);
+    setError(null);
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        console.error('User not found');
-        setError('User not found');
-        return;
+        throw new Error('User not found');
       }
 
       const { data, error } = await supabase
@@ -25,13 +27,17 @@ const useAddWorkout = () => {
       if (refreshWorkouts) {
         refreshWorkouts(data);
       }
+
+      return true;
     } catch (error) {
-      console.error('Error adding workout:', error);
       setError(error.message);
+      return false;
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { addWorkout, error };
+  return { addWorkout, loading, error };
 };
 
 export default useAddWorkout;

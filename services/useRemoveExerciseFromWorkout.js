@@ -4,8 +4,12 @@ import ToastShow from '../components/ToastShow';
 
 const useRemoveExerciseFromWorkout = (workouts, setWorkouts) => {
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const removeExerciseFromWorkout = async (workoutId, exerciseId) => {
+    setLoading(true);
+    setError(null);
+
     try {
       console.log('Removing exercise:', { workoutId, exerciseId });
 
@@ -13,7 +17,7 @@ const useRemoveExerciseFromWorkout = (workouts, setWorkouts) => {
         .delete()
         .eq('workout_id', workoutId)
         .eq('exercise_id', exerciseId)
-        .select('*'); // Ensure the response includes the deleted rows
+        .select('*');
 
       if (error) {
         throw error;
@@ -32,10 +36,13 @@ const useRemoveExerciseFromWorkout = (workouts, setWorkouts) => {
     } catch (error) {
       console.error('Error removing exercise from workout:', error);
       setError('Error removing exercise from workout');
+      ToastShow('error', 'Error', 'Error removing exercise from workout');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { removeExerciseFromWorkout, error, setError };
+  return { removeExerciseFromWorkout, error, loading, setError };
 };
 
 export default useRemoveExerciseFromWorkout;

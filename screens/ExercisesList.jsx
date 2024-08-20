@@ -7,6 +7,8 @@ import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
 import useAddExerciseToWorkout from '../services/useAddExerciseToWorkout';
 import Container from '../components/Container';
 import { styled } from 'nativewind';
+import LoadingScreen from '../components/LoadingScreen';
+
 
 const ExerciseItem = styled(View, 'flex-row justify-between items-center p-4 border-b border-gray-400');
 const ExerciseText = styled(Text, 'capitalize text-lg text-white');
@@ -40,7 +42,7 @@ const ExercisesList = ({ route }) => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <LoadingScreen message="Loading exercises..." />;
   }
 
   if (error || addError) {

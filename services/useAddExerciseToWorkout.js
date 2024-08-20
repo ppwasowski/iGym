@@ -3,14 +3,19 @@ import { supabase } from '../utility/supabase';
 
 const useAddExerciseToWorkout = (workouts, setWorkouts) => {
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const addExerciseToWorkout = async (workoutId, exerciseId) => {
+    setLoading(true); // Set loading to true when the function starts
+    setError(null);   // Reset error state before starting a new request
+
     try {
       const existingWorkout = workouts.find(workout => workout.id === workoutId);
 
       if (!existingWorkout) {
         const errorMessage = 'Workout not found';
         setError(errorMessage);
+        setLoading(false); 
         return;
       }
 
@@ -19,6 +24,7 @@ const useAddExerciseToWorkout = (workouts, setWorkouts) => {
       if (isExerciseInWorkout) {
         const errorMessage = 'Exercise is already in the workout';
         setError(errorMessage);
+        setLoading(false); 
         return;
       }
 
@@ -32,8 +38,7 @@ const useAddExerciseToWorkout = (workouts, setWorkouts) => {
       if (error) {
         throw error;
       }
-
-      // Update the workouts state
+      
       setWorkouts(workouts.map(workout =>
         workout.id === workoutId
           ? { ...workout, workout_exercise: [...workout.workout_exercise, { exercise_id: exerciseId }] }
@@ -43,10 +48,12 @@ const useAddExerciseToWorkout = (workouts, setWorkouts) => {
       const errorMessage = error.message || 'Error adding exercise to workout';
       console.error('Error adding exercise to workout:', errorMessage);
       setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { addExerciseToWorkout, error };
+  return { addExerciseToWorkout, error, loading };
 };
 
 export default useAddExerciseToWorkout;

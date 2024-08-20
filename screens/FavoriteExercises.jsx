@@ -5,6 +5,7 @@ import { useFavorites } from '../context/FavoriteContext';
 import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Item = styled(TouchableOpacity, 'flex-row justify-between text-capitalize items-center p-4 my-2 border-b border-gray-400 bg-background rounded-md w-full');
 const ItemText = styled(Text, 'text-Text text-base');
@@ -14,7 +15,7 @@ const FavoriteExercises = () => {
   const { favorites, toggleFavorite, loading, error } = useFavorites();
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <LoadingScreen message="Loading favorites..." />;
   }
 
   if (error) {

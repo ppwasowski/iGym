@@ -8,6 +8,7 @@ import useRemoveExerciseFromWorkout from '../services/useRemoveExerciseFromWorko
 import ToastShow from '../components/ToastShow';
 import Button from '../components/Button';
 import Container from '../components/Container';
+import LoadingScreen from '../components/LoadingScreen'; // Import the LoadingScreen component
 import { styled } from 'nativewind';
 
 const Title = styled(Text, 'text-Text text-xl mb-4');
@@ -19,9 +20,13 @@ const WorkoutSelection = ({ route }) => {
   const { exerciseId, session } = route.params;
   const userId = session.user.id;
   const navigation = useNavigation();
-  const { workouts, error: fetchError, setWorkouts } = useFetchWorkouts(userId);
-  const { addExerciseToWorkout, error: addError } = useAddExerciseToWorkout(workouts, setWorkouts);
-  const { removeExerciseFromWorkout, error: removeError } = useRemoveExerciseFromWorkout(workouts, setWorkouts);
+  const { workouts, error: fetchError, loading: loadingWorkouts, setWorkouts } = useFetchWorkouts(userId);
+  const { addExerciseToWorkout, error: addError, loading: addingExercise } = useAddExerciseToWorkout(workouts, setWorkouts);
+  const { removeExerciseFromWorkout, error: removeError, loading: removingExercise } = useRemoveExerciseFromWorkout(workouts, setWorkouts);
+
+  if (loadingWorkouts || addingExercise || removingExercise) {
+    return <LoadingScreen message="Processing..." />;
+  }
 
   return (
     <Container className="flex-1 p-4">

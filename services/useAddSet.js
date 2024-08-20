@@ -6,6 +6,7 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
   const { profile } = useContext(UserContext);
   const [weight, setWeight] = useState('');
   const [reps, setReps] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const addSet = async () => {
     // Validate inputs
@@ -46,6 +47,8 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
     };
 
     try {
+      setLoading(true);
+
       const { data, error } = await supabase
         .from('workout_progress')
         .insert([newSet])
@@ -56,8 +59,6 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
       }
 
       if (data && data.length > 0) {
-        console.log(`Set Added: Set ${currentSetNumber} has been successfully added.`);
-
         setSets([...sets, { ...newSet, id: data[0].id }]);
         setWeight('');
         setReps('');
@@ -65,14 +66,15 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
       } else {
         throw new Error('Set was not added. Please try again.');
       }
-
     } catch (error) {
       console.log('Error Adding Set:', error.message || 'An unexpected error occurred while adding the set.');
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { weight, setWeight, reps, setReps, addSet };
+  return { weight, setWeight, reps, setReps, addSet, loading };
 };
 
 export default useAddSet;

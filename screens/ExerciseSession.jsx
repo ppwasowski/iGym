@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { supabase } from '../utility/supabase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import useFetchExerciseSession from '../hooks/useFetchExerciseSession'; // Import the custom hook
 import Button from '../components/Button';
 import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
@@ -14,56 +14,9 @@ const IconButton = styled(Ionicons, 'text-2xl');
 
 const ExerciseSession = ({ route }) => {
   const { workoutId, sessionId, session, refresh } = route.params;
-  const [exercises, setExercises] = useState([]);
-  const [completedExercises, setCompletedExercises] = useState([]);
-  const [error, setError] = useState(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (!workoutId || !sessionId) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Workout ID or Session ID is missing',
-      });
-      setError('Workout ID or Session ID is missing');
-      return;
-    }
-
-    const fetchExercises = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('workout_exercise')
-          .select('*, exercises(name)')
-          .eq('workout_id', workoutId);
-
-        if (error) {
-          throw error;
-        } else {
-          setExercises(data);
-          const { data: progressData, error: progressError } = await supabase
-            .from('workout_progress')
-            .select('exercise_id')
-            .eq('workout_session_id', sessionId);
-
-          if (progressError) {
-            throw progressError;
-          } else {
-            setCompletedExercises(progressData.map(item => item.exercise_id));
-          }
-        }
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: 'Error fetching exercises',
-          text2: error.message,
-        });
-        setError(error.message);
-      }
-    };
-
-    fetchExercises();
-  }, [workoutId, sessionId]);
+  const { exercises, completedExercises, loading, error } = useFetchExerciseSession(workoutId, sessionId);
 
   const markExerciseCompleted = (exerciseId) => {
     setCompletedExercises(prev => [...prev, exerciseId]);
@@ -84,9 +37,26 @@ const ExerciseSession = ({ route }) => {
     navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
   };
 
+  if (loading) {
+    return (
+      <Container className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="text-Text text-base mt-4">Loading exercises...</Text>
+      </Container>
+    );
+  }
+
+  if (error) {
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: error,
+    });
+    return null;
+  }
+
   return (
     <Container className="flex-1 p-4">
-      {error && <Toast />}
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.id.toString()}

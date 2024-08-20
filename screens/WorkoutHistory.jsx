@@ -1,22 +1,28 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchWorkoutHistory from '../hooks/useFetchWorkoutHistory';
 import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
+import LoadingScreen from '@/components/LoadingScreen';
 
 const SessionItem = styled(View, 'py-3 px-4 my-2 bg-Secondary rounded-md');
 const SessionText = styled(Text, 'text-Text text-base');
 
 const WorkoutHistory = ({ session }) => {
-  const { workoutSessions, error } = useFetchWorkoutHistory(session.user.id);
+  const { workoutSessions, loading, error } = useFetchWorkoutHistory(session.user.id);
   const navigation = useNavigation();
 
   const navigateToWorkoutProgress = (sessionId, workoutName) => {
-    // Passing both sessionId and workoutName to WorkoutProgress
     navigation.navigate('WorkoutProgress', { sessionId, workoutName, from: 'WorkoutHistory' });
   };
+
+  if (loading) {
+    return (
+      <LoadingScreen message="Loading history..." />
+    );
+  }
 
   if (error) {
     Toast.show({
