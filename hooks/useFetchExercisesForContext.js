@@ -26,7 +26,8 @@ const useFetchExercisesForContext = ({ userId, bodypartId, workoutId }) => {
         result = await supabase
           .from('workout')
           .select('*, workout_exercise(exercise_id)')
-          .eq('user_id', userId);
+          .eq('user_id', userId)
+          .eq('deleted', false);  // Filter out deleted workouts
       } else {
         setError('Either userId, bodypartId, or workoutId must be provided');
         Toast.show({

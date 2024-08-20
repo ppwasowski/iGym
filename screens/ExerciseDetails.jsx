@@ -1,6 +1,5 @@
-// ExerciseDetails.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useFavorites } from '../context/FavoriteContext';
@@ -11,13 +10,14 @@ import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Title = styled(Text, 'text-Text font-bold text-lg mb-3');
-const FavoriteContainer = styled(View, 'flex-row items-center mb-2');
-const InstructionTitle = styled(Text, 'text-Text text-lg mb-2');
+const FavoriteContainer = styled(View, 'flex-row items-center mb-2 ml-4');
+const InstructionTitle = styled(Text, 'text-Text text-lg mb-2 border-b border-gray-400');
 const InstructionText = styled(Text, 'text-white text-base mb-1');
 const InstructionItem = styled(View, 'mb-1');
+const BottomContainer = styled(View, 'flex-row items-center justify-center p-4 bg-background');
 
 const ExerciseDetails = ({ route }) => {
-  const { exerciseId, workoutId } = route.params;
+  const { exerciseId } = route.params;
   const { exerciseDetails, loading, error } = useExerciseDetails(exerciseId);
   const { favorites, toggleFavorite } = useFavorites();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -61,30 +61,31 @@ const ExerciseDetails = ({ route }) => {
   }
 
   return (
-    <Container className=" p-4">
+    <Container className="flex-1 p-4 justify-between">
       {exerciseDetails ? (
         <>
-          <Title>{exerciseDetails.name.toUpperCase()}</Title>
-          <FavoriteContainer>
-            <Ionicons
-              name={isFavorite ? "heart" : "heart-outline"}
-              size={24}
-              color="white"
-              onPress={handleToggleFavorite}
-              className="mr-2"
-            />
-            <Text className="text-lg text-white">{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</Text>
-          </FavoriteContainer>
-          <InstructionTitle>Instructions:</InstructionTitle>
-          <View className="self-stretch">
-            {formatDescription(exerciseDetails.desc)}
+          <View className="flex-1">
+            <Title>{exerciseDetails.name.toUpperCase()}</Title>
+            <InstructionTitle>Instructions:</InstructionTitle>
+            <View className="self-stretch">
+              {formatDescription(exerciseDetails.desc)}
+            </View>
           </View>
-          <View className="flex-row items-center mt-4">
-            <Button
-              title="Add to Workout"
-              onPress={addExerciseToWorkout}
-            />
-          </View>
+          <BottomContainer>
+            <Button title="Add to Workout" onPress={addExerciseToWorkout} />
+            <FavoriteContainer>
+              <Ionicons
+                name={isFavorite ? "heart" : "heart-outline"}
+                size={24}
+                color="#00C87C"
+                className="mr-2"
+                onPress={handleToggleFavorite}
+              />
+              <Text className="text-lg ml-2 text-white">
+                {isFavorite ? "Favorites(-)" : "Favorites(+)"}
+              </Text>
+            </FavoriteContainer>
+          </BottomContainer>
         </>
       ) : (
         <Text>Loading...</Text>

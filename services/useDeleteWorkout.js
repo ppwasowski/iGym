@@ -13,7 +13,7 @@ const useDeleteWorkout = () => {
     try {
       const { error } = await supabase
         .from('workout')
-        .delete()
+        .update({ deleted: true })
         .eq('id', workoutId);
 
       if (error) {

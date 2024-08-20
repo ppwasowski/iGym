@@ -24,6 +24,7 @@ const WorkoutList = () => {
 
   const handleDeleteWorkout = async (workoutId) => {
     try {
+      // Perform a soft delete by setting the 'deleted' column to true
       await deleteWorkout(workoutId);
       refresh(); // Refresh the workout list after deletion
       Toast.show({
@@ -40,7 +41,6 @@ const WorkoutList = () => {
     }
   };
 
-  // Display the loading screen if user data or workouts are still loading
   if (userLoading || workoutsLoading) {
     return <LoadingScreen message="Loading workouts..." />;
   }

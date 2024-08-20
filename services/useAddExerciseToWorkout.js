@@ -3,11 +3,11 @@ import { supabase } from '../utility/supabase';
 
 const useAddExerciseToWorkout = (workouts, setWorkouts) => {
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   const addExerciseToWorkout = async (workoutId, exerciseId) => {
-    setLoading(true); // Set loading to true when the function starts
-    setError(null);   // Reset error state before starting a new request
+    setLoading(true);
+    setError(null); 
 
     try {
       const existingWorkout = workouts.find(workout => workout.id === workoutId);
@@ -38,7 +38,7 @@ const useAddExerciseToWorkout = (workouts, setWorkouts) => {
       if (error) {
         throw error;
       }
-      
+
       setWorkouts(workouts.map(workout =>
         workout.id === workoutId
           ? { ...workout, workout_exercise: [...workout.workout_exercise, { exercise_id: exerciseId }] }

@@ -13,7 +13,8 @@ const useFetchWorkouts = (userId) => {
         const { data: workoutsData, error: workoutsError } = await supabase
           .from('workout')
           .select('*, workout_exercise(exercise_id)')
-          .eq('user_id', userId);
+          .eq('user_id', userId)
+          .eq('deleted', false);
 
         if (workoutsError) {
           throw workoutsError;

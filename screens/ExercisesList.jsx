@@ -35,7 +35,7 @@ const ExercisesList = ({ route }) => {
           </Pressable>
         )}
         <Pressable onPress={() => toggleFavorite(item.id)}>
-          <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color="white" />
+          <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color="#00C87C" />
         </Pressable>
       </ExerciseItem>
     );

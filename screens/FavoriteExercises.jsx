@@ -8,7 +8,7 @@ import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Item = styled(TouchableOpacity, 'flex-row justify-between text-capitalize items-center p-4 my-2 border-b border-gray-400 bg-background rounded-md w-full');
-const ItemText = styled(Text, 'text-Text text-base');
+const ItemText = styled(Text, 'text-Text text-base capitalize');
 const NoFavoritesText = styled(Text, 'text-Text text-center mt-4');
 
 const FavoriteExercises = () => {
@@ -38,7 +38,7 @@ const FavoriteExercises = () => {
           renderItem={({ item }) => (
             <Item onPress={() => toggleFavorite(item.exercise_id)}>
               <ItemText>{item.exercises.name}</ItemText>
-              <Ionicons name="heart" size={24} color="white" />
+              <Ionicons name="heart" size={24} color="#00C87C" />
             </Item>
           )}
         />

@@ -8,7 +8,7 @@ import useRemoveExerciseFromWorkout from '../services/useRemoveExerciseFromWorko
 import ToastShow from '../components/ToastShow';
 import Button from '../components/Button';
 import Container from '../components/Container';
-import LoadingScreen from '../components/LoadingScreen'; // Import the LoadingScreen component
+import LoadingScreen from '../components/LoadingScreen'; // Importing LoadingScreen correctly
 import { styled } from 'nativewind';
 
 const Title = styled(Text, 'text-Text text-xl mb-4');
@@ -25,7 +25,7 @@ const WorkoutSelection = ({ route }) => {
   const { removeExerciseFromWorkout, error: removeError, loading: removingExercise } = useRemoveExerciseFromWorkout(workouts, setWorkouts);
 
   if (loadingWorkouts || addingExercise || removingExercise) {
-    return <LoadingScreen message="Processing..." />;
+    return <LoadingScreen message="Processing..." />; // Use the correctly imported LoadingScreen
   }
 
   return (
