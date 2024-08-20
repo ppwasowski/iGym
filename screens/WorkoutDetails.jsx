@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
@@ -18,6 +18,7 @@ const IconButton = styled(Ionicons, 'text-2xl');
 const WorkoutDetails = ({ route, navigation }) => {
   const { workoutId, session } = route.params;
   const userId = session.user.id;
+  const [deleteMode, setDeleteMode] = useState(false);
 
   const {
     data: exercises,
@@ -53,6 +54,10 @@ const WorkoutDetails = ({ route, navigation }) => {
     }
   };
 
+  const toggleDeleteMode = () => {
+    setDeleteMode(!deleteMode);
+  };
+
   // Check if any of the hooks are loading and display the LoadingScreen
   if (exercisesLoading || removeLoading || historyLoading || startLoading) {
     return <LoadingScreen message="Loading workout details..." />;
@@ -69,15 +74,26 @@ const WorkoutDetails = ({ route, navigation }) => {
         renderItem={({ item }) => (
           <ExerciseItem>
             <ExerciseName>{item.exercises.name}</ExerciseName>
-            <IconButton
-              name="remove-circle"
-              onPress={() => removeExerciseFromWorkout(item.exercise_id)}
-              color="red"
-            />
+            {deleteMode && (
+              <IconButton
+                name="remove-circle"
+                onPress={() => removeExerciseFromWorkout(item.exercise_id)}
+                color="red"
+              />
+            )}
           </ExerciseItem>
         )}
       />
-      <Button title="Start Workout" onPress={handleStartWorkout} />
+      {!deleteMode && (
+        <Button title="Start Workout" onPress={handleStartWorkout} />
+      )}
+      <View className="mt-4">
+        <Button
+          title={deleteMode ? "Confirm" : "Delete Exercises"}
+          onPress={toggleDeleteMode}
+          className="mb-4"
+        />
+      </View>
     </Container>
   );
 };
