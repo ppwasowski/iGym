@@ -52,13 +52,13 @@ const CombinedStack = ({ route }) => {
         name="Bodyparts"
         component={BodypartView}
         initialParams={({ route }) => ({ session, workoutId: route.params?.workoutId })}
-        options={{ headerTitle: 'Exercises' }}
+        options={{ headerTitle: 'Bodyparts' }}
       />
 
       <Stack.Screen
         name="ExercisesList"
         component={ExercisesList}
-        options={({ route }) => ({ headerTitle: route.params.bodypartId || 'Exercises List' })}
+        options={({ route }) => ({ headerTitle: 'Exercises List' })}
         initialParams={{ session }}
       />
 
