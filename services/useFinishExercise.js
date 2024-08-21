@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'; // Make sure to import useState
 import { supabase } from '../utility/supabase';
 
 const useFinishExercise = (sets, setSets) => {
@@ -38,7 +38,7 @@ const useFinishExercise = (sets, setSets) => {
       if (newSets.length === 0) {
         console.log('No new sets to insert.');
         if (typeof markExerciseCompleted === 'function') {
-          markExerciseCompleted(exerciseId);
+          markExerciseCompleted(exerciseId);  // Ensure this function is correctly defined and used.
         }
         navigation.navigate('ExerciseSession', { sessionId });
         return;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';  // Import useState
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,7 +16,10 @@ const ExerciseSession = ({ route }) => {
   const { workoutId, sessionId, session, refresh } = route.params;
   const navigation = useNavigation();
 
-  const { exercises, completedExercises, loading, error } = useFetchExerciseSession(workoutId, sessionId);
+  // Add state to track completed exercises
+  const [completedExercises, setCompletedExercises] = useState([]);
+
+  const { exercises, loading, error } = useFetchExerciseSession(workoutId, sessionId);
 
   const markExerciseCompleted = (exerciseId) => {
     setCompletedExercises(prev => [...prev, exerciseId]);
@@ -27,7 +30,7 @@ const ExerciseSession = ({ route }) => {
       exerciseId,
       exerciseName,
       sessionId,
-      markExerciseCompleted,
+      markExerciseCompleted, // Pass this function down
       session,
     });
   };

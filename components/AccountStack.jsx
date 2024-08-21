@@ -12,19 +12,35 @@ const AccountStack = ({ session }) => {
   return (
     <Stack.Navigator
       screenOptions={({ route }) => ({
-        header: () => <CustomHeader title={route.name} />,
+        // Pass the headerTitle dynamically to CustomHeader
+        header: (props) => <CustomHeader {...props} title={props.options.headerTitle} />,
       })}
     >
-      <Stack.Screen name="Account">
+      <Stack.Screen
+        name="Account"
+        options={{ headerTitle: 'My Account' }}
+      >
         {(props) => <Account {...props} session={session} />}
       </Stack.Screen>
-      <Stack.Screen name="WorkoutHistory">
+
+      <Stack.Screen
+        name="WorkoutHistory"
+        options={{ headerTitle: 'Workout History' }}
+      >
         {(props) => <WorkoutHistory {...props} session={session} />}
       </Stack.Screen>
-      <Stack.Screen name="FavoriteExercises">
+
+      <Stack.Screen
+        name="FavoriteExercises"
+        options={{ headerTitle: 'Favorite Exercises' }}
+      >
         {(props) => <FavoriteExercises {...props} session={session} />}
       </Stack.Screen>
-      <Stack.Screen name="PersonalRecords">
+
+      <Stack.Screen
+        name="PersonalRecords"
+        options={{ headerTitle: 'Personal Records' }}
+      >
         {(props) => <PersonalRecords {...props} session={session} />}
       </Stack.Screen>
     </Stack.Navigator>

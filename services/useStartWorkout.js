@@ -4,10 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 
 const useStartWorkout = (workoutId, userId) => {
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  
 
   const startWorkout = async () => {
+    setLoading(true);
+    setError(null);
+
     try {
       const { data, error } = await supabase
         .from('workout_sessions')
@@ -27,10 +30,12 @@ const useStartWorkout = (workoutId, userId) => {
     } catch (error) {
       console.error('Error starting workout session:', error.message);
       setError('Error starting workout session');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { startWorkout, error };
+  return { startWorkout, error, loading };
 };
 
 export default useStartWorkout;

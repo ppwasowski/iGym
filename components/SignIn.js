@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, AppState, View } from 'react-native';
+import { Alert, AppState, View, ActivityIndicator } from 'react-native';
 import { supabase } from '../utility/supabase';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import { styled } from 'nativewind';
+import LoadingScreen from './LoadingScreen';
 
 const FormItem = styled(View, 'py-1');
 const FormContainer = styled(Container, 'flex-1 p-4');
@@ -39,6 +40,12 @@ export default function SignIn({ navigation }) {
 
     if (error) Alert.alert(error.message);
     setLoading(false);
+  }
+
+  if (loading) {
+    return (
+      <LoadingScreen message='Singing in...'/>
+    );
   }
 
   return (

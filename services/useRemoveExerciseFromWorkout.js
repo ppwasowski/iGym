@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { supabase } from '../utility/supabase';
-import ToastShow from '../components/ToastShow';
 
 const useRemoveExerciseFromWorkout = (workouts, setWorkouts) => {
   const [error, setError] = useState(null);
@@ -31,12 +30,9 @@ const useRemoveExerciseFromWorkout = (workouts, setWorkouts) => {
           ? { ...workout, workout_exercise: workout.workout_exercise.filter(exercise => exercise.exercise_id !== exerciseId) }
           : workout
       ));
-
-      ToastShow('success', 'Success', 'Exercise removed from workout');
     } catch (error) {
       console.error('Error removing exercise from workout:', error);
       setError('Error removing exercise from workout');
-      ToastShow('error', 'Error', 'Error removing exercise from workout');
     } finally {
       setLoading(false);
     }

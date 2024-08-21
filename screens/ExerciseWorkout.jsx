@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
@@ -9,6 +9,7 @@ import Container from '../components/Container';
 import Input from '../components/Input';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
+import LoadingScreen from '../components/LoadingScreen';
 
 const StyledText = styled(Text, 'text-Text text-lg px-3 mb-2 capitalize');
 const SetContainer = styled(View, 'flex-row justify-between mb-4 border-b border-gray-400 pb-2');
@@ -18,9 +19,29 @@ const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
 
-  const { sets, setSets, error: fetchError, loading: fetchLoading, refresh: refreshProgress } = useFetchExerciseProgress(sessionId, exerciseId);
-  const { finishExercise, error: finishError, loading: finishLoading } = useFinishExercise(sets, setSets);
-  const { weight, setWeight, reps, setReps, addSet, error: addSetError, loading: addSetLoading } = useAddSet(sessionId, exerciseId, sets, setSets);
+  const {
+    sets,
+    setSets,
+    error: fetchError,
+    loading: fetchLoading,
+    refresh: refreshProgress,
+  } = useFetchExerciseProgress(sessionId, exerciseId);
+
+  const {
+    finishExercise,
+    error: finishError,
+    loading: finishLoading,
+  } = useFinishExercise(sets, setSets);
+
+  const {
+    weight,
+    setWeight,
+    reps,
+    setReps,
+    addSet,
+    error: addSetError,
+    loading: addSetLoading,
+  } = useAddSet(sessionId, exerciseId, sets, setSets);
 
   useEffect(() => {
     if (!sessionId) {
@@ -35,11 +56,11 @@ const ExerciseWorkout = ({ route }) => {
 
   const handleAddSet = async () => {
     const newSet = { weight: parseFloat(weight), reps: parseInt(reps, 10) };
-    setSets((prevSets) => [...prevSets, newSet]);
-    setWeight(''); // Reset to empty string
-    setReps(''); // Reset to empty string
     const success = await addSet(newSet);
     if (success) {
+      setSets((prevSets) => [...prevSets, newSet]);
+      setWeight(''); // Reset to empty string
+      setReps('');   // Reset to empty string
       refreshProgress(); // Fetch the latest progress after adding a set
     }
   };
@@ -66,13 +87,8 @@ const ExerciseWorkout = ({ route }) => {
     }
   }, [fetchError, finishError, addSetError]);
 
-  if (fetchLoading || addSetLoading || finishLoading) {
-    return (
-      <Container className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text className="text-Text text-base mt-4">Processing...</Text>
-      </Container>
-    );
+  if (fetchLoading) {
+    return <LoadingScreen message="Loading exercise data..." />;
   }
 
   return (
@@ -93,6 +109,12 @@ const ExerciseWorkout = ({ route }) => {
         className="mb-4"
       />
       <Button title="Add Set" onPress={handleAddSet} className="mb-4" />
+
+      {addSetLoading && (
+        <View className="mb-4">
+          <ActivityIndicator size="small" color="#00C87C" />
+        </View>
+      )}
 
       <ScrollView className="flex-1 mt-5">
         {sets.length > 0 ? (

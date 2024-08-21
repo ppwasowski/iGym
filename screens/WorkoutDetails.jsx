@@ -58,7 +58,6 @@ const WorkoutDetails = ({ route, navigation }) => {
     setDeleteMode(!deleteMode);
   };
 
-  // Check if any of the hooks are loading and display the LoadingScreen
   if (exercisesLoading || removeLoading || historyLoading || startLoading) {
     return <LoadingScreen message="Loading workout details..." />;
   }

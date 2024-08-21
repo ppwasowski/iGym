@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Text, StyleSheet } from 'react-native';
+import { View, FlatList, KeyboardAvoidingView, Platform, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { supabase } from '../utility/supabase';
@@ -7,6 +7,7 @@ import { UserContext } from '../context/UserContext';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Container from '../components/Container';
+import LoadingScreen from '../components/LoadingScreen'; // Import the LoadingScreen component
 import { styled } from 'nativewind';
 
 const FormItem = styled(View, 'py-1');
@@ -156,6 +157,10 @@ export default function SignUp() {
     </FormItem>
   );
 
+  if (loading) {
+    return <LoadingScreen message="Signing up..." />; // Display loading screen during sign up process
+  }
+
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-background"
@@ -190,7 +195,6 @@ export default function SignUp() {
               <FormItem>
                 <Button title="Sign up" disabled={loading} onPress={signUpWithEmail} />
                 <Toast />
-                {loading && <ActivityIndicator size="large" color="#0000ff" />}
               </FormItem>
             </>
           )}
