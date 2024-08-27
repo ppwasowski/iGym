@@ -5,6 +5,7 @@ import WorkoutHistory from '../screens/WorkoutHistory';
 import FavoriteExercises from '../screens/FavoriteExercises';
 import PersonalRecords from '../screens/PersonalRecords';
 import CustomHeader from '../components/CustomHeader';
+import Goals from '../screens/Goals'
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,13 @@ const AccountStack = ({ session }) => {
       >
         {(props) => <PersonalRecords {...props} session={session} />}
       </Stack.Screen>
+      <Stack.Screen
+        name="Goals"
+        options={{ headerTitle: 'My Goals' }}
+      >
+        {(props) => <Goals {...props} session={session} />}
+      </Stack.Screen>
+
     </Stack.Navigator>
   );
 };

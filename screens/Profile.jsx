@@ -62,6 +62,12 @@ const Account = () => {
           </ButtonView>
           <ButtonView>
             <Button
+              title="My Goals"
+              onPress={() => navigation.navigate('Goals')}
+            />
+          </ButtonView>
+          <ButtonView>
+            <Button
               title="Sign Out"
               onPress={() => supabase.auth.signOut()}
             />
