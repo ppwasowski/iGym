@@ -14,7 +14,7 @@ const ExerciseItem = styled(Pressable, 'flex-row justify-between items-center p-
 const WorkoutProgress = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { sessionId, from, session } = route.params;  // Added session to the destructured params
+  const { sessionId, from, session } = route.params;
   const { progress, error } = useFetchWorkoutProgress(sessionId);
   const [loading, setLoading] = useState(true);
 
@@ -25,16 +25,13 @@ const WorkoutProgress = () => {
   }, [progress, error]);
 
   const handleClose = () => {
-    const tabNavigation = navigation.getParent(); // Get the parent TabNavigator
+    const tabNavigation = navigation.getParent();
   
     if (from === 'WorkoutHistory') {
-      // Navigate back to WorkoutHistory if that was the originating screen
       navigation.jumpTo('Profile');
     } else if (tabNavigation) {
-      // Jump to the Dashboard tab
       tabNavigation.jumpTo('Dashboard');
     } else {
-      // Fallback to goBack if no parent tab navigation or specific navigation case
       navigation.goBack();
     }
   };
@@ -56,8 +53,6 @@ const WorkoutProgress = () => {
     });
     return null;
   }
-
-  // Extract exercises with both exerciseId and exerciseName
   const exercises = [...new Map(progress?.map(item => [item.exercises?.id, item.exercises?.name]))];
 
   return (
