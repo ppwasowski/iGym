@@ -1,45 +1,39 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../utility/supabase';
-import Toast from 'react-native-toast-message';
 
 const useFetchExerciseProgress = (sessionId, exerciseId) => {
   const [sets, setSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProgress = async () => {
-    try {
-      setLoading(true);
-
-      const { data, error } = await supabase
-        .from('workout_progress')
-        .select('id, sets, reps, weight')
-        .eq('workout_session_id', sessionId)
-        .eq('exercise_id', exerciseId)
-        .order('sets', { ascending: true });
-
-      if (error) throw error;
-
-      setSets(data);
-    } catch (error) {
-      setError(error.message);
-      Toast.show({
-        type: 'error',
-        text1: 'Error fetching progress',
-        text2: error.message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (sessionId && exerciseId) {
-      fetchProgress();
-    }
+    const fetchExerciseProgress = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        if (!sessionId || !exerciseId) throw new Error('Session ID or Exercise ID is missing');
+
+        const { data, error } = await supabase
+          .from('workout_progress')
+          .select('*')
+          .eq('workout_session_id', sessionId)
+          .eq('exercise_id', exerciseId);
+
+        if (error) throw new Error('Error fetching exercise progress: ' + error.message);
+
+        setSets(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExerciseProgress();
   }, [sessionId, exerciseId]);
 
-  return { sets, setSets, loading, error, refresh: fetchProgress };
+  return { sets, setSets, loading, error };
 };
 
 export default useFetchExerciseProgress;

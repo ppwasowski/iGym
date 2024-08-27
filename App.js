@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native'; // Ensure View is imported
+import { View, StatusBar } from 'react-native'; // Ensure View is imported
 import { NavigationContainer } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind'; // Import styled from nativewind
@@ -25,6 +25,7 @@ const App = () => {
             ) : (
               <AuthStack />
             )}
+            <StatusBar barStyle="light-content" backgroundColor="#1c1c1c" />
           </NavigationContainer>
           <Toast />
         </AppContainer>

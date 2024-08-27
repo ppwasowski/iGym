@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
@@ -19,29 +19,9 @@ const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
 
-  const {
-    sets,
-    setSets,
-    error: fetchError,
-    loading: fetchLoading,
-    refresh: refreshProgress,
-  } = useFetchExerciseProgress(sessionId, exerciseId);
-
-  const {
-    finishExercise,
-    error: finishError,
-    loading: finishLoading,
-  } = useFinishExercise(sets, setSets);
-
-  const {
-    weight,
-    setWeight,
-    reps,
-    setReps,
-    addSet,
-    error: addSetError,
-    loading: addSetLoading,
-  } = useAddSet(sessionId, exerciseId, sets, setSets);
+  const { sets, setSets, loading: fetchLoading, error: fetchError } = useFetchExerciseProgress(sessionId, exerciseId);
+  const { finishExercise, loading: finishLoading, error: finishError } = useFinishExercise(sets, setSets);
+  const { weight, setWeight, reps, setReps, addSet, loading: addSetLoading, error: addSetError } = useAddSet(sessionId, exerciseId, sets, setSets);
 
   useEffect(() => {
     if (!sessionId) {
@@ -55,19 +35,23 @@ const ExerciseWorkout = ({ route }) => {
   }, [sessionId, navigation]);
 
   const handleAddSet = async () => {
-    const newSet = { weight: parseFloat(weight), reps: parseInt(reps, 10) };
-    const success = await addSet(newSet);
+    const success = await addSet();
     if (success) {
-      setSets((prevSets) => [...prevSets, newSet]);
       setWeight(''); // Reset to empty string
       setReps('');   // Reset to empty string
-      refreshProgress(); // Fetch the latest progress after adding a set
     }
   };
 
   const handleFinishExercise = async () => {
     if (sessionId) {
-      await finishExercise(sessionId, exerciseId, session.user.id, markExerciseCompleted, navigation);
+      await finishExercise(
+        sessionId,
+        route.params.workoutId,
+        exerciseId,
+        session.user.id,
+        markExerciseCompleted,
+        navigation
+      );
     } else {
       Toast.show({
         type: 'error',
@@ -108,13 +92,14 @@ const ExerciseWorkout = ({ route }) => {
         onChangeText={setReps}
         className="mb-4"
       />
-      <Button title="Add Set" onPress={handleAddSet} className="mb-4" />
 
-      {addSetLoading && (
-        <View className="mb-4">
-          <ActivityIndicator size="small" color="#00C87C" />
-        </View>
-      )}
+      {/* Show loading indicator when adding a set */}
+      <Button
+        title={addSetLoading ? "Adding Set..." : "Add Set"}
+        onPress={handleAddSet}
+        disabled={addSetLoading}
+        className="mb-4"
+      />
 
       <ScrollView className="flex-1 mt-5">
         {sets.length > 0 ? (
@@ -129,7 +114,12 @@ const ExerciseWorkout = ({ route }) => {
         )}
       </ScrollView>
 
-      <Button title="Finish Exercise" onPress={handleFinishExercise} />
+      {/* Show loading indicator when finishing the exercise */}
+      <Button
+        title={finishLoading ? "Finishing Exercise..." : "Finish Exercise"}
+        onPress={handleFinishExercise}
+        disabled={finishLoading}
+      />
       <Toast />
     </Container>
   );

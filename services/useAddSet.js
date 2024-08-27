@@ -8,6 +8,8 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
   const [reps, setReps] = useState('');
   const [loading, setLoading] = useState(false);
 
+
+
   const addSet = async () => {
     // Validate inputs
     const parsedWeight = parseFloat(weight);
@@ -34,12 +36,12 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
     }
 
     // Calculate the current set number for the exercise
-    const currentSetNumber = sets.length + 1;
+    const currentSetNumber = sets.filter(set => set.exercise_id === exerciseId).length + 1;
 
     const newSet = {
       workout_session_id: sessionId,
       exercise_id: exerciseId,
-      sets: currentSetNumber,
+      sets: currentSetNumber,  // Assign the calculated current set number
       reps: parsedReps,
       weight: parsedWeight,
       completed_at: new Date().toISOString(),
@@ -59,6 +61,7 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
       }
 
       if (data && data.length > 0) {
+        // Update the local state with the new set
         setSets([...sets, { ...newSet, id: data[0].id }]);
         setWeight('');
         setReps('');

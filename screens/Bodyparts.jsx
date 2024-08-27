@@ -27,7 +27,7 @@ const BodypartView = ({ session, workoutId }) => {
       } catch (error) {
         setError(error.message);
       } finally {
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       }
       
       
