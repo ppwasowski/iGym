@@ -30,7 +30,10 @@ export default function HomeScreen() {
 
   const handleNavigation = (sessionId) => {
     if (sessionId) {
-      navigation.navigate('WorkoutProgress', { sessionId });
+      navigation.navigate('Workouts', {
+        screen: 'WorkoutProgress',
+        params: { sessionId },
+      });
     } else {
       console.warn("Invalid sessionId passed to handleNavigation:", sessionId);
     }

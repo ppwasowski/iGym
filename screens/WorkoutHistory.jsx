@@ -17,7 +17,10 @@ const WorkoutHistory = ({ session }) => {
   const navigation = useNavigation();
 
   const navigateToWorkoutProgress = (sessionId, workoutName) => {
-    navigation.navigate('WorkoutProgress', { sessionId, workoutName, from: 'WorkoutHistory' });
+    navigation.navigate('Workouts', {
+      screen: 'WorkoutProgress',
+      params: { sessionId, workoutName, from: 'WorkoutHistory' },
+    });
   };
 
   if (loading) {

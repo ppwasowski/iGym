@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, Pressable } from 'react-native';
-import { useRoute, useNavigation, CommonActions } from '@react-navigation/native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import useFetchWorkoutProgress from '../hooks/useFetchWorkoutProgress';
 import Container from '../components/Container';
 import Button from '../components/Button';
@@ -8,14 +8,13 @@ import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 import LoadingScreen from '@/components/LoadingScreen';
 
-
 const StyledText = styled(Text, 'text-Text text-lg mb-2 capitalize');
 const ExerciseItem = styled(Pressable, 'flex-row justify-between items-center p-4 border-b border-gray-400');
 
 const WorkoutProgress = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { sessionId, from } = route.params;
+  const { sessionId, from, session } = route.params;  // Added session to the destructured params
   const { progress, error } = useFetchWorkoutProgress(sessionId);
   const [loading, setLoading] = useState(true);
 
@@ -26,26 +25,27 @@ const WorkoutProgress = () => {
   }, [progress, error]);
 
   const handleClose = () => {
+    const tabNavigation = navigation.getParent(); // Get the parent TabNavigator
+  
     if (from === 'WorkoutHistory') {
-      navigation.goBack();
+      // Navigate back to WorkoutHistory if that was the originating screen
+      navigation.jumpTo('Profile');
+    } else if (tabNavigation) {
+      // Jump to the Dashboard tab
+      tabNavigation.jumpTo('Dashboard');
     } else {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Dashboard' }],
-        })
-      );
+      // Fallback to goBack if no parent tab navigation or specific navigation case
+      navigation.goBack();
     }
   };
+  
 
   const navigateToExerciseProgress = (exerciseId, exerciseName) => {
     navigation.navigate('ExerciseProgress', { sessionId, exerciseId, exerciseName });
   };
 
   if (loading) {
-    return (
-      <LoadingScreen message="Fetching workout data..." />
-    );
+    return <LoadingScreen message="Fetching workout data..." />;
   }
 
   if (error) {
