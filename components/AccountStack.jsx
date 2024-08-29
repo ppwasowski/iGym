@@ -50,6 +50,12 @@ const AccountStack = ({ session }) => {
       >
         {(props) => <Goals {...props} session={session} />}
       </Stack.Screen>
+      <Stack.Screen
+        name="AddGoal"
+        options={{ headerTitle: 'Add Goal' }}
+        >
+        {(props) => <AddGoal {...props} session={session}/>}
+      </Stack.Screen>
 
     </Stack.Navigator>
   );

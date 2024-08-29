@@ -10,6 +10,7 @@ import { styled } from 'nativewind';
 import Container from '../components/Container';
 import { UserContext } from '../context/UserContext';
 import LoadingScreen from '../components/LoadingScreen';
+import CustomAlert from '../components/CustomAlert';
 
 const ListContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
 const ItemText = styled(Text, 'text-Text text-lg');
@@ -23,10 +24,11 @@ const WorkoutList = () => {
   const { deleteWorkout, error: deleteError } = useDeleteWorkout();
 
   const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const handleDeleteWorkout = async (workoutId) => {
     try {
-      // Perform a soft delete by setting the 'deleted' column to true
       await deleteWorkout(workoutId);
       refresh(); // Refresh the workout list after deletion
       Toast.show({
@@ -41,6 +43,11 @@ const WorkoutList = () => {
         text2: error.message,
       });
     }
+  };
+
+  const confirmDelete = (workout_id) => {
+    setSelectedWorkout(workout_id);
+    setAlertVisible(true);
   };
 
   const toggleDeleteMode = () => {
@@ -66,8 +73,6 @@ const WorkoutList = () => {
 
   return (
     <Container className="flex-1">
-     
-
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {workouts && workouts.length > 0 ? (
           <FlatList
@@ -82,7 +87,7 @@ const WorkoutList = () => {
                   <ItemText>{item.name}</ItemText>
                 </TouchableOpacity>
                 {deleteMode && (
-                  <TouchableOpacity onPress={() => handleDeleteWorkout(item.id)}>
+                  <TouchableOpacity onPress={() => confirmDelete(item.id)}>
                     <Ionicons name="trash" size={24} color="red" />
                   </TouchableOpacity>
                 )}
@@ -103,10 +108,26 @@ const WorkoutList = () => {
       )}
       <View>
         <Button
-          title={deleteMode ? "Confirm" : "Delete Workouts"}
+          title={deleteMode ? "Cancel Delete" : "Delete Workouts"}
           onPress={toggleDeleteMode}
         />
       </View>
+      <CustomAlert
+        visible={alertVisible}
+        title="Delete Workout"
+        message="Are you sure you want to delete this workout?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={() => {
+          handleDeleteWorkout(selectedWorkout);
+          setAlertVisible(false);
+          setSelectedWorkout(null);
+        }}
+        onCancel={() => {
+          setAlertVisible(false);
+          setSelectedWorkout(null);
+        }}
+      />
     </Container>
   );
 };
