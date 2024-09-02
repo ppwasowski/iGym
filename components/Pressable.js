@@ -1,14 +1,18 @@
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, Image } from 'react-native';
 import { styled } from 'nativewind';
 
-const StyledPressable = styled(Pressable, 'bg-Primary h-24 w-40 m-1 mt-2 rounded-lg justify-center items-center shadow-lg');
-const StyledText = styled(Text, 'text-Text text-lg font-bold capitalize');
+const StyledPressable = styled(Pressable);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
 
-const CustomPressable = ({ onPress, title, textStyle, ...props}) => {
+const CustomPressable = ({ onPress, title, imageSource, pressableStyle, textStyle, imageStyle, tintColor, ...props }) => {
   return (
-    <StyledPressable onPress={onPress}>
-      <StyledText>{title}</StyledText>
+    <StyledPressable onPress={onPress} className={`flex-col justify-between ${pressableStyle}`} {...props}>
+      {imageSource && (
+        <StyledImage source={imageSource} className={`mb-2 ${imageStyle}`} style={{ tintColor }} />
+      )}
+      <StyledText className={`text-center ${textStyle}`}>{title}</StyledText>
     </StyledPressable>
   );
 };
