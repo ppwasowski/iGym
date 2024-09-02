@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, Picker, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput } from 'react-native';
 import Container from '../components/Container';
 import Button from '../components/Button';
 import LoadingScreen from '../components/LoadingScreen';
-import useFetchGoalsAdding from '../hooks/useFetchGoalsAdding';  // Import the custom hook
+import { Picker } from '@react-native-picker/picker';  // Correctly import Picker
+import useFetchGoalsAdding from '../hooks/useFetchGoalsAdding';  
 
 const AddGoal = ({ navigation, route }) => {
   const { session, onGoalAdded } = route.params;
@@ -13,38 +14,41 @@ const AddGoal = ({ navigation, route }) => {
   const [selectedExercise, setSelectedExercise] = useState('');
   const [selectedBodyPart, setSelectedBodyPart] = useState('');
   const [selectedWorkout, setSelectedWorkout] = useState('');
-  const [metricType, setMetricType] = useState(''); // State for reps or weight
+  const [metricType, setMetricType] = useState('');
 
-  const {
-    categories,
-    exercises,
-    bodyParts,
-    workouts,
-    loading,
-    error,
-  } = useFetchGoalsAdding();
+  const { categories, exercises, bodyParts, workouts, loading, error } = useFetchGoalsAdding();
+
+  useEffect(() => {
+    setSelectedBodyPart('');
+    setSelectedExercise('');
+    setSelectedWorkout('');
+    setMetricType('');
+  }, [selectedCategory]);
 
   const handleAddGoal = async () => {
-    const { data, error } = await supabase.from('goals').insert([
-      {
-        user_id: session.user.id,
-        name: goalName,
-        category_id: selectedCategory,
-        exercise_id: selectedExercise || null,
-        workout_id: selectedWorkout || null,
-        target_value: targetValue,
-        current_value: 0,
-        metric_type: metricType, 
-      },
-    ]);
+    try {
+      const { data, error } = await supabase.from('goals').insert([
+        {
+          user_id: session.user.id,
+          name: goalName,
+          category_id: selectedCategory,
+          exercise_id: selectedExercise || null,
+          workout_id: selectedWorkout || null,
+          target_value: targetValue,
+          current_value: 0,
+          metric_type: metricType, 
+        },
+      ]);
 
-    if (error) {
-      console.error('Error adding goal:', error);
-    } else {
+      if (error) throw new Error(error.message);
+
       if (onGoalAdded) {
         onGoalAdded(data[0]);
       }
       navigation.goBack();
+    } catch (err) {
+      console.error('Error adding goal:', err);
+      alert(`Failed to add goal: ${err.message}`);
     }
   };
 
@@ -61,12 +65,6 @@ const AddGoal = ({ navigation, route }) => {
 
   return (
     <Container className="p-4">
-      <TextInput
-        placeholder="Goal Name"
-        value={goalName}
-        onChangeText={setGoalName}
-        style={{ marginBottom: 10, padding: 10, backgroundColor: '#ddd', borderRadius: 5 }}
-      />
       <Picker
         selectedValue={selectedCategory}
         onValueChange={(itemValue) => setSelectedCategory(itemValue)}
@@ -78,7 +76,6 @@ const AddGoal = ({ navigation, route }) => {
         ))}
       </Picker>
 
-      {/* Conditional rendering based on the selected category name */}
       {selectedCategoryName === 'Exercise' && (
         <>
           <Picker
@@ -103,7 +100,6 @@ const AddGoal = ({ navigation, route }) => {
             ))}
           </Picker>
 
-          {/* Picker for selecting between Reps or Weight */}
           <Picker
             selectedValue={metricType}
             onValueChange={(itemValue) => setMetricType(itemValue)}

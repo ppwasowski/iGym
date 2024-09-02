@@ -6,6 +6,8 @@ import FavoriteExercises from '../screens/FavoriteExercises';
 import PersonalRecords from '../screens/PersonalRecords';
 import CustomHeader from '../components/CustomHeader';
 import Goals from '../screens/Goals'
+import AddGoal from '../screens/AddGoal'
+
 
 const Stack = createStackNavigator();
 

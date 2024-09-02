@@ -3,14 +3,27 @@ const getWorkoutMessage = (lastWorkoutDate) => {
   const lastWorkout = new Date(lastWorkoutDate);
   const diffTime = Math.abs(today - lastWorkout);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  let consistency = "";
+  let reminder = "";
+  let color = "";
+  let message = `Your last workout was: ${diffDays} days ago.`;
 
   if (diffDays <= 3) {
-    return "Excellent consistency, keep up the good work! Your last workout was: " + diffDays + " days ago";
+    consistency = "Excellent";
+    reminder = "Keep up the good work!";
+    color = "text-Primary"; 
   } else if (diffDays <= 5) {
-    return "Not bad, but don't forget to find some time to exercise! Your last workout was: " + diffDays + " days ago";
+    consistency = "Not bad";
+    reminder = "Don't forget to find some time to exercise!";
+    color = "text-Alter";
   } else {
-    return "It's time to get back to work! Your last workout was: " + diffDays + " days ago";
+    consistency = "Bad";
+    reminder = "It's time to get back to work!";
+    color = "text-red-500"; 
   }
+
+  return { message, consistency, reminder, color, diffDays };
 };
 
 export default getWorkoutMessage;

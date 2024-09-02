@@ -1,35 +1,46 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
+import Icon from './Icon';
 
 const StatsContainer = styled(View, 'flex-wrap flex-row justify-between items-center w-full');
-const StatBlock = styled(TouchableOpacity, 'bg-background p-4 m-2 rounded-md w-[47%] items-left');
-const StatTitle = styled(Text, 'text-lg text-Primary font-bold');
-const StatText = styled(Text, 'text-lg text-white font-bold');
-const Separator = styled(View, 'bg-Separator h-[1px] w-full my-4');
+const StatBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 rounded-lg w-[47%] items-left');
+const StatTitle = styled(Text, 'text-md text-white font-bold');
+const StatText = styled(Text, 'text-lg text-Primary font-bold');
 
 export default function StatsSection({ stats, handleNavigation }) {
   return (
     <StatsContainer>
       <View className="flex-row w-full justify-between">
         <StatBlock onPress={() => handleNavigation(stats?.maxWeightSessionId)}>
-          <StatTitle>Max Weight</StatTitle>
+          <View className='flex-row items-center justify-between'>
+            <StatTitle>Max Weight</StatTitle>
+            <Icon name="analytics" color="Alter" style="mr-2" />
+          </View>
           <StatText>{stats?.maxCarriedWeight ? `${stats.maxCarriedWeight} kg` : 'N/A'}</StatText>
         </StatBlock>
         <StatBlock>
-          <StatTitle>Total Weight</StatTitle>
+          <View className='flex-row items-center justify-between'>
+            <StatTitle>Total Weight</StatTitle>
+            <Icon name="barbell" color="Alter" style="mr-2" /> 
+          </View>
           <StatText>{stats?.totalWeightCarried ? `${stats.totalWeightCarried} kg` : 'N/A'}</StatText>
         </StatBlock>
       </View>
-      <Separator />
       <View className="flex-row w-full justify-between">
         <StatBlock onPress={() => handleNavigation(stats?.maxRepsSessionId)}>
-          <StatTitle>Max Reps</StatTitle>
+          <View className='flex-row items-center justify-between'>
+            <StatTitle>Max Reps</StatTitle>
+            <Icon name="analytics" color="Alter" style="mr-2" />
+          </View>
           <StatText>{stats?.maxRepsDone ?? 'N/A'}</StatText>
         </StatBlock>
         <StatBlock>
-          <StatTitle>Workouts Done</StatTitle>
-          <StatText>{stats?.numberOfWorkouts ?? 'N/A'}</StatText>
+          <View className='flex-row items-center justify-between'>
+            <StatTitle>Workouts Done</StatTitle>
+            <Icon name="pulse" color="Alter" style="mr-2" />
+          </View>
+          <StatText className='text-'>{stats?.numberOfWorkouts ?? 'N/A'}</StatText>
         </StatBlock>
       </View>
     </StatsContainer>

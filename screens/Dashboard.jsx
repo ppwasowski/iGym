@@ -9,12 +9,13 @@ import Container from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
 import StatsSection from '../components/StatsSection';
 import LoadingScreen from '../components/LoadingScreen';
-
+import Icon from '../components/Icon'; // Import the Icon component
 
 // Styled components using nativewind
-const Title = styled(Text, 'text-Text text-3xl font-bold mb-2');
-const Message = styled(Text, 'text-Text text-lg text-center my-5 text-Primary');
+const Title = styled(Text, 'text-3xl mb-2');
+const Message = styled(Text, 'text-Text text-lg text-center my-2');
 const Separator = styled(View, 'bg-Separator h-[1px] w-full my-4');
+const Reminder = styled(Text, 'text-Alter text-center text-xl mt-4 font-bold');
 
 export default function HomeScreen() {
   const { profile, loading: profileLoading, error: profileError } = useContext(UserContext);
@@ -26,7 +27,13 @@ export default function HomeScreen() {
   const hasError = profileError || sessionsError || statsError;
 
   const lastWorkoutDate = sessions?.length > 0 ? sessions[0].session_date : null;
-  const message = lastWorkoutDate ? getWorkoutMessage(lastWorkoutDate) : "You haven't started a workout yet.";
+  const workoutMessage = lastWorkoutDate ? getWorkoutMessage(lastWorkoutDate) : {
+    message: "You haven't started a workout yet.",
+    consistency: "",
+    reminder: "",
+    color: "text-gray-500",
+    diffDays: 0
+  };
 
   const handleNavigation = (sessionId) => {
     if (sessionId) {
@@ -51,10 +58,22 @@ export default function HomeScreen() {
     <Container className="justify-center items-center p-4">
       <Image
         source={require('../assets/images/logo.png')}
-        style={{ width: 250, height: 100, marginBottom: 20 }}
+        className="w-[250px] h-[100px] mb-5"
       />
-      <Title>Welcome back, {profile?.first_name || 'Guest'}!</Title>
-      <Message>{message}</Message>
+      <Title className='text-Text font-md mr-10'>Hi!</Title>
+      <Title className='text-Alter font-semibold mt-[-20px] ml-20'> {profile?.first_name || 'Guest'}</Title>
+      
+      <View className='bg-Secondary p-6 m-4 rounded-lg w-[94%]'>
+        <View className='flex-row items-center justify-between'>
+          <Text className='text-Text text-md font-bold'>
+            Consistency: <Text className={`${workoutMessage.color} font-xl`}>{workoutMessage.consistency}</Text>
+          </Text>
+          <Icon name="bulb" color="Alter" style="mr-2" />
+        </View>
+        <Reminder>{workoutMessage.reminder}</Reminder>
+        <Message>Your last workout was: <Text className='text-Primary'>{workoutMessage.diffDays} day ago</Text></Message>
+      </View>
+
       <Separator />
       <StatsSection stats={stats} handleNavigation={handleNavigation} />
     </Container>
