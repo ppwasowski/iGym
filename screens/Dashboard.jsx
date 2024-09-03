@@ -65,13 +65,13 @@ export default function HomeScreen() {
       
       <View className='bg-Secondary p-6 m-4 rounded-lg w-[94%]'>
         <View className='flex-row items-center justify-between'>
-          <Text className='text-Text text-md font-bold'>
-            Consistency: <Text className={`${workoutMessage.color} font-xl`}>{workoutMessage.consistency}</Text>
+          <Text className='text-Text text-xl'>
+            Consistency: <Text className={`${workoutMessage.color} font-xl font-bold`}>{workoutMessage.consistency}</Text>
           </Text>
-          <Icon name="bulb" color="Alter" style="mr-2" />
+          <Icon name="bulb" color="SecAlter" style="mr-2" />
         </View>
         <Reminder>{workoutMessage.reminder}</Reminder>
-        <Message>Your last workout was: <Text className='text-Primary'>{workoutMessage.diffDays} day ago</Text></Message>
+        <Message>Your last workout was: <Text className={`${workoutMessage.color} font-xl`}>{workoutMessage.diffDays} day ago</Text></Message>
       </View>
 
       <Separator />

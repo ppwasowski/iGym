@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         Primary: '#00C87C', // Primary action green
         Alter: '#ff9a03', // Secondary action orange
+        SecAlter: '#a303ff', // Alternative action purple
         Navigation: '#1c1c1c', // Navigation
         background: '#232323', // Dark background
         Secondary: '#2e2e2e', // Light grey background

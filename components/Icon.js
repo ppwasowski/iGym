@@ -5,6 +5,7 @@ import { styled } from 'nativewind';
 const colorMap = {
   Primary: '#00C87C',  
   Alter: '#ff9a03',
+  SecAlter: '#a303ff',
 };
 
 const StyledIonicons = styled(Ionicons);
