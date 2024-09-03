@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import useFetchExercisesForContext from '../hooks/useFetchExercisesForContext';
@@ -11,9 +11,11 @@ import Container from '../components/Container';
 import { UserContext } from '../context/UserContext';
 import LoadingScreen from '../components/LoadingScreen';
 import CustomAlert from '../components/CustomAlert';
+import CustomPressable from '../components/Pressable';
 
 const ListContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
-const ItemText = styled(Text, 'text-Text text-lg');
+const ItemText = styled(Text, 'text-Primary text-xl font-bold flex-1 text-center'); // Center the text
+
 const EmptyText = styled(Text, 'text-Text text-lg text-center mt-4');
 
 const WorkoutList = () => {
@@ -73,31 +75,35 @@ const WorkoutList = () => {
 
   return (
     <Container className="flex-1">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {workouts && workouts.length > 0 ? (
-          <FlatList
-            data={workouts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <ListContainer>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('WorkoutDetails', { workoutId: item.id, workoutName: item.name, userId })}
-                  style={{ flex: 1 }}
-                >
-                  <ItemText>{item.name}</ItemText>
-                </TouchableOpacity>
-                {deleteMode && (
-                  <TouchableOpacity onPress={() => confirmDelete(item.id)}>
-                    <Ionicons name="trash" size={24} color="red" />
-                  </TouchableOpacity>
-                )}
-              </ListContainer>
-            )}
-          />
-        ) : (
-          <EmptyText>No workouts found. Please add a new workout.</EmptyText>
-        )}
-      </ScrollView>
+      {workouts && workouts.length > 0 ? (
+        <FlatList
+          data={workouts}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ListContainer>
+              <CustomPressable
+                onPress={() => navigation.navigate('WorkoutDetails', { workoutId: item.id, workoutName: item.name, userId })}
+                pressableStyle="bg-Secondary p-4 m-1 items-center flex-row rounded-lg w-[94%]"
+              >
+                <Ionicons 
+                  name={item.icon_name || 'fitness'} 
+                  size={24} 
+                  color={item.icon_color || '#000'} 
+                  style={{ marginRight: 10 }}
+                />
+                <ItemText>{item.name}</ItemText>
+              </CustomPressable>
+              {deleteMode && (
+                <CustomPressable onPress={() => confirmDelete(item.id)}>
+                  <Ionicons name="trash" size={24} color="red" />
+                </CustomPressable>
+              )}
+            </ListContainer>
+          )}
+        />
+      ) : (
+        <EmptyText>No workouts found. Please add a new workout.</EmptyText>
+      )}
       {!deleteMode && (
         <View className="mb-4">
           <Button

@@ -6,13 +6,13 @@ const StyledPressable = styled(Pressable);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
 
-const CustomPressable = ({ onPress, title, imageSource, pressableStyle, textStyle, imageStyle, tintColor, ...props }) => {
+const CustomPressable = ({ onPress, title, imageSource, pressableStyle, textStyle, imageStyle, tintColor, children, ...props }) => {
   return (
     <StyledPressable onPress={onPress} className={`flex-col justify-between ${pressableStyle}`} {...props}>
       {imageSource && (
         <StyledImage source={imageSource} className={`mb-2 ${imageStyle}`} style={{ tintColor }} />
       )}
-      <StyledText className={`text-center ${textStyle}`}>{title}</StyledText>
+      {children ? children : title && <StyledText className={`text-center ${textStyle}`}>{title}</StyledText>}
     </StyledPressable>
   );
 };

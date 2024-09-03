@@ -47,11 +47,11 @@ const BodypartView = ({ session, workoutId }) => {
     upperlegs: require('../assets/icons/upper_legs.png'),
     upperarms: require('../assets/icons/upper_arms.png'),
     shoulders: require('../assets/icons/shoulders.png'),
-    neck: require('../assets/icons/waist.png'),
+    neck: require('../assets/icons/neck.png'),
     lowerlegs: require('../assets/icons/lower_legs.png'),
     lowerarms: require('../assets/icons/lower_arms.png'),
     chest: require('../assets/icons/chest.png'),
-    cardio: require('../assets/icons/waist.png'),
+    cardio: require('../assets/icons/cardio.png'),
     back: require('../assets/icons/back.png'),
 
   };

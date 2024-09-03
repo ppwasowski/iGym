@@ -97,7 +97,7 @@ export default function ProfileForm({ onClose }) {
         secureTextEntry={item.secureTextEntry}
         autoCapitalize="none"
         keyboardType={item.keyboardType}
-        className="border border-Secondary bg-background text-Text rounded-md px-4 py-2"
+
       />
       {!isProfileLoaded && (
         <ActivityIndicator size="small" color='#00C87C' />  // Loading indicator while profile data is loading
@@ -134,12 +134,8 @@ export default function ProfileForm({ onClose }) {
                     setValue={setGender}
                     placeholder="Select Gender"
                     style={styles.picker}
-                    textStyle={styles.textPicker}
-                    dropDownContainerStyle={styles.dropDownContainer}
-                    selectedItemLabelStyle={styles.selectedItemLabel}
                     dropdownIconRippleColor="#FFFFFF"
-                    arrowIconStyle={styles.arrowIcon}
-                    tickIconStyle={styles.tickIcon}
+
                   />
                 </FormItem>
                 <ButtonContainer>
@@ -161,25 +157,9 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     borderColor: '#4B4B4B',
-    backgroundColor: '#232323',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 25,
-  },
-  textPicker: {
-    color: '#FFFFFF', // Text color for dropdown items
-  },
-  dropDownContainer: {
-    borderColor: '#2a2a2a',
-    backgroundColor: '#232323',
-  },
-  selectedItemLabel: {
-    color: '#FFFFFF', // Selected item text color
-  },
-  arrowIcon: {
-    tintColor: '#FFFFFF', // Arrow icon color
-  },
-  tickIcon: {
-    tintColor: '#FFFFFF', // Tick icon color
   },
 });

@@ -43,6 +43,7 @@ const TabNavigator = ({ session }) => {
         tabBarInactiveTintColor: '#FFFFFF',
         tabBarStyle: {
           backgroundColor: '#1E1E1E',
+          paddingBottom: 1,
         },
       })}
     >

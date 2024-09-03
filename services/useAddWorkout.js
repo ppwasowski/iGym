@@ -5,7 +5,7 @@ const useAddWorkout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const addWorkout = async (workoutName, refreshWorkouts) => {
+  const addWorkout = async ({ workoutName, iconName, iconColor }, refreshWorkouts) => {
     setLoading(true);
     setError(null);
 
@@ -17,7 +17,14 @@ const useAddWorkout = () => {
 
       const { data, error } = await supabase
         .from('workout')
-        .insert([{ name: workoutName, user_id: user.id }])
+        .insert([
+          { 
+            name: workoutName, 
+            user_id: user.id, 
+            icon_name: iconName,  // Include icon_name
+            icon_color: iconColor // Include icon_color
+          }
+        ])
         .single();
 
       if (error) {
