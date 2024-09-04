@@ -3,6 +3,7 @@
       "development": {
         "android": {
           "developmentClient": true,
+          "releaseChannel": "production",
           "distribution": "internal",
           "image": "latest"
         }
