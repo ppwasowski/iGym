@@ -9,8 +9,13 @@ import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
+import Icon from '@/components/Icon';
 
-const ButtonView = styled(View, 'm-2');
+const ButtonView = styled(View, 'my-2 w-[98%]');
+const ProfBlock = styled(View, 'bg-Secondary p-4 my-1 rounded-lg w-[47%] items-left');
+const ProfTitle = styled(Text, 'text-md text-white font-bold');
+const ProfText = styled(Text, 'text-lg text-Primary font-bold');
+const SignOutButtonContainer = styled(View, 'absolute bottom-4 w-full');
 
 const Account = () => {
   const { profile, loading, error } = useContext(UserContext);
@@ -31,47 +36,64 @@ const Account = () => {
   }
 
   return (
-    <Container className="p-4 space-y-2 flex-1 justify-start">
+    <Container className="p-4 space-y-2 flex-1 justify-start items-center">
+        
       {showProfileForm ? (
         <ProfileForm onClose={() => setShowProfileForm(false)} />
       ) : (
         <>
+          <ProfBlock className='w-[98%]'>
+            <View className='flex-row items-center justify-between'>
+              <View className="flex-1">
+                <ProfTitle className='text-center text-Primary text-xl'>
+                  {profile?.first_name || 'Guest'} {profile?.last_name || ''}
+                </ProfTitle>
+              </View>
+              <Icon name="person-circle" color="SecAlter" style="mr-2" />
+            </View>
+          </ProfBlock>
+          
+          <View className="flex-row w-full justify-between mb-10">
+            <ProfBlock>
+              <View className='flex-row items-center justify-between'>
+                <View className="flex-1">
+                  <ProfTitle>Height:</ProfTitle>
+                  <ProfText>{profile?.height ? `${profile.height} cm` : 'N/A'}</ProfText>
+                </View>
+                <Icon name="body" color="Alter" style="mr-2" />
+              </View>
+            </ProfBlock>
+            <ProfBlock className=''>
+              <View className='flex-row items-center justify-between'>
+                <View className="flex-1">
+                  <ProfTitle>Weight:</ProfTitle>
+                  <ProfText>{profile?.weight ? `${profile.weight} kg` : 'N/A'}</ProfText>
+                </View>
+                <Icon name="barbell" color="Alter" style="mr-2" />
+              </View>
+            </ProfBlock>
+          </View>
+
           <ButtonView>
-            <Button
-              title="Edit Personal Info"
-              onPress={() => setShowProfileForm(true)}
-            />
+            <Button title="Edit Personal Info" onPress={() => setShowProfileForm(true)} />
           </ButtonView>
           <ButtonView>
-            <Button
-              title="Workout History"
-              onPress={() => navigation.navigate('WorkoutHistory')}
-            />
+            <Button title="Workout History" onPress={() => navigation.navigate('WorkoutHistory')} />
           </ButtonView>
           <ButtonView>
-            <Button
-              title="Favorite Exercises"
-              onPress={() => navigation.navigate('FavoriteExercises')}
-            />
+            <Button title="Favorite Exercises" onPress={() => navigation.navigate('FavoriteExercises')} />
           </ButtonView>
           <ButtonView>
-            <Button
-              title="Personal Records"
-              onPress={() => navigation.navigate('PersonalRecords')}
-            />
+            <Button title="Personal Records" onPress={() => navigation.navigate('PersonalRecords')} />
           </ButtonView>
           <ButtonView>
-            <Button
-              title="My Goals"
-              onPress={() => navigation.navigate('Goals')}
-            />
+            <Button title="My Goals" onPress={() => navigation.navigate('Goals')} />
           </ButtonView>
-          <ButtonView>
-            <Button
-              title="Sign Out"
-              onPress={() => supabase.auth.signOut()}
-            />
-          </ButtonView>
+
+          <SignOutButtonContainer>
+            <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
+          </SignOutButtonContainer>
+          
           <Toast />
         </>
       )}
