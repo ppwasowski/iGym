@@ -39,7 +39,7 @@ export default function HomeScreen() {
     if (sessionId) {
       navigation.navigate('Workouts', {
         screen: 'WorkoutProgress',
-        params: { sessionId, from },  // Pass 'from' along with sessionId
+        params: { sessionId, from:'Dashboard' },  // Pass 'from' along with sessionId
       });
     } else {
       console.warn("Invalid sessionId passed to handleNavigation:", sessionId);

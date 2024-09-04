@@ -27,20 +27,21 @@ const WorkoutProgress = () => {
   
   const handleClose = () => {
     const tabNavigation = navigation.getParent();  // Get the parent tab navigator
-    
+  
     if (from === 'WorkoutHistory') {
-      navigation.jumpTo('Profile');  // Jump to Profile tab if coming from WorkoutHistory
-    } else if (from === 'Dashboard') {
-      // Correctly jump to the Dashboard tab if from 'Dashboard'
-      tabNavigation.jumpTo('Dashboard');  // Ensure it navigates back to the Dashboard tab
-    } else if (tabNavigation) {
-      // Reset the stack to WorkoutList when coming from other tabs
+      // Reset the stack and navigate to WorkoutHistory
       tabNavigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [
-            { name: 'Workouts', screen: 'WorkoutList' }  // Reset to WorkoutList inside the Workouts tab
-          ],
+          routes: [{ name: 'Profile', params: { screen: 'WorkoutHistory' } }],  // Reset to WorkoutHistory inside the Profile tab
+        })
+      );
+    } else if (from === 'Dashboard') {
+      // Reset the stack and navigate to Dashboard
+      tabNavigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }],  // Reset to Dashboard tab
         })
       );
     } else {
@@ -48,6 +49,8 @@ const WorkoutProgress = () => {
       navigation.goBack();
     }
   };
+  
+  
   
   
   
