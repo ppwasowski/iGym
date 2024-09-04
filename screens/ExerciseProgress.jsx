@@ -65,7 +65,7 @@ const ExerciseProgress = () => {
   const numberOfSets = weightData.length;
 
   return (
-    <Container className="flex-1">
+    <Container className="flex-1 justify-center">
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="flex-1 p-4">
         <StyledText>{exerciseName}</StyledText>
         <Title>Weight Chart</Title>

@@ -7,6 +7,7 @@ import Button from '../components/Button';
 import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 import LoadingScreen from '@/components/LoadingScreen';
+import { CommonActions } from '@react-navigation/native';
 
 const StyledText = styled(Text, 'text-Text text-lg mb-2 capitalize');
 const ExerciseItem = styled(Pressable, 'flex-row justify-between items-center p-4 border-b border-gray-400');
@@ -23,18 +24,32 @@ const WorkoutProgress = () => {
       setLoading(false);
     }
   }, [progress, error]);
-
-  const handleClose = () => {
-    const tabNavigation = navigation.getParent();
   
+  const handleClose = () => {
+    const tabNavigation = navigation.getParent();  // Get the parent tab navigator
+    
     if (from === 'WorkoutHistory') {
-      navigation.jumpTo('Profile');
+      navigation.jumpTo('Profile');  // Jump to Profile tab if coming from WorkoutHistory
+    } else if (from === 'Dashboard') {
+      // Correctly jump to the Dashboard tab if from 'Dashboard'
+      tabNavigation.jumpTo('Dashboard');  // Ensure it navigates back to the Dashboard tab
     } else if (tabNavigation) {
-      tabNavigation.jumpTo('Dashboard');
+      // Reset the stack to WorkoutList when coming from other tabs
+      tabNavigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            { name: 'Workouts', screen: 'WorkoutList' }  // Reset to WorkoutList inside the Workouts tab
+          ],
+        })
+      );
     } else {
+      // Default fallback to go back in navigation stack
       navigation.goBack();
     }
   };
+  
+  
   
 
   const navigateToExerciseProgress = (exerciseId, exerciseName) => {
