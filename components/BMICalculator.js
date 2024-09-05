@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { styled } from 'nativewind';
-import { CircularProgress } from 'react-native-svg-circular-progress'; // Circular Progress library
+import { CircularProgress } from 'react-native-svg-circular-progress';
 
-// Styling
 const ProfBlock = styled(View, 'bg-Secondary p-4 my-1 rounded-lg w-full items-center');
 const ProfTitle = styled(Text, 'text-md text-white font-bold');
 const ProfText = styled(Text, 'text-lg text-Primary font-bold');
@@ -28,9 +27,8 @@ const BMICalculator = ({ height, weight }) => {
   const { category, color } = getBMICategory(bmi);
 
   return (
-    <ProfBlock className="w-[98%]">
+    <ProfBlock className="w-full">
       <View className="flex-row justify-between items-center">
-        {/* BMI Category Info on the left */}
         <View style={{ flex: 1 }}>
           <ProfTitle>BMI:</ProfTitle>
           <ProfText className="text-[14px]" style={{ color }}>
@@ -38,7 +36,6 @@ const BMICalculator = ({ height, weight }) => {
           </ProfText>
         </View>
 
-        {/* CircularProgress on the right */}
         <View style={{ flexShrink: 0 }}>
           <CircularProgress
             radius={40}
