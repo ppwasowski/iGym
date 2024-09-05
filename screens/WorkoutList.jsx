@@ -14,7 +14,7 @@ import CustomAlert from '../components/CustomAlert';
 import CustomPressable from '../components/Pressable';
 
 const ListContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
-const ItemText = styled(Text, 'text-Primary text-xl font-bold flex-1 text-center'); // Center the text
+const ItemText = styled(Text, 'text-Primary text-xl font-bold flex-1 text-start'); // Center the text
 
 const EmptyText = styled(Text, 'text-Text text-lg text-center mt-4');
 
@@ -92,6 +92,7 @@ const WorkoutList = () => {
                   style={{ marginRight: 10 }}
                 />
                 <ItemText>{item.name}</ItemText>
+                
               </CustomPressable>
               {deleteMode && (
                 <CustomPressable onPress={() => confirmDelete(item.id)}>
@@ -108,6 +109,7 @@ const WorkoutList = () => {
         <View className="mb-4">
           <Button
             title="Add New Workout"
+            customStyle='bg-SecAlter'  
             onPress={() => navigation.navigate('AddWorkout', { userId, refreshWorkouts: refresh })}
           />
         </View>
@@ -115,6 +117,7 @@ const WorkoutList = () => {
       <View>
         <Button
           title={deleteMode ? "Cancel Delete" : "Delete Workouts"}
+          customStyle='bg-Alter'  
           onPress={toggleDeleteMode}
         />
       </View>

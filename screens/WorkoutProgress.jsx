@@ -29,11 +29,10 @@ const WorkoutProgress = () => {
     const tabNavigation = navigation.getParent();
   
     if (from === 'WorkoutHistory') {
-      tabNavigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Profile', params: { screen: 'WorkoutHistory' } }],
-        })
+      tabNavigation.navigate('Profile', {
+        screen: 'Profile',
+        params: { screen: 'WorkoutHistory' }
+      }
       );
     } else if (from === 'Dashboard') {
       tabNavigation.dispatch(

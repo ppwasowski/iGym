@@ -16,7 +16,7 @@ const ButtonView = styled(View, 'my-2 w-[47%]');
 const ProfBlock = styled(View, 'bg-Secondary p-4 my-1 rounded-lg w-[47%] items-left');
 const ProfTitle = styled(Text, 'text-md text-white font-bold');
 const ProfText = styled(Text, 'text-lg text-Primary font-bold');
-const ButtonRow = styled(View, 'flex-row justify-between w-full my-2 absolute bottom-2'); // New styled view for buttons
+const ButtonRow = styled(View, 'flex-row justify-between w-full my-2 absolute bottom-2');
 
 const Account = () => {
   const { profile, loading, error } = useContext(UserContext);
@@ -77,7 +77,6 @@ const Account = () => {
 
           <BMICalculator height={profile?.height} weight={profile?.weight} />
 
-          {/* Main content buttons in two columns */}
           <View className="flex-row flex-wrap justify-between w-full">
             <ButtonView>
               <Button title="Workout History" onPress={() => navigation.navigate('WorkoutHistory')} />
@@ -96,10 +95,10 @@ const Account = () => {
           {/* Edit Account and Sign Out buttons in a row */}
           <ButtonRow>
             <ButtonView>
-              <Button title="Edit Account" onPress={() => setShowProfileForm(true)} />
+              <Button customStyle='bg-SecAlter'  title="Edit Account" onPress={() => setShowProfileForm(true)} />
             </ButtonView>
             <ButtonView>
-              <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
+              <Button customStyle='bg-Alter'   title="Sign Out" onPress={() => supabase.auth.signOut()} />
             </ButtonView>
           </ButtonRow>
 
