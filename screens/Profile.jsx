@@ -10,9 +10,10 @@ import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 import Icon from '@/components/Icon';
+import BMICalculator from '../components/BMICalculator';  // Import BMICalculator component
 
 const ButtonView = styled(View, 'my-2 w-[98%]');
-const ProfBlock = styled(View, 'bg-Secondary p-4 my-1 rounded-lg w-[47%] items-left');
+const ProfBlock = styled(View, 'bg-Secondary p-4 ml-1 my-1 rounded-lg w-[47%] items-left');
 const ProfTitle = styled(Text, 'text-md text-white font-bold');
 const ProfText = styled(Text, 'text-lg text-Primary font-bold');
 const SignOutButtonContainer = styled(View, 'absolute bottom-4 w-full');
@@ -53,7 +54,7 @@ const Account = () => {
             </View>
           </ProfBlock>
           
-          <View className="flex-row w-full justify-between mb-10">
+          <View className="flex-row w-full justify-between mb-2">
             <ProfBlock>
               <View className='flex-row items-center justify-between'>
                 <View className="flex-1">
@@ -73,6 +74,8 @@ const Account = () => {
               </View>
             </ProfBlock>
           </View>
+
+          <BMICalculator height={profile?.height} weight={profile?.weight} />
 
           <ButtonView>
             <Button title="Edit Personal Info" onPress={() => setShowProfileForm(true)} />
