@@ -5,10 +5,10 @@ import { styled } from 'nativewind';
 const ButtonContainer = styled(TouchableOpacity);
 const ButtonText = styled(Text);
 
-const Button = ({ title, onPress, disabled }) => {
+const Button = ({ title, onPress, disabled, customStyle }) => {
   return (
     <ButtonContainer
-      className={`bg-Primary rounded-md py-2 px-4 flex justify-center items-center ${disabled ? 'opacity-50' : ''}`}
+      className={`bg-Primary rounded-md py-2 px-4 flex justify-center items-center ${disabled ? 'opacity-50' : ''} ${customStyle}`}
       onPress={onPress}
       disabled={disabled}
     >

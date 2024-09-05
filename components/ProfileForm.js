@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, StyleSheet, FlatList, Text, ActivityIndicator } from 'react-native'; // <-- Import ActivityIndicator
+import { View, StyleSheet, FlatList, Text, ActivityIndicator } from 'react-native'; 
 import Toast from 'react-native-toast-message';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { UserContext } from '../context/UserContext';
@@ -8,9 +8,10 @@ import Button from '../components/Button';
 import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 
+// Styled components
 const FormItem = styled(View, 'py-1');
 const Label = styled(Text, 'text-Primary text-md font-bold mb-2');
-const ButtonContainer = styled(View, 'mt-4 flex-row justify-between');
+const ButtonRow = styled(View, 'flex-row justify-between w-full my-4'); // Side-by-side button layout
 
 export default function ProfileForm({ onClose }) {
   const { profile, updateProfile, error, loading: profileLoading } = useContext(UserContext);
@@ -39,7 +40,7 @@ export default function ProfileForm({ onClose }) {
         gender: profile.gender || '',
       });
       setGender(profile.gender || '');
-      setIsProfileLoaded(true); // Indicate that the profile data has been loaded
+      setIsProfileLoaded(true); 
     }
   }, [profile, isProfileLoaded]);
 
@@ -97,15 +98,14 @@ export default function ProfileForm({ onClose }) {
         secureTextEntry={item.secureTextEntry}
         autoCapitalize="none"
         keyboardType={item.keyboardType}
-
       />
       {!isProfileLoaded && (
-        <ActivityIndicator size="small" color='#00C87C' />  // Loading indicator while profile data is loading
+        <ActivityIndicator size="small" color='#00C87C' />
       )}
     </FormItem>
   );
 
-  if (profileLoading || !isProfileLoaded) {  // Display loading screen until profile is fully loaded
+  if (profileLoading || !isProfileLoaded) {
     return <LoadingScreen message="Loading profile..." />;
   }
 
@@ -135,13 +135,15 @@ export default function ProfileForm({ onClose }) {
                     placeholder="Select Gender"
                     style={styles.picker}
                     dropdownIconRippleColor="#FFFFFF"
-
                   />
                 </FormItem>
-                <ButtonContainer>
-                  <Button className="w-1/2" title="Save" onPress={handleSubmit} />
-                  <Button title="Close" onPress={onClose} />
-                </ButtonContainer>
+
+                {/* Button Row for Save and Close */}
+                <ButtonRow>
+                  <Button title="Save" onPress={handleSubmit} className="w-[48%]" />
+                  <Button title="Close" onPress={onClose} className="w-[48%]" />
+                </ButtonRow>
+
                 <Toast />
               </>
             )}
