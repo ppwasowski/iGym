@@ -1,24 +1,28 @@
 {
-    "build": {
-      "development": {
-        "android": {
-          "developmentClient": true,
-          "releaseChannel": "production",
-          "distribution": "internal",
-          "image": "latest"
-        }
-      },
-      "preview": {
-        "android": {
-          "distribution": "internal",
-          "image": "latest"
-        }
-      },
-      "production": {
-        "android": {
-          "image": "latest"
-        }
+  "build": {
+    "development": {
+      "android": {
+        "developmentClient": true,
+        "releaseChannel": "main",
+        "distribution": "internal",
+        "image": "latest"
+      }
+    },
+    "preview": {
+      "android": {
+        "distribution": "internal",
+        "image": "latest"
+      }
+    },
+    "production": {
+      "android": {
+        "image": "latest"
+      }
+    },
+    "main": { 
+      "android": {
+        "image": "latest"
       }
     }
   }
-  
+}
