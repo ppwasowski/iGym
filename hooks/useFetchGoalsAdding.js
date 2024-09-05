@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { supabase } from '../utility/supabase';
+import { UserContext } from '../context/UserContext';
 
 const useFetchGoalsAdding = () => {
   const [categories, setCategories] = useState([]);
@@ -9,8 +10,14 @@ const useFetchGoalsAdding = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Get user profile data from UserContext
+  const { profile, loading: profileLoading, error: profileError } = useContext(UserContext);
+
   useEffect(() => {
     const fetchData = async () => {
+      if (!profile || profileLoading || profileError) {
+        return;
+      }
       try {
         const { data: categoriesData, error: categoriesError } = await supabase
           .from('goal_categories')
@@ -34,9 +41,12 @@ const useFetchGoalsAdding = () => {
         setExercises(exercisesData);
         setBodyParts(bodyPartsData);
 
+        // Fetch workouts specific to the logged-in user
         const { data: workoutsData, error: workoutsError } = await supabase
           .from('workout')
-          .select('*');
+          .select('*')
+          .eq('user_id', profile.id)  // Access user_id from context profile
+          .neq('deleted', true);  // Exclude rows where 'deleted' is true
 
         if (workoutsError) {
           console.warn('Workouts table not found, skipping workouts:', workoutsError);
@@ -52,7 +62,7 @@ const useFetchGoalsAdding = () => {
     };
 
     fetchData();
-  }, []);
+  }, [profile, profileLoading, profileError]); // Re-run the hook when profile or its state changes
 
   return { categories, exercises, bodyParts, workouts, loading, error };
 };
