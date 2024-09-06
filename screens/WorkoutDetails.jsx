@@ -12,11 +12,13 @@ import LoadingScreen from '../components/LoadingScreen';
 import { styled } from 'nativewind';
 
 const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
-const ExerciseName = styled(Text, 'text-Text text-lg');
+const ExerciseName = styled(Text, 'text-Text text-lg capitalize');
 const IconButton = styled(Ionicons, 'text-2xl');
+const TitleBlock = styled(View, 'bg-Secondary p-4 my-1 rounded-lg w-full items-center flex-row');
+const WorkoutTitle = styled(Text, 'text-lg text-white font-bold ml-3'); // Left margin for spacing next to icon
 
 const WorkoutDetails = ({ route, navigation }) => {
-  const { workoutId, session } = route.params;
+  const { workoutId, workoutName, icon_name, icon_color, session  } = route.params;
   const userId = session.user.id;
   const [deleteMode, setDeleteMode] = useState(false);
 
@@ -64,9 +66,13 @@ const WorkoutDetails = ({ route, navigation }) => {
 
   return (
     <Container className="flex-1 p-4">
-      {(fetchError || removeError || startError || historyError) && (
-        <ToastShow type="error" text1="Error" text2={fetchError || removeError || startError || historyError} />
-      )}
+      <TitleBlock>
+        <Ionicons 
+          name={icon_name || 'fitness'} 
+          size={24} 
+          color={icon_color || '#000'} />
+        <WorkoutTitle>{workoutName}</WorkoutTitle> 
+      </TitleBlock>
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.exercise_id.toString()}
@@ -83,6 +89,7 @@ const WorkoutDetails = ({ route, navigation }) => {
           </ExerciseItem>
         )}
       />
+
       {!deleteMode && (
         <Button title="Start Workout" onPress={handleStartWorkout} />
       )}

@@ -37,7 +37,7 @@ export default function HomeScreen() {
 
   const handleNavigation = (sessionId, from) => {
     if (sessionId) {
-      navigation.navigate('Workouts', {
+      navigation.navigate('Workout Plans', {
         screen: 'WorkoutProgress',
         params: { sessionId, from:'Dashboard' },
       });

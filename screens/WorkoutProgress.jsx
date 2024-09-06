@@ -41,7 +41,22 @@ const WorkoutProgress = () => {
           routes: [{ name: 'Dashboard' }], 
         })
       );
-    } else {
+    } else if (from === 'ExerciseSession') {
+      tabNavigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }], 
+        })
+      );
+    }else if (from === 'ExerciseProgress') {
+      tabNavigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }], 
+        })
+      );
+    }
+    else {
       navigation.goBack();
     }
   };

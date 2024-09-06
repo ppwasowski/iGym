@@ -44,7 +44,7 @@ const CombinedStack = ({ route }) => {
       <Stack.Screen
         name="WorkoutDetails"
         component={WorkoutDetails}
-        options={({ route }) => ({ headerTitle: route.params?.workoutName || 'Workout Details' })}
+        options={({ route }) => ({ headerTitle: 'Workout Plan' })}
         initialParams={{ session }}
       />
 

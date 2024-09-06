@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 import { supabase } from '../utility/supabase';
 import { UserContext } from '../context/UserContext';
 
@@ -8,53 +8,56 @@ const usePersonalRecords = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchPersonalRecords = async () => {
-      if (!profile) {
-        setLoading(false);
-        return;
+  const fetchPersonalRecords = useCallback(async () => {
+    if (!profile) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true); // Start loading
+      const { data, error } = await supabase
+        .from('workout_progress')
+        .select(`
+          exercise_id,
+          weight,
+          completed_at,
+          exercises (
+            id,
+            name
+          )
+        `)
+        .eq('user_id', profile.id);
+
+      if (error) {
+        throw error;
       }
 
-      try {
-        const { data, error } = await supabase
-          .from('workout_progress')
-          .select(`
-            exercise_id,
-            weight,
-            completed_at,
-            exercises (
-              id,
-              name
-            )
-          `)
-          .eq('user_id', profile.id);
-
-        if (error) {
-          throw error;
+      const maxWeightRecords = data.reduce((acc, record) => {
+        const existingRecord = acc.find(r => r.exercise_id === record.exercise_id);
+        if (!existingRecord || record.weight > existingRecord.weight) {
+          acc = acc.filter(r => r.exercise_id !== record.exercise_id);
+          acc.push(record);
         }
-        const maxWeightRecords = data.reduce((acc, record) => {
-          const existingRecord = acc.find(r => r.exercise_id === record.exercise_id);
-          if (!existingRecord || record.weight > existingRecord.weight) {
-            acc = acc.filter(r => r.exercise_id !== record.exercise_id);
-            acc.push(record);
-          }
-          return acc;
-        }, []);
+        return acc;
+      }, []);
 
-        maxWeightRecords.sort((a, b) => b.weight - a.weight);
-        setRecords(maxWeightRecords);
-      } catch (error) {
-        console.error('Error fetching personal records:', error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPersonalRecords();
+      maxWeightRecords.sort((a, b) => b.weight - a.weight);
+      setRecords(maxWeightRecords);
+    } catch (error) {
+      console.error('Error fetching personal records:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   }, [profile]);
 
-  return { records, loading, error };
+  // Initial fetch when the hook is first mounted or profile changes
+  useEffect(() => {
+    fetchPersonalRecords();
+  }, [fetchPersonalRecords]);
+
+  return { records, loading, error, refetch: fetchPersonalRecords }; // Return refetch function for manual triggers
 };
 
 export default usePersonalRecords;

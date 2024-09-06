@@ -33,17 +33,9 @@ const WorkoutList = () => {
     try {
       await deleteWorkout(workoutId);
       refresh(); // Refresh the workout list after deletion
-      Toast.show({
-        type: 'success',
-        text1: 'Workout Deleted',
-        text2: 'The workout has been successfully deleted.',
-      });
+      
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error.message,
-      });
+      
     }
   };
 
@@ -82,7 +74,13 @@ const WorkoutList = () => {
           renderItem={({ item }) => (
             <ListContainer>
               <CustomPressable
-                onPress={() => navigation.navigate('WorkoutDetails', { workoutId: item.id, workoutName: item.name, userId })}
+                onPress={() => navigation.navigate('WorkoutDetails', {
+                  workoutId: item.id, 
+                  workoutName: item.name, 
+                  icon_color: item.icon_color, 
+                  icon_name: item.icon_name, 
+                  userId
+                })}
                 pressableStyle="bg-Secondary p-4 m-1 items-center flex-row rounded-lg w-[94%]"
               >
                 <Ionicons 
