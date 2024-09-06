@@ -33,7 +33,7 @@ const TabNavigator = ({ session }) => {
             iconName = focused ? 'fitness' : 'fitness-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
-          } else if (route.name === 'Workouts') {
+          } else if (route.name === 'Workout Plans') {
             iconName = focused ? 'pulse' : 'pulse-outline';
           }
 
@@ -61,7 +61,7 @@ const TabNavigator = ({ session }) => {
       />
       <Tab.Screen
         options={{ headerShown: false }}
-        name="Workouts"
+        name="Workout Plans"
         component={CombinedStack}
         initialParams={{ session, initialRouteName: 'WorkoutList' }}
       />

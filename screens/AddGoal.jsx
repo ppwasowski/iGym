@@ -12,7 +12,6 @@ import { supabase } from '@/utility/supabase';
 
 const AddGoal = ({ navigation, route }) => {
   const { session, onGoalAdded } = route.params;
-  const [goalName, setGoalName] = useState('');
   const [targetValue, setTargetValue] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
@@ -46,7 +45,6 @@ const AddGoal = ({ navigation, route }) => {
   const handleAddGoal = async () => {
     console.log('Goal Details:', {
       user_id: profile.id,
-      name: goalName,
       category_id: selectedCategory,
       exercise_id: selectedExercise || null,
       workout_id: selectedWorkout || null,

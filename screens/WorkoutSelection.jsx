@@ -9,11 +9,12 @@ import ToastShow from '../components/ToastShow';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import LoadingScreen from '../components/LoadingScreen';
+import CustomPressable from '../components/Pressable'; // Import CustomPressable for consistent button style
 import { styled } from 'nativewind';
 
-const Title = styled(Text, 'text-Primary text-xl mb-4 border-b border-gray-400 text-center');
-const WorkoutItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
-const WorkoutName = styled(Text, 'text-Text text-lg');
+const WorkoutItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator bg-Secondary p-3 m-2 rounded-lg w-[94%]');
+const WorkoutNameContainer = styled(View, 'flex-1 items-center '); // Center the text inside this container
+const WorkoutName = styled(Text, 'text-Text text-xl font-bold text-center '); // Text centered inside the WorkoutNameContainer
 const IconButton = styled(Ionicons, 'text-2xl');
 
 const WorkoutSelection = ({ route }) => {
@@ -33,7 +34,6 @@ const WorkoutSelection = ({ route }) => {
       {(fetchError || addError || removeError) && (
         <ToastShow type="error" text1="Error" text2={fetchError || addError || removeError} />
       )}
-      <Title>Select workout to add or remove exercise</Title>
       <FlatList
         data={workouts}
         keyExtractor={(item) => item.id.toString()}
@@ -41,7 +41,15 @@ const WorkoutSelection = ({ route }) => {
           const isExerciseInWorkout = item.workout_exercise.some(we => we.exercise_id === exerciseId);
           return (
             <WorkoutItem>
-              <WorkoutName>{item.name}</WorkoutName>
+              <Ionicons 
+                name={item.icon_name || 'fitness'} 
+                size={24} 
+                color={item.icon_color || '#000'} 
+                style={{ marginRight: 10 }}
+              />
+              <WorkoutNameContainer>
+                <WorkoutName>{item.name}</WorkoutName>
+              </WorkoutNameContainer>
               {isExerciseInWorkout ? (
                 <IconButton
                   name="remove-circle"

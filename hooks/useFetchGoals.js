@@ -13,7 +13,6 @@ const useFetchGoals = (userId) => {
           .from('goals')
           .select(`
             id,
-            name,
             metric_type,
             target_value,
             current_value,
