@@ -13,7 +13,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import CustomAlert from '../components/CustomAlert';
 import CustomPressable from '../components/Pressable';
 
-const ListContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
+const ListContainer = styled(View, 'w-full border-b border-Separator p-4 flex-row justify-between items-center bg-background');
 const ItemText = styled(Text, 'text-Primary text-xl font-bold flex-1 text-start'); // Center the text
 
 const EmptyText = styled(Text, 'text-Text text-lg text-center mt-4');
@@ -81,7 +81,7 @@ const WorkoutList = () => {
                   icon_name: item.icon_name, 
                   userId
                 })}
-                pressableStyle="bg-Secondary p-4 m-1 items-center flex-row rounded-lg w-[94%]"
+                pressableStyle="bg-Secondary p-4 items-center flex-row rounded-lg w-full"
               >
                 <Ionicons 
                   name={item.icon_name || 'fitness'} 
@@ -94,7 +94,16 @@ const WorkoutList = () => {
               </CustomPressable>
               {deleteMode && (
                 <CustomPressable onPress={() => confirmDelete(item.id)}>
-                  <Ionicons name="trash" size={24} color="red" />
+                  <Ionicons
+                name="trash"
+                size={24}
+                color="red"
+                style={{
+                  position: 'absolute',
+                  top: -35,
+                  right: -15,
+                  padding: 20,
+                }}></Ionicons>
                 </CustomPressable>
               )}
             </ListContainer>

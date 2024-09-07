@@ -9,9 +9,8 @@ import Container from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
 import StatsSection from '../components/StatsSection';
 import LoadingScreen from '../components/LoadingScreen';
-import Icon from '../components/Icon'; // Import the Icon component
+import Icon from '../components/Icon';
 
-// Styled components using nativewind
 const Title = styled(Text, 'text-3xl mb-2');
 const Message = styled(Text, 'text-Text text-lg text-center my-2');
 const Separator = styled(View, 'bg-Separator h-[1px] w-full my-4');
@@ -57,26 +56,36 @@ export default function HomeScreen() {
 
   return (
     <Container className="justify-center items-center p-4">
-      <Image
-        source={require('../assets/images/logo.png')}
-        className="w-[250px] h-[100px] mb-5"
-      />
-      <Title className='text-Text font-md mr-10'>Hi!</Title>
-      <Title className='text-Alter font-semibold mt-[-20px] ml-20'> {profile?.first_name || 'Guest'}</Title>
-      
-      <View className='bg-Secondary p-6 m-4 rounded-lg w-[94%]'>
-        <View className='flex-row items-center justify-between'>
-          <Text className='text-Text text-xl'>
-            Consistency: <Text className={`${workoutMessage.color} font-xl font-bold`}>{workoutMessage.consistency}</Text>
-          </Text>
-          <Icon name="bulb" color="SecAlter" style="mr-2" />
-        </View>
-        <Reminder>{workoutMessage.reminder}</Reminder>
-        <Message>Your last workout was: <Text className={`${workoutMessage.color} font-xl`}>{workoutMessage.diffDays} day ago</Text></Message>
-      </View>
+  <View className="relative w-full items-center mt-10">
+    <Image
+      source={require('../assets/images/logo.png')}
+      className="w-[250px] h-[100px] mb-5"
+      style={{
+        position: 'absolute', 
+        top: -40, 
+        zIndex: 1, 
+      }}
+    />
+  </View>
+  
+  <View className='bg-Secondary p-6 m-4 rounded-lg w-full mt-10'>
+    <View className='flex-row items-center justify-between'>
+      <Text className='text-Text text-xl'>
+        Consistency: <Text className={`${workoutMessage.color} font-xl font-bold`}>{workoutMessage.consistency}</Text>
+      </Text>
+      <Icon name="bulb" color="SecAlter" style="mr-2" />
+    </View>
+    <Reminder>{workoutMessage.reminder}</Reminder>
+    <Message>Your last workout was: <Text className={`${workoutMessage.color} font-xl`}>{workoutMessage.diffDays} day ago</Text></Message>
+  </View>
 
-      <Separator />
-      <StatsSection stats={stats} handleNavigation={handleNavigation} />
-    </Container>
+  <Separator />
+
+  
+  
+  <StatsSection stats={stats} handleNavigation={handleNavigation} />
+</Container>
+
   );
+  
 }

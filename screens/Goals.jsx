@@ -12,9 +12,9 @@ import LoadingScreen from '@/components/LoadingScreen';
 
 // Define your styled components
 const GoalContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
-const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
-const GoalTitle = styled(Text, 'text-md text-Primary font-bold capitalize');
-const GoalText = styled(Text, 'text-sm text-Text font-bold flex-1');
+const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-3 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
+const GoalTitle = styled(Text, 'text-base text-Text font-bold capitalize');
+const GoalText = styled(Text, 'text-sm text-Text flex-1 capitalize');
 
 const Goals = ({ session }) => {
   const navigation = useNavigation();
@@ -83,9 +83,9 @@ const Goals = ({ session }) => {
               <GoalTitle>
                 {item.exercises ? item.exercises.name : item.workout ? item.workout.name : 'N/A'}
               </GoalTitle>
-              <GoalText className='text-Alter'>Category: {item.goal_categories.name}</GoalText>
-              <GoalText>{item.metric_type ? `Type: ${item.metric_type}` : null}</GoalText>
-              <GoalText className='text-SecAlter text-center mt-2'>
+              <GoalText className='text-SecAlter mt-1'>{item.goal_categories.name}</GoalText>
+              <GoalText className='text-Alter'>{item.metric_type ? `${item.metric_type}` : null}</GoalText>
+              <GoalText className='text-Primary text-center mt-2 font-bold'>
                 Progress: {item.current_value}/{item.target_value}
               </GoalText>
             </View>
@@ -96,7 +96,7 @@ const Goals = ({ session }) => {
                 color="red"
                 style={{
                   position: 'absolute',
-                  top: 0,
+                  top: 50,
                   right: 0,
                   padding: 10,
                   borderRadius: 50,

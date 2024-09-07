@@ -4,7 +4,7 @@ import { styled } from 'nativewind';
 import Icon from './Icon';
 
 const StatsContainer = styled(View, 'flex-wrap flex-row justify-between items-center w-full');
-const StatBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 rounded-lg w-[47%] items-left');
+const StatBlock = styled(TouchableOpacity, 'bg-Secondary p-4 my-2 rounded-lg w-[47%] items-left');
 const StatTitle = styled(Text, 'text-md text-white font-bold');
 const StatText = styled(Text, 'text-lg text-Primary font-bold');
 
