@@ -50,6 +50,7 @@ const ExerciseSession = ({ route }) => {
   const handleFinishWorkout = () => {
     if (refresh) refresh();
     navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
+    checkAndUpdateGoals(userId, workoutProgress);
   };
 
   if (loading) {
@@ -92,7 +93,7 @@ const ExerciseSession = ({ route }) => {
           )}
         />
       )}
-      <Button title="Finish Workout" onPress={handleFinishWorkout} />
+      <Button title="Finish Workout" onPress={handleFinishWorkout}/>
       <Toast />
     </Container>
   );

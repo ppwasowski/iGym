@@ -14,8 +14,8 @@ const screenWidth = Dimensions.get('window').width;
 
 const StyledText = styled(Text, 'text-center text-Primary text-lg font-bold mb-5 capitalize');
 const Title = styled(Text, 'text-Text text-xl font-bold mb-2');
-const Separator = styled(View, 'h-[1px] bg-background mx-auto my-2 w-[94%]'); 
-const LogContainer = styled(View, 'p-4 flex-row items-center justify-between');
+const Separator = styled(View, 'h-[1px] bg-Secondary mx-auto my-2 w-[94%]'); 
+const LogContainer = styled(View, 'bg-Secondary p-4 flex-row items-center justify-between mb-2 rounded-lg');
 const LogText = styled(Text, 'text-lg text-white');
 
 const ExerciseProgress = () => {
@@ -96,25 +96,26 @@ const ExerciseProgress = () => {
         </ScrollView>
         
         <Title>Set logs</Title>
-        <View className='bg-Secondary rounded-lg'>
+        <View>
           {exerciseProgress.length > 0 ? (
             exerciseProgress.map((set, index) => (
               <React.Fragment key={index}>
                 <LogContainer>
-                  <Text className="text-2xl text-SecAlter font-bold border-r-2 border-background pr-2">SET {index + 1}</Text>
+                  <Text className="text-2xl text-SecAlter font-bold border-r-2 border-background">SET {index + 1}</Text>
                   <View className="flex-row ml-4">
                     <LogText>Weight: <Text className='text-Alter'>{set.weight}</Text> kg</LogText>
                     <LogText className='ml-4'>Reps: <Text className='text-Primary'>{set.reps}</Text></LogText>
                   </View>
                 </LogContainer>
 
-                {index < exerciseProgress.length - 1 && <Separator />}
+                {index < exerciseProgress.length - 1}
               </React.Fragment>
             ))
           ) : (
             <LogText>No logs available.</LogText>
           )}
         </View>
+        <Separator/>
         
         <ExerciseStatsSection 
           maxReps={maxReps} 
@@ -122,7 +123,7 @@ const ExerciseProgress = () => {
           numberOfSets={numberOfSets} 
         />
       </ScrollView>
-      <View style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+      <View className="absolute inset-x-0 bottom-5 mx-5">
         <Button
           title="Close"
           onPress={() => navigation.navigate('WorkoutProgress', { sessionId, from: 'ExerciseProgress' })}

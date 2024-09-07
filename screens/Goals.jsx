@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,17 +7,23 @@ import LoadingScreen from '../components/LoadingScreen';
 import Button from '../components/Button';
 import useFetchGoals from '../hooks/useFetchGoals';
 import { supabase } from '../utility/supabase';
-import CustomAlert from '../components/CustomAlert'; // Import the CustomAlert
+import CustomAlert from '../components/CustomAlert';
 
 const Goals = ({ session }) => {
   const navigation = useNavigation();
-  const { goals, loading, error, setGoals } = useFetchGoals(session.user.id);
+  const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(session.user.id);
   const [deleteMode, setDeleteMode] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState(null);
 
+  // Ensure the goals are refreshed after adding or deleting
+  useEffect(() => {
+    refreshGoals();
+  }, [refreshGoals]);
+
   const handleGoalAdded = (newGoal) => {
-    setGoals((prevGoals) => [...prevGoals, newGoal]);
+    setGoals((prevGoals) => [...prevGoals, newGoal]); // Immediate state update
+    refreshGoals(); // Also refresh from the database
   };
 
   const handleDeleteGoal = async () => {
@@ -31,8 +37,10 @@ const Goals = ({ session }) => {
         throw error;
       }
 
+      // Immediately remove the goal from the state for responsiveness
       setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== selectedGoalId));
       setAlertVisible(false); // Close alert after deletion
+      refreshGoals(); // Refresh the data from the database to ensure consistency
     } catch (error) {
       console.error('Error deleting goal:', error);
     }
@@ -85,16 +93,17 @@ const Goals = ({ session }) => {
       />
 
       {!deleteMode && (
-        <View className='mb-4'>
+        <View className="mb-4">
           <Button
             title="Add New Goal"
             onPress={() =>
               navigation.navigate('AddGoal', {
                 session,
                 onGoalAdded: handleGoalAdded,
+                refreshGoals, // Pass the refresh function to the AddGoal component
               })
             }
-            className="mb-4" // Add margin bottom for spacing
+            className="mb-4"
           />
         </View>
       )}
@@ -103,7 +112,7 @@ const Goals = ({ session }) => {
         <Button
           title={deleteMode ? "Cancel Delete" : "Delete Goal"}
           onPress={() => setDeleteMode(!deleteMode)}
-          className={!deleteMode ? "mt-2" : "mt-4"} // Add margin top for spacing when deleteMode is not active
+          className={!deleteMode ? "mt-2" : "mt-4"}
         />
       </View>
 

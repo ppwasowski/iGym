@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utility/supabase';
 
 const useFetchGoals = (userId) => {
@@ -6,37 +6,41 @@ const useFetchGoals = (userId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchGoals = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('goals')
-          .select(`
-            id,
-            metric_type,
-            target_value,
-            current_value,
-            goal_categories (name),
-            exercises (name)
-          `)
-          .eq('user_id', userId);
+  // Fetch goals data
+  const fetchGoals = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('goals')
+        .select(`
+          id,
+          metric_type,
+          target_value,
+          current_value,
+          goal_categories (name),
+          exercises (name)
+        `)
+        .eq('user_id', userId);
 
-        if (error) {
-          setError(error.message);
-        } else {
-          setGoals(data);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      if (error) {
+        setError(error.message);
+      } else {
+        setGoals(data);
       }
-    };
-
-    fetchGoals();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [userId]);
 
-  return { goals, loading, error, setGoals };
+  // Fetch goals on component mount
+  useEffect(() => {
+    fetchGoals();
+  }, [fetchGoals]);
+
+  // Return fetchGoals so that it can be manually triggered
+  return { goals, loading, error, setGoals, refreshGoals: fetchGoals };
 };
 
 export default useFetchGoals;
