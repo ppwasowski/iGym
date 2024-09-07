@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { supabase } from '../utility/supabase';
-import { UserContext } from '../context/UserContext'; // Import the UserContext
+import { UserContext } from '../context/UserContext';
 
 const useFetchGoals = () => {
-  const { profile } = useContext(UserContext); // Access the profile from the UserContext
+  const { profile } = useContext(UserContext);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Fetch goals data
   const fetchGoals = useCallback(async () => {
-    if (!profile || !profile.id) return; // Make sure profile is available
+    if (!profile || !profile.id) return;
 
     setLoading(true);
     try {
@@ -21,12 +21,12 @@ const useFetchGoals = () => {
           metric_type,
           target_value,
           current_value,
+          achieved,
           goal_categories (name),
           exercises (name),
           workout (name)   // Fetch associated workout name
         `)
-        .eq('user_id', profile.id); // Use profile.id from context
-
+        .eq('user_id', profile.id);
       if (error) {
         setError(error.message);
       } else {

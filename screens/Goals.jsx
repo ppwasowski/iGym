@@ -11,19 +11,18 @@ import { styled } from 'nativewind';
 import LoadingScreen from '@/components/LoadingScreen';
 
 // Define your styled components
-const GoalContainer = styled(View, 'flex-wrap flex-row justify-between items-center w-full');
-const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 rounded-lg w-[47%] items-left');
+const GoalContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
+const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 rounded-lg w-[47%] flex-row justify-between items-center');
 const GoalTitle = styled(Text, 'text-md text-Primary font-bold capitalize');
-const GoalText = styled(Text, 'text-sm text-Text font-bold');
+const GoalText = styled(Text, 'text-sm text-Text font-bold flex-1');
 
 const Goals = ({ session }) => {
-  const navigation = useNavigation(); // Initialize navigation
+  const navigation = useNavigation();
   const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(session.user.id);
   const [deleteMode, setDeleteMode] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState(null);
 
-  // Ensure the goals are refreshed after adding or deleting
   useEffect(() => {
     refreshGoals();
   }, [refreshGoals]);
@@ -70,57 +69,71 @@ const Goals = ({ session }) => {
   }
 
   return (
-    <Container className="p-4">
-      <GoalContainer>
-        <FlatList
-          data={goals}
-          numColumns={2} // Two-column layout
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <GoalBlock>
+    <Container className="flex-1 p-4">
+      <Text className='text-center text-Text text-xl font-bold mb-2'>Active Goals</Text>
+      
+      {/* FlatList wrapped in a View with flex: 1 */}
+      <FlatList
+        data={goals}
+        numColumns={2}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <GoalBlock>
+            <View style={{ flex: 1 }}>
               <GoalTitle>
                 {item.exercises ? item.exercises.name : item.workout ? item.workout.name : 'N/A'}
               </GoalTitle>
               <GoalText className='text-Alter'>Category: {item.goal_categories.name}</GoalText>
               <GoalText>Type: {item.metric_type}</GoalText>
-              <GoalText className='text-SecAlter'>
+              <GoalText className='text-SecAlter text-center mt-2'>
                 Progress: {item.current_value}/{item.target_value}
               </GoalText>
-              {deleteMode && (
-                <Ionicons
-                  name="trash"
-                  size={24}
-                  color="red"
-                  onPress={() => confirmDelete(item.id)}
-                />
-              )}
-            </GoalBlock>
-          )}
-        />
-      </GoalContainer>
-
-      {!deleteMode && (
-        <View className="mb-4">
-          <Button
-            title="Add New Goal"
-            onPress={() =>
-              navigation.navigate('AddGoal', {
-                session,
-                onGoalAdded: handleGoalAdded,
-                refreshGoals, // Pass the refresh function to the AddGoal component
-              })
-            }
-            className="mb-4"
-          />
-        </View>
-      )}
-
-      <Button
-        title={deleteMode ? 'Cancel Delete' : 'Delete Goal'}
-        onPress={() => setDeleteMode(!deleteMode)}
-        className={!deleteMode ? 'mt-2' : 'mt-4'}
+            </View>
+            {deleteMode && (
+              <Ionicons
+                name="trash"
+                size={24}
+                color="red"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  padding: 10,
+                  borderRadius: 50,
+                }}
+                onPress={() => confirmDelete(item.id)}
+              />
+            )}
+          </GoalBlock>
+        )}
       />
 
+
+        {!deleteMode && (
+          <View className='mb-4'>
+            <Button
+              title="Add Goal"
+              customStyle='bg-SecAlter'  
+              onPress={() =>
+                navigation.navigate('AddGoal', {
+                  session,
+                  onGoalAdded: handleGoalAdded,
+                  refreshGoals,
+                })
+              }
+            />
+          </View>
+        )}
+
+        <View>
+          <Button
+            title={deleteMode ? 'Cancel Delete' : 'Delete Goal'}
+            customStyle='bg-Alter'  
+            onPress={() => setDeleteMode(!deleteMode)}
+          />
+        </View>
+
+      {/* Custom Alert for deleting goals */}
       <CustomAlert
         visible={alertVisible}
         title="Delete Goal"
