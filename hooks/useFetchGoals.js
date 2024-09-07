@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { supabase } from '../utility/supabase';
+import { UserContext } from '../context/UserContext'; // Import the UserContext
 
-const useFetchGoals = (userId) => {
+const useFetchGoals = () => {
+  const { profile } = useContext(UserContext); // Access the profile from the UserContext
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Fetch goals data
   const fetchGoals = useCallback(async () => {
+    if (!profile || !profile.id) return; // Make sure profile is available
+
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -18,9 +22,10 @@ const useFetchGoals = (userId) => {
           target_value,
           current_value,
           goal_categories (name),
-          exercises (name)
+          exercises (name),
+          workout (name)   // Fetch associated workout name
         `)
-        .eq('user_id', userId);
+        .eq('user_id', profile.id); // Use profile.id from context
 
       if (error) {
         setError(error.message);
@@ -32,7 +37,7 @@ const useFetchGoals = (userId) => {
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [profile]);
 
   // Fetch goals on component mount
   useEffect(() => {
