@@ -12,7 +12,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 
 // Define your styled components
 const GoalContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
-const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 rounded-lg w-[47%] flex-row justify-between items-center');
+const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-4 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
 const GoalTitle = styled(Text, 'text-md text-Primary font-bold capitalize');
 const GoalText = styled(Text, 'text-sm text-Text font-bold flex-1');
 
@@ -84,7 +84,7 @@ const Goals = ({ session }) => {
                 {item.exercises ? item.exercises.name : item.workout ? item.workout.name : 'N/A'}
               </GoalTitle>
               <GoalText className='text-Alter'>Category: {item.goal_categories.name}</GoalText>
-              <GoalText>Type: {item.metric_type}</GoalText>
+              <GoalText>{item.metric_type ? `Type: ${item.metric_type}` : null}</GoalText>
               <GoalText className='text-SecAlter text-center mt-2'>
                 Progress: {item.current_value}/{item.target_value}
               </GoalText>
