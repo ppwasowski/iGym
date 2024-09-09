@@ -12,6 +12,7 @@ import { checkAndUpdateGoals } from '../components/CheckAndUpdateGoals';
 import { UserContext } from '../context/UserContext';
 import { styled } from 'nativewind';
 
+// Define your styled components
 const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-3 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
 const GoalTitle = styled(Text, 'text-base text-Text font-bold capitalize');
 const GoalText = styled(Text, 'text-sm text-Text flex-1 capitalize');
@@ -20,6 +21,7 @@ const Goals = () => {
   const { profile } = useContext(UserContext);
   const navigation = useNavigation();
   const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(profile.id);
+  const [deleteMode, setDeleteMode] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState(null);
   const [isUpdatingGoals, setIsUpdatingGoals] = useState(false);
