@@ -51,7 +51,7 @@ export const UserProvider = ({ children, session }) => {
     } catch (error) {
       setError(error.message);
       console.error('Error updating profile:', error.message);
-      throw error; // rethrow the error to be caught in the component
+      throw error;
     } finally {
       setLoading(false);
     }

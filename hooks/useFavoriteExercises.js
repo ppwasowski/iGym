@@ -1,4 +1,3 @@
-// hooks/useFavoriteExercises.js
 import { useState, useEffect, useContext } from 'react';
 import { supabase } from '../utility/supabase';
 import { UserContext } from '../context/UserContext';

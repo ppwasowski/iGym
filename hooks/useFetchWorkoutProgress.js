@@ -65,7 +65,7 @@ const useFetchWorkoutProgress = (sessionId) => {
     fetchProgress();
   }, [sessionId]);
 
-  return { progress, loading, error }; // Return loading state as well
+  return { progress, loading, error };
 };
 
 export default useFetchWorkoutProgress;

@@ -78,7 +78,7 @@ const BodypartView = ({ session, workoutId }) => {
           keyExtractor={item => item.id.toString()}
           contentContainerStyle={{ alignItems: 'center' }}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
-          style={{ flexGrow: 1 }} // Ensure FlatList grows to fill the Container
+          style={{ flexGrow: 1 }}
         />
       )}
     </Container>

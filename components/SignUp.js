@@ -7,7 +7,7 @@ import { UserContext } from '../context/UserContext';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Container from '../components/Container';
-import LoadingScreen from '../components/LoadingScreen'; // Import the LoadingScreen component
+import LoadingScreen from '../components/LoadingScreen';
 import { styled } from 'nativewind';
 
 const FormItem = styled(View, 'py-1');
@@ -158,7 +158,7 @@ export default function SignUp() {
   );
 
   if (loading) {
-    return <LoadingScreen message="Signing up..." />; // Display loading screen during sign up process
+    return <LoadingScreen message="Signing up..." />;
   }
 
   return (

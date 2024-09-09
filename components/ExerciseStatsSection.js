@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { styled } from 'nativewind';
-import Icon from './Icon'; // Import the Icon component
+import Icon from './Icon';
 
 const Container = styled(View, 'flex-wrap flex-row justify-between items-center w-full');
 const StatsContainer = styled(View, 'flex-row justify-between bg-Secondary  rounded-lg w-full my-3');

@@ -62,8 +62,6 @@ const BMICalculator = ({ height, weight }) => {
           </View>
         </View>
       </ProfBlock>
-
-      {/* Modal Section */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View className="bg-background p-5 rounded-lg">
           <ProfTitle className='text-xl text-center'>BMI Categories</ProfTitle>

@@ -27,7 +27,7 @@ const useFetchExercisesForContext = ({ userId, bodypartId, workoutId }) => {
           .from('workout')
           .select('*, workout_exercise(exercise_id)')
           .eq('user_id', userId)
-          .eq('deleted', false);  // Filter out deleted workouts
+          .eq('deleted', false);
       } else {
         setError('Either userId, bodypartId, or workoutId must be provided');
         Toast.show({

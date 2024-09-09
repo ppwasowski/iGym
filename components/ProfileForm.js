@@ -8,10 +8,9 @@ import Button from '../components/Button';
 import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 
-// Styled components
 const FormItem = styled(View, 'py-1');
 const Label = styled(Text, 'text-Primary text-md font-bold mb-2');
-const ButtonRow = styled(View, 'flex-row justify-between w-full my-4'); // Side-by-side button layout
+const ButtonRow = styled(View, 'flex-row justify-between w-full my-4');
 
 export default function ProfileForm({ onClose }) {
   const { profile, updateProfile, error, loading: profileLoading } = useContext(UserContext);
@@ -137,8 +136,6 @@ export default function ProfileForm({ onClose }) {
                     dropdownIconRippleColor="#FFFFFF"
                   />
                 </FormItem>
-
-                {/* Button Row for Save and Close */}
                 <ButtonRow>
                   <Button title="Save" onPress={handleSubmit} className="w-[48%]" />
                   <Button title="Close" onPress={onClose} className="w-[48%]" />

@@ -18,8 +18,6 @@ const AddGoal = ({ navigation, route }) => {
   const [selectedWorkout, setSelectedWorkout] = useState("");
   const [metricType, setMetricType] = useState("");
   const { profile } = useContext(UserContext);
-
-  // Unified state management for dropdowns
   const [dropdowns, setDropdowns] = useState({
     categoryOpen: false,
     bodyPartOpen: false,
@@ -34,8 +32,7 @@ const AddGoal = ({ navigation, route }) => {
   const isConsistencyOrCompletion = ['Consistency', 'Workout Completion'].includes(
     categories.find(category => category.id === selectedCategory)?.name
   );
-
-  // Close all dropdowns except the one that's being toggled
+  // Close all dropdowns except the one
   const toggleDropdown = (dropdownKey) => {
     setDropdowns((prevState) => ({
       categoryOpen: false,
@@ -78,8 +75,6 @@ const AddGoal = ({ navigation, route }) => {
       if (data && onGoalAdded) {
         onGoalAdded(data[0]);
       }
-  
-      // Call refreshGoals to update the goals list after adding the goal
       if (refreshGoals) {
         refreshGoals();
       }
@@ -95,8 +90,8 @@ const AddGoal = ({ navigation, route }) => {
 
   return (
     <Container className="p-4">
-      {/* Category Dropdown */}
       <View style={{ zIndex: dropdowns.categoryOpen ? 5000 : 1 }}> 
+        {/* Category*/}
         <DropDownPicker
           open={dropdowns.categoryOpen}
           value={selectedCategory}
@@ -112,7 +107,7 @@ const AddGoal = ({ navigation, route }) => {
         />
       </View>
 
-      {/* Render Workout dropdown if category is 'Consistency' or 'Workout Completion' */}
+      {/* Consistency/Workout Completion*/}
       {isConsistencyOrCompletion && (
         <View style={{ zIndex: dropdowns.workoutOpen ? 3000 : 1 }}>
           <DropDownPicker
@@ -131,7 +126,7 @@ const AddGoal = ({ navigation, route }) => {
         </View>
       )}
 
-      {/* Render Exercise related fields if Exercise category is selected */}
+      {/* Exercise */}
       {selectedCategory === exerciseCategoryId && (
         <>
           <View style={{ zIndex: dropdowns.bodyPartOpen ? 4000 : 1 }}>

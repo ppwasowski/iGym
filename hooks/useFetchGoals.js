@@ -8,7 +8,7 @@ const useFetchGoals = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch goals data
+
   const fetchGoals = useCallback(async () => {
     if (!profile || !profile.id) return;
 
@@ -44,7 +44,6 @@ const useFetchGoals = () => {
     fetchGoals();
   }, [fetchGoals]);
 
-  // Return fetchGoals so that it can be manually triggered
   return { goals, loading, error, setGoals, refreshGoals: fetchGoals };
 };
 

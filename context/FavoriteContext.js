@@ -1,4 +1,3 @@
-// FavoriteContext.js
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { supabase } from '../utility/supabase';
 import Toast from 'react-native-toast-message';

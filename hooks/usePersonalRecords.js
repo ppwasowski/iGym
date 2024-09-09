@@ -15,7 +15,7 @@ const usePersonalRecords = () => {
     }
 
     try {
-      setLoading(true); // Start loading
+      setLoading(true);
       const { data, error } = await supabase
         .from('workout_progress')
         .select(`
@@ -52,12 +52,11 @@ const usePersonalRecords = () => {
     }
   }, [profile]);
 
-  // Initial fetch when the hook is first mounted or profile changes
   useEffect(() => {
     fetchPersonalRecords();
   }, [fetchPersonalRecords]);
 
-  return { records, loading, error, refetch: fetchPersonalRecords }; // Return refetch function for manual triggers
+  return { records, loading, error, refetch: fetchPersonalRecords };
 };
 
 export default usePersonalRecords;

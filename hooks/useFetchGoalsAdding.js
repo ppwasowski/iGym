@@ -9,8 +9,6 @@ const useFetchGoalsAdding = () => {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Get user profile data from UserContext
   const { profile, loading: profileLoading, error: profileError } = useContext(UserContext);
 
   useEffect(() => {
@@ -41,11 +39,10 @@ const useFetchGoalsAdding = () => {
         setExercises(exercisesData);
         setBodyParts(bodyPartsData);
 
-        // Fetch workouts specific to the logged-in user
         const { data: workoutsData, error: workoutsError } = await supabase
           .from('workout')
           .select('*')
-          .eq('user_id', profile.id)  // Access user_id from context profile
+          .eq('user_id', profile.id)
           .neq('deleted', true);  // Exclude rows where 'deleted' is true
 
         if (workoutsError) {

@@ -23,9 +23,8 @@ const useStats = () => {
 
       try {
         setLoading(true);
-        setError(null); // Reset error state
+        setError(null);
 
-        // Fetch weight data along with session_id
         const { data: weightData, error: weightError } = await supabase
           .from('workout_progress')
           .select('exercise_id, weight, reps, workout_session_id')

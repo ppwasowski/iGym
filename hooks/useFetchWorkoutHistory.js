@@ -3,7 +3,7 @@ import { supabase } from '../utility/supabase';
 
 const useFetchWorkoutHistory = (userId) => {
   const [workoutSessions, setWorkoutSessions] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshFlag, setRefreshFlag] = useState(false);
 
