@@ -15,7 +15,7 @@ const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 bor
 const ExerciseName = styled(Text, 'text-Text text-lg capitalize');
 const IconButton = styled(Ionicons, 'text-2xl');
 const TitleBlock = styled(View, 'bg-Secondary p-4 my-1 rounded-lg w-full items-center flex-row');
-const WorkoutTitle = styled(Text, 'text-lg text-white font-bold ml-3'); // Left margin for spacing next to icon
+const WorkoutTitle = styled(Text, 'text-lg text-white font-bold ml-3');
 
 const WorkoutDetails = ({ route, navigation }) => {
   const { workoutId, workoutName, icon_name, icon_color, session  } = route.params;

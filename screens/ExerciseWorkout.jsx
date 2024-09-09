@@ -37,8 +37,8 @@ const ExerciseWorkout = ({ route }) => {
   const handleAddSet = async () => {
     const success = await addSet();
     if (success) {
-      setWeight(''); // Reset to empty string
-      setReps('');   // Reset to empty string
+      setWeight('');
+      setReps('');
     }
   };
 
@@ -92,8 +92,6 @@ const ExerciseWorkout = ({ route }) => {
         onChangeText={setReps}
         className="mb-4"
       />
-
-      {/* Show loading indicator when adding a set */}
       <Button
         title={addSetLoading ? "Adding Set..." : "Add Set"}
         onPress={handleAddSet}
@@ -113,8 +111,6 @@ const ExerciseWorkout = ({ route }) => {
           <CenteredText>No sets recorded yet.</CenteredText>
         )}
       </ScrollView>
-
-      {/* Show loading indicator when finishing the exercise */}
       <Button
         title={finishLoading ? "Finishing Exercise..." : "Finish Exercise"}
         onPress={handleFinishExercise}

@@ -14,7 +14,7 @@ import CustomAlert from '../components/CustomAlert';
 import CustomPressable from '../components/Pressable';
 
 const ListContainer = styled(View, 'w-full border-b border-Separator p-4 flex-row justify-between items-center bg-background');
-const ItemText = styled(Text, 'text-Primary text-xl font-bold flex-1 text-start'); // Center the text
+const ItemText = styled(Text, 'text-Primary text-xl font-bold flex-1 text-start');
 
 const EmptyText = styled(Text, 'text-Text text-lg text-center mt-4');
 

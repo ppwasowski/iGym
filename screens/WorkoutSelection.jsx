@@ -9,12 +9,12 @@ import ToastShow from '../components/ToastShow';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import LoadingScreen from '../components/LoadingScreen';
-import CustomPressable from '../components/Pressable'; // Import CustomPressable for consistent button style
+import CustomPressable from '../components/Pressable';
 import { styled } from 'nativewind';
 
 const WorkoutItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator bg-Secondary p-3 m-2 rounded-lg w-[94%]');
-const WorkoutNameContainer = styled(View, 'flex-1 items-center '); // Center the text inside this container
-const WorkoutName = styled(Text, 'text-Text text-xl font-bold text-center '); // Text centered inside the WorkoutNameContainer
+const WorkoutNameContainer = styled(View, 'flex-1 items-center ');
+const WorkoutName = styled(Text, 'text-Text text-xl font-bold text-center ');
 const IconButton = styled(Ionicons, 'text-2xl');
 
 const WorkoutSelection = ({ route }) => {

@@ -10,7 +10,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 const SessionItem = styled(View, 'py-3 px-4 my-2 border-b border-Separator rounded-md');
 const SessionText = styled(Text, 'text-Text text-base');
 
-const Row = styled(View, 'flex-row justify-between items-center'); // New Row component
+const Row = styled(View, 'flex-row justify-between items-center');
 
 const WorkoutHistory = ({ session }) => {
   const { workoutSessions, loading, error } = useFetchWorkoutHistory(session.user.id);

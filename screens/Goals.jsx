@@ -12,37 +12,34 @@ import { checkAndUpdateGoals } from '../components/CheckAndUpdateGoals';
 import { UserContext } from '../context/UserContext';
 import { styled } from 'nativewind';
 
-// Define your styled components
 const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-3 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
 const GoalTitle = styled(Text, 'text-base text-Text font-bold capitalize');
 const GoalText = styled(Text, 'text-sm text-Text flex-1 capitalize');
 
 const Goals = () => {
-  const { profile } = useContext(UserContext); // Access user profile from UserContext
+  const { profile } = useContext(UserContext);
   const navigation = useNavigation();
-  const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(profile.id); // Use profile.id instead of session.user.id
-  const [deleteMode, setDeleteMode] = useState(false);
+  const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(profile.id);
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState(null);
   const [isUpdatingGoals, setIsUpdatingGoals] = useState(false);
 
   useEffect(() => {
     const updateGoalsOnLoad = async () => {
-      setIsUpdatingGoals(true);  // Start loading
+      setIsUpdatingGoals(true);
       try {
         await checkAndUpdateGoals(profile.id, { workoutCompleted: true });
         refreshGoals();
       } catch (error) {
         console.error('Error checking and updating goals:', error);
       } finally {
-        setIsUpdatingGoals(false);  // Stop loading
+        setIsUpdatingGoals(false);
       }
     };
   
     updateGoalsOnLoad();
   }, [profile.id]);
   
-  // Conditional rendering of loading screen
   if (isUpdatingGoals || loading) {
     return <LoadingScreen message="Loading goals..." />;
   }
@@ -91,8 +88,6 @@ const Goals = () => {
   return (
     <Container className="flex-1 p-4">
       <Text className='text-center text-Text text-xl font-bold mb-2'>Active Goals</Text>
-      
-      {/* FlatList wrapped in a View with flex: 1 */}
       <FlatList
         data={goals}
         numColumns={2}
@@ -150,8 +145,6 @@ const Goals = () => {
             onPress={() => setDeleteMode(!deleteMode)}
           />
         </View>
-
-      {/* Custom Alert for deleting goals */}
       <CustomAlert
         visible={alertVisible}
         title="Delete Goal"
