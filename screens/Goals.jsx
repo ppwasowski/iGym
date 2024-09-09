@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,26 +7,46 @@ import Button from '../components/Button';
 import useFetchGoals from '../hooks/useFetchGoals';
 import { supabase } from '../utility/supabase';
 import CustomAlert from '../components/CustomAlert';
-import { styled } from 'nativewind';
 import LoadingScreen from '@/components/LoadingScreen';
+import { checkAndUpdateGoals } from '../components/CheckAndUpdateGoals';
+import { UserContext } from '../context/UserContext';
+import { styled } from 'nativewind';
 
 // Define your styled components
-const GoalContainer = styled(View, 'border-b border-Separator p-4 flex-row justify-between items-center bg-background');
 const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-3 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
 const GoalTitle = styled(Text, 'text-base text-Text font-bold capitalize');
 const GoalText = styled(Text, 'text-sm text-Text flex-1 capitalize');
 
-const Goals = ({ session }) => {
+const Goals = () => {
+  const { profile } = useContext(UserContext); // Access user profile from UserContext
   const navigation = useNavigation();
-  const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(session.user.id);
+  const { goals, loading, error, setGoals, refreshGoals } = useFetchGoals(profile.id); // Use profile.id instead of session.user.id
   const [deleteMode, setDeleteMode] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState(null);
+  const [isUpdatingGoals, setIsUpdatingGoals] = useState(false);
 
   useEffect(() => {
-    refreshGoals();
-  }, [refreshGoals]);
-
+    const updateGoalsOnLoad = async () => {
+      setIsUpdatingGoals(true);  // Start loading
+      try {
+        await checkAndUpdateGoals(profile.id, { workoutCompleted: true });
+        refreshGoals();
+      } catch (error) {
+        console.error('Error checking and updating goals:', error);
+      } finally {
+        setIsUpdatingGoals(false);  // Stop loading
+      }
+    };
+  
+    updateGoalsOnLoad();
+  }, [profile.id]);
+  
+  // Conditional rendering of loading screen
+  if (isUpdatingGoals || loading) {
+    return <LoadingScreen message="Loading goals..." />;
+  }
+  
   const handleGoalAdded = (newGoal) => {
     setGoals((prevGoals) => [...prevGoals, newGoal]);
     refreshGoals();
@@ -108,7 +128,6 @@ const Goals = ({ session }) => {
         )}
       />
 
-
         {!deleteMode && (
           <View className='mb-4'>
             <Button
@@ -116,7 +135,6 @@ const Goals = ({ session }) => {
               customStyle='bg-SecAlter'  
               onPress={() =>
                 navigation.navigate('AddGoal', {
-                  session,
                   onGoalAdded: handleGoalAdded,
                   refreshGoals,
                 })

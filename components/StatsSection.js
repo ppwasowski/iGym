@@ -40,7 +40,7 @@ export default function StatsSection({ stats, handleNavigation }) {
             <StatTitle>Workouts Done</StatTitle>
             <Icon name="pulse" color="Alter" style="mr-2" />
           </View>
-          <StatText className='text-'>{stats?.numberOfWorkouts ?? 'N/A'}</StatText>
+          <StatText className='text-'>{stats?.numberOfWorkouts ? `${stats.numberOfWorkouts}` : 'N/A'}</StatText>
         </StatBlock>
       </View>
     </StatsContainer>

@@ -32,7 +32,7 @@ const WorkoutList = () => {
   const handleDeleteWorkout = async (workoutId) => {
     try {
       await deleteWorkout(workoutId);
-      refresh(); // Refresh the workout list after deletion
+      refresh();
       
     } catch (error) {
       
@@ -110,7 +110,7 @@ const WorkoutList = () => {
           )}
         />
       ) : (
-        <EmptyText>No workouts found. Please add a new workout.</EmptyText>
+        <ItemText className='text-center justify-center'>No workouts found</ItemText>
       )}
       {!deleteMode && (
         <View className="mb-4">

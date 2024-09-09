@@ -92,7 +92,6 @@ const Account = () => {
             </ButtonView>
           </View>
 
-          {/* Edit Account and Sign Out buttons in a row */}
           <ButtonRow>
             <ButtonView>
               <Button customStyle='bg-SecAlter'  title="Edit Account" onPress={() => setShowProfileForm(true)} />

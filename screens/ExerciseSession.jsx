@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';  
+import React, { useState, useEffect, useContext } from 'react';  
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -6,7 +6,10 @@ import useFetchExerciseSession from '../hooks/useFetchExerciseSession';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
+import { UserContext } from '../context/UserContext';
+import { checkAndUpdateGoals } from '../components/CheckAndUpdateGoals';
 import { styled } from 'nativewind';
+import { supabase } from '@/utility/supabase';
 
 const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
 const ExerciseName = styled(Text, 'text-Text text-lg capitalize');
@@ -15,6 +18,8 @@ const IconButton = styled(Ionicons, 'text-2xl');
 const ExerciseSession = ({ route }) => {
   const { workoutId, sessionId, session, refresh } = route.params;
   const navigation = useNavigation();
+  const { profile } = useContext(UserContext); // Get user profile from context
+  const userId = profile?.id;
 
   const [completedExercises, setCompletedExercises] = useState([]);
 
@@ -47,10 +52,57 @@ const ExerciseSession = ({ route }) => {
     });
   };
 
-  const handleFinishWorkout = () => {
-    if (refresh) refresh();
-    navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
-    checkAndUpdateGoals(userId, workoutProgress);
+  const handleFinishWorkout = async () => {
+    try {
+      // Mark the workout session as completed in the database
+      const { data, error } = await supabase
+        .from('workout_sessions')
+        .update({ completed: true })  // Set the workout session as completed
+        .eq('id', sessionId);         // Match the current session ID
+  
+      // Log the complete response for debugging
+      console.log('Supabase response:', data, sessionId);
+  
+      if (error) {
+        console.error('Error updating workout session:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Failed to mark workout as complete. Please try again.',
+        });
+        return;
+      }
+  
+      // Refresh the session after marking it completed
+      if (refresh) {
+        refresh(); // Call the refresh function to reload the screen or data
+      }
+  
+      // Prepare progress data to update goals
+      const workoutProgress = {
+        workoutCompleted: true,
+        exercises: completedExercises.map(exerciseId => ({
+          exercise_id: exerciseId,
+          // Assuming we have weight and reps in each exercise. Add actual values if needed.
+          weight: 0, // Set actual weight used during the session
+          reps: 0,   // Set actual reps done during the session
+        })),
+      };
+  
+      // Update the user's goals based on the workout completion
+      await checkAndUpdateGoals(userId, workoutProgress);
+  
+      // Navigate to the Workout Progress screen after updating
+      navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
+  
+    } catch (error) {
+      console.error('Error completing workout:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to finish workout. Please try again.',
+      });
+    }
   };
 
   if (loading) {
@@ -93,7 +145,7 @@ const ExerciseSession = ({ route }) => {
           )}
         />
       )}
-      <Button title="Finish Workout" onPress={handleFinishWorkout}/>
+      <Button title="Finish Workout" onPress={handleFinishWorkout} />
       <Toast />
     </Container>
   );

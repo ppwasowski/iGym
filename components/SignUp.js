@@ -208,26 +208,9 @@ export default function SignUp() {
 const styles = StyleSheet.create({
   picker: {
     height: 50,
-    borderColor: 'gray',
-    backgroundColor: '#232323',
+    borderColor: '#4B4B4B',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 25,
-  },
-  textPicker: {
-    color: '#FFFFFF', // Text color for dropdown items
-  },
-  dropDownContainer: {
-    borderColor: '#2a2a2a',
-    backgroundColor: '#232323',
-  },
-  selectedItemLabel: {
-    color: '#FFFFFF', // Selected item text color
-  },
-  arrowIcon: {
-    tintColor: '#FFFFFF', // Arrow icon color
-  },
-  tickIcon: {
-    tintColor: '#FFFFFF', // Tick icon color
-  },
-});
+  },});
