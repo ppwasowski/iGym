@@ -2,13 +2,11 @@ import { useState, useContext } from 'react';
 import { supabase } from '../utility/supabase';
 import { UserContext } from '../context/UserContext';
 
-const useAddSet = (sessionId, exerciseId, sets, setSets) => {
+const useAddSet = (sessionId, exerciseId, sets, setSets, setAlertMessage, setAlertVisible) => {
   const { profile } = useContext(UserContext);
   const [weight, setWeight] = useState('');
   const [reps, setReps] = useState('');
   const [loading, setLoading] = useState(false);
-
-
 
   const addSet = async () => {
     // Validate inputs
@@ -16,22 +14,26 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
     const parsedReps = parseInt(reps, 10);
 
     if (isNaN(parsedWeight) || parsedWeight <= 0) {
-      console.log('Invalid Weight: Please provide a valid weight greater than 0.');
+      setAlertMessage('Please provide a valid weight greater than 0.');
+      setAlertVisible(true);
       return false;
     }
 
     if (isNaN(parsedReps) || parsedReps <= 0) {
-      console.log('Invalid Reps: Please provide a valid number of reps greater than 0.');
+      setAlertMessage('Please provide a valid number of reps greater than 0.');
+      setAlertVisible(true);
       return false;
     }
 
     if (!sessionId) {
-      console.log('Session ID Missing: No session ID provided. Please ensure you have started a session.');
+      setAlertMessage('No session ID provided. Please ensure you have started a session.');
+      setAlertVisible(true);
       return false;
     }
 
     if (!profile?.id) {
-      console.log('User Not Logged In: Please log in to add a set.');
+      setAlertMessage('Please log in to add a set.');
+      setAlertVisible(true);
       return false;
     }
 
@@ -41,7 +43,7 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
     const newSet = {
       workout_session_id: sessionId,
       exercise_id: exerciseId,
-      sets: currentSetNumber,  // Assign the calculated current set number
+      sets: currentSetNumber,
       reps: parsedReps,
       weight: parsedWeight,
       completed_at: new Date().toISOString(),
@@ -57,7 +59,9 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
         .select();
 
       if (error) {
-        throw error;
+        setAlertMessage('Error: Failed to add the set.');
+        setAlertVisible(true);
+        return false;
       }
 
       if (data && data.length > 0) {
@@ -67,10 +71,13 @@ const useAddSet = (sessionId, exerciseId, sets, setSets) => {
         setReps('');
         return true;
       } else {
-        throw new Error('Set was not added. Please try again.');
+        setAlertMessage('Set was not added. Please try again.');
+        setAlertVisible(true);
+        return false;
       }
     } catch (error) {
-      console.log('Error Adding Set:', error.message || 'An unexpected error occurred while adding the set.');
+      setAlertMessage('Error: ' + (error.message || 'An unexpected error occurred while adding the set.'));
+      setAlertVisible(true);
       return false;
     } finally {
       setLoading(false);

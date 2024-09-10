@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useFetchExerciseProgress from '../hooks/useFetchExerciseProgress';
 import useAddSet from '../services/useAddSet';
@@ -7,7 +7,7 @@ import useFinishExercise from '../services/useFinishExercise';
 import Button from '../components/Button';
 import Container from '../components/Container';
 import Input from '../components/Input';
-import Toast from 'react-native-toast-message';
+import InfoAlert from '../components/InfoAlert';  // Import your InfoAlert component
 import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 
@@ -19,17 +19,17 @@ const ExerciseWorkout = ({ route }) => {
   const { exerciseId, exerciseName, sessionId, markExerciseCompleted, session } = route.params;
   const navigation = useNavigation();
 
+  const [infoAlertVisible, setInfoAlertVisible] = useState(false);
+  const [infoAlertMessage, setInfoAlertMessage] = useState('');  // This will store the alert message
+
   const { sets, setSets, loading: fetchLoading, error: fetchError } = useFetchExerciseProgress(sessionId, exerciseId);
-  const { finishExercise, loading: finishLoading, error: finishError } = useFinishExercise(sets, setSets);
-  const { weight, setWeight, reps, setReps, addSet, loading: addSetLoading, error: addSetError } = useAddSet(sessionId, exerciseId, sets, setSets);
+  const { finishExercise, loading: finishLoading, error: finishError } = useFinishExercise(sets, setSets, setInfoAlertMessage, setInfoAlertVisible);
+  const { weight, setWeight, reps, setReps, addSet, loading: addSetLoading, error: addSetError } = useAddSet(sessionId, exerciseId, sets, setSets, setInfoAlertMessage, setInfoAlertVisible);
 
   useEffect(() => {
     if (!sessionId) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Session ID is missing.',
-      });
+      setInfoAlertMessage('Session ID is missing.');
+      setInfoAlertVisible(true);
       navigation.goBack();
     }
   }, [sessionId, navigation]);
@@ -53,21 +53,15 @@ const ExerciseWorkout = ({ route }) => {
         navigation
       );
     } else {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Cannot finish exercise without a session ID.',
-      });
+      setInfoAlertMessage('Cannot finish exercise without a session ID.');
+      setInfoAlertVisible(true);
     }
   };
 
   useEffect(() => {
     if (fetchError || finishError || addSetError) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: fetchError || finishError || addSetError,
-      });
+      setInfoAlertMessage(fetchError || finishError || addSetError);
+      setInfoAlertVisible(true);
     }
   }, [fetchError, finishError, addSetError]);
 
@@ -116,7 +110,15 @@ const ExerciseWorkout = ({ route }) => {
         onPress={handleFinishExercise}
         disabled={finishLoading}
       />
-      <Toast />
+
+      {/* InfoAlert for displaying error or informational messages */}
+      <InfoAlert
+        visible={infoAlertVisible}
+        title="Information"
+        message={infoAlertMessage}
+        onConfirm={() => setInfoAlertVisible(false)}  // Close the alert when confirmed
+        confirmText="Close"
+      />
     </Container>
   );
 };
