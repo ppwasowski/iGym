@@ -90,9 +90,8 @@ const AddGoal = ({ navigation, route }) => {
 
   return (
     <Container className="p-4">
-      <View style={{ zIndex: dropdowns.categoryOpen ? 5000 : 1 }}> 
-        {/* Category*/}
         <DropDownPicker
+         style={{ zIndex: dropdowns.categoryOpen ? 5000 : 1 }}
           open={dropdowns.categoryOpen}
           value={selectedCategory}
           items={categories.map((category) => ({
@@ -105,12 +104,11 @@ const AddGoal = ({ navigation, route }) => {
           className="mb-3 bg-white"
           listMode="SCROLLVIEW"
         />
-      </View>
 
       {/* Consistency/Workout Completion*/}
       {isConsistencyOrCompletion && (
-        <View style={{ zIndex: dropdowns.workoutOpen ? 3000 : 1 }}>
           <DropDownPicker
+             style={{ zIndex: dropdowns.workoutOpen ? 3000 : 1 }}
             open={dropdowns.workoutOpen}
             value={selectedWorkout}
             items={workouts.map((workout) => ({
@@ -123,14 +121,13 @@ const AddGoal = ({ navigation, route }) => {
             className="mb-3 bg-white"
             listMode="SCROLLVIEW"
           />
-        </View>
       )}
 
       {/* Exercise */}
       {selectedCategory === exerciseCategoryId && (
         <>
-          <View style={{ zIndex: dropdowns.bodyPartOpen ? 4000 : 1 }}>
             <DropDownPicker
+              style={{ zIndex: dropdowns.bodyPartOpen ? 4000 : 1 }}
               open={dropdowns.bodyPartOpen}
               value={selectedBodyPart}
               items={bodyParts.map((part) => ({
@@ -140,13 +137,12 @@ const AddGoal = ({ navigation, route }) => {
               setOpen={() => toggleDropdown('bodyPartOpen')}
               setValue={setSelectedBodyPart}
               placeholder="Select Body Part"
-              className="mb-3 bg-white"
+              className="mb-3 bg-white capitalize"
               listMode="SCROLLVIEW"
             />
-          </View>
 
-          <View style={{ zIndex: dropdowns.exerciseOpen ? 3000 : 1 }}>
             <DropDownPicker
+              style={{ zIndex: dropdowns.exerciseOpen ? 3000 : 1 }}
               open={dropdowns.exerciseOpen}
               value={selectedExercise}
               items={filteredExercises.map((exercise) => ({
@@ -159,10 +155,9 @@ const AddGoal = ({ navigation, route }) => {
               className="mb-3 bg-white"
               listMode="SCROLLVIEW"
             />
-          </View>
 
-          <View style={{ zIndex: dropdowns.metricOpen ? 2000 : 1 }}>
             <DropDownPicker
+              style={{ zIndex: dropdowns.metricOpen ? 2000 : 1 }}
               open={dropdowns.metricOpen}
               value={metricType}
               items={[
@@ -174,7 +169,6 @@ const AddGoal = ({ navigation, route }) => {
               placeholder="Select Metric"
               className="mb-3 bg-white"
             />
-          </View>
         </>
       )}
 

@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import { styled } from 'nativewind';
 import LoadingScreen from '@/components/LoadingScreen';
 import { CommonActions } from '@react-navigation/native';
+import GoalAchievedModal from '../components/GoalAchievedModal'; 
 
 const StyledText = styled(Text, 'text-Text text-lg mb-2 capitalize');
 const ExerciseItem = styled(Pressable, 'flex-row justify-between items-center p-4 border-b border-gray-400');
@@ -15,56 +16,46 @@ const ExerciseItem = styled(Pressable, 'flex-row justify-between items-center p-
 const WorkoutProgress = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { sessionId, from, session } = route.params;
+  const { sessionId, from, goalAchieved } = route.params || {}; // Added default destructure
   const { progress, error } = useFetchWorkoutProgress(sessionId);
   const [loading, setLoading] = useState(true);
+  const [goalAchievedModalVisible, setGoalAchievedModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (goalAchieved) {
+      setGoalAchievedModalVisible(true);
+    }
+  }, [goalAchieved]);
+
+  const handleModalClose = () => {
+    setGoalAchievedModalVisible(false);
+  };
 
   useEffect(() => {
     if (progress?.length > 0 || error) {
       setLoading(false);
     }
   }, [progress, error]);
-  
+
   const handleClose = () => {
     const tabNavigation = navigation.getParent();
-  
+
     if (from === 'WorkoutHistory') {
       tabNavigation.navigate('Profile', {
         screen: 'Profile',
-        params: { screen: 'WorkoutHistory' }
-      }
-      );
-    } else if (from === 'Dashboard') {
+        params: { screen: 'WorkoutHistory' },
+      });
+    } else if (from === 'Dashboard' || from === 'ExerciseSession' || from === 'ExerciseProgress') {
       tabNavigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Dashboard' }], 
+          routes: [{ name: 'Dashboard' }],
         })
       );
-    } else if (from === 'ExerciseSession') {
-      tabNavigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Dashboard' }], 
-        })
-      );
-    }else if (from === 'ExerciseProgress') {
-      tabNavigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Dashboard' }], 
-        })
-      );
-    }
-    else {
+    } else {
       navigation.goBack();
     }
   };
-  
-  
-  
-  
-  
 
   const navigateToExerciseProgress = (exerciseId, exerciseName) => {
     navigation.navigate('ExerciseProgress', { sessionId, exerciseId, exerciseName });
@@ -82,7 +73,9 @@ const WorkoutProgress = () => {
     });
     return null;
   }
-  const exercises = [...new Map(progress?.map(item => [item.exercises?.id, item.exercises?.name]))];
+
+  // Creating an array of unique exercises with Map
+  const exercises = [...new Map(progress?.map(item => [item.exercises?.id, item.exercises?.name])).entries()];
 
   return (
     <Container className="flex-1 p-4">
@@ -91,7 +84,8 @@ const WorkoutProgress = () => {
           exercises.map(([exerciseId, exerciseName], index) => (
             <ExerciseItem
               key={index}
-              onPress={() => navigateToExerciseProgress(exerciseId, exerciseName)}>
+              onPress={() => navigateToExerciseProgress(exerciseId, exerciseName)}
+            >
               <StyledText>{exerciseName}</StyledText>
             </ExerciseItem>
           ))
@@ -99,7 +93,16 @@ const WorkoutProgress = () => {
           <StyledText>No records to display</StyledText>
         )}
       </ScrollView>
-      
+
+      {/* Goal Achieved Modal */}
+      {goalAchieved && (
+        <GoalAchievedModal
+          visible={goalAchievedModalVisible}
+          onClose={handleModalClose}
+          goal={goalAchieved}  // Pass goal data to modal
+        />
+      )}
+
       <View className="mb-4">
         <Button title="Close" onPress={handleClose} />
       </View>

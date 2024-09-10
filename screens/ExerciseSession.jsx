@@ -8,8 +8,8 @@ import Container from '../components/Container';
 import Toast from 'react-native-toast-message';
 import { UserContext } from '../context/UserContext';
 import { checkAndUpdateGoals } from '../components/CheckAndUpdateGoals';
-import { styled } from 'nativewind';
 import { supabase } from '@/utility/supabase';
+import { styled } from 'nativewind';
 
 const ExerciseItem = styled(View, 'flex-row items-center justify-between p-3 border-b border-Separator');
 const ExerciseName = styled(Text, 'text-Text text-lg capitalize');
@@ -18,12 +18,13 @@ const IconButton = styled(Ionicons, 'text-2xl');
 const ExerciseSession = ({ route }) => {
   const { workoutId, sessionId, session, refresh } = route.params;
   const navigation = useNavigation();
-  const { profile } = useContext(UserContext); // Get user profile from context
+  const { profile } = useContext(UserContext); 
   const userId = profile?.id;
 
   const [completedExercises, setCompletedExercises] = useState([]);
+  const [goalAchievedModalVisible, setGoalAchievedModalVisible] = useState(false); 
+  const [achievedGoal, setAchievedGoal] = useState(null);
 
-  // Validate the presence of required IDs
   useEffect(() => {
     if (!workoutId || !sessionId) {
       console.error('Workout ID or Session ID is missing:', { workoutId, sessionId });
@@ -43,25 +44,21 @@ const ExerciseSession = ({ route }) => {
 
   const startExercise = (exerciseId, exerciseName) => {
     navigation.navigate('ExerciseWorkout', {
-    workoutId,
-    exerciseId,
-    exerciseName,
-    sessionId,
-    markExerciseCompleted,
-    session,
+      workoutId,
+      exerciseId,
+      exerciseName,
+      sessionId,
+      markExerciseCompleted,
+      session,
     });
   };
 
   const handleFinishWorkout = async () => {
     try {
-      // Mark the workout session as completed in the database
       const { data, error } = await supabase
         .from('workout_sessions')
-        .update({ completed: true })  // Set the workout session as completed
-        .eq('id', sessionId);         // Match the current session ID
-  
-      // Log the complete response for debugging
-      console.log('Supabase response:', data, sessionId);
+        .update({ completed: true })
+        .eq('id', sessionId);
   
       if (error) {
         console.error('Error updating workout session:', error);
@@ -73,28 +70,28 @@ const ExerciseSession = ({ route }) => {
         return;
       }
   
-      // Refresh the session after marking it completed
       if (refresh) {
-        refresh(); // Call the refresh function to reload the screen or data
+        refresh();
       }
   
-      // Prepare progress data to update goals
       const workoutProgress = {
         workoutCompleted: true,
         exercises: completedExercises.map(exerciseId => ({
           exercise_id: exerciseId,
-          // Assuming we have weight and reps in each exercise. Add actual values if needed.
-          weight: 0, // Set actual weight used during the session
-          reps: 0,   // Set actual reps done during the session
+          weight: 0,
+          reps: 0,
         })),
       };
   
-      // Update the user's goals based on the workout completion
-      await checkAndUpdateGoals(userId, workoutProgress);
+      const goalAchieved = await checkAndUpdateGoals(userId, workoutProgress);
   
-      // Navigate to the Workout Progress screen after updating
-      navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
-  
+      // Navigate to WorkoutProgress, passing the achieved goal if any
+      navigation.navigate('WorkoutProgress', {
+        workoutId,
+        sessionId,
+        from: 'ExerciseSession',
+        goalAchieved, // Pass the achieved goal data
+      });
     } catch (error) {
       console.error('Error completing workout:', error);
       Toast.show({
@@ -103,6 +100,11 @@ const ExerciseSession = ({ route }) => {
         text2: 'Failed to finish workout. Please try again.',
       });
     }
+  };
+
+  const handleModalClose = () => {
+    setGoalAchievedModalVisible(false);
+    navigation.navigate('WorkoutProgress', { workoutId, sessionId, from: 'ExerciseSession' });
   };
 
   if (loading) {
@@ -146,6 +148,9 @@ const ExerciseSession = ({ route }) => {
         />
       )}
       <Button title="Finish Workout" onPress={handleFinishWorkout} />
+
+      
+
       <Toast />
     </Container>
   );

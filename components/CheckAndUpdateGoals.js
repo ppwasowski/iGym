@@ -1,4 +1,4 @@
-import { supabase } from '../utility/supabase';
+import { supabase } from "@/utility/supabase";
 
 export const checkAndUpdateGoals = async (userId, progress) => {
   try {
@@ -10,15 +10,17 @@ export const checkAndUpdateGoals = async (userId, progress) => {
 
     if (goalsError) {
       console.error('Error fetching goals:', goalsError);
-      return;
+      return null;
     }
+    
     const { data: workoutProgress, error: workoutError } = await supabase
       .from('workout_progress')
       .select('*')
       .eq('user_id', userId);
+
     if (workoutError) {
       console.error('Error fetching workout progress:', workoutError);
-      return;
+      return null;
     }
 
     const { data: workoutSessions, error: sessionError } = await supabase
@@ -29,32 +31,28 @@ export const checkAndUpdateGoals = async (userId, progress) => {
 
     if (sessionError) {
       console.error('Error fetching workout sessions:', sessionError);
-      return;
+      return null;
     }
 
-    const updates = [];  // To store all updates for bulk updating later
+    let achievedGoal = null;
+    const updates = [];
 
-    // Loop through goals and compare with workout progress and workout session data
     for (const goal of goals) {
       let goalAchieved = false;
-      let updatedValue = goal.current_value;  // Default to current value
+      let updatedValue = goal.current_value;
 
-      // Compare workout progress with goals for max weight and reps
       for (const progressItem of workoutProgress) {
         if (goal.exercise_id === progressItem.exercise_id) {
-          // Check if goal is based on weight progress
           if (goal.metric_type === 'weight') {
             updatedValue = Math.max(updatedValue, progressItem.weight);
             if (updatedValue >= goal.target_value) {
-              updatedValue = goal.target_value;  // Cap at target value
+              updatedValue = goal.target_value;
               goalAchieved = true;
             }
-          }
-          // Check if goal is based on reps progress
-          else if (goal.metric_type === 'reps') {
+          } else if (goal.metric_type === 'reps') {
             updatedValue = Math.max(updatedValue, progressItem.reps);
             if (updatedValue >= goal.target_value) {
-              updatedValue = goal.target_value;  // Cap at target value
+              updatedValue = goal.target_value;
               goalAchieved = true;
             }
           }
@@ -66,14 +64,16 @@ export const checkAndUpdateGoals = async (userId, progress) => {
           session => session.workout_id === goal.workout_id
         ).length;
 
-        // Update the goal's current value with the number of completed sessions
         updatedValue = Math.min(completedSessions, goal.target_value);
 
-        // If target is met or exceeded, mark the goal as achieved
         if (updatedValue >= goal.target_value) {
-          updatedValue = goal.target_value;  // Cap at target value
+          updatedValue = goal.target_value;
           goalAchieved = true;
         }
+      }
+
+      if (goalAchieved && !achievedGoal) {
+        achievedGoal = goal;  // Return the entire goal object
       }
 
       if (updatedValue !== goal.current_value || goalAchieved) {
@@ -85,20 +85,20 @@ export const checkAndUpdateGoals = async (userId, progress) => {
       }
     }
 
-    // Bulk update all goals that have changed
     if (updates.length > 0) {
       const { error: updateError } = await supabase
         .from('goals')
-        .upsert(updates, { onConflict: ['id'] }); 
+        .upsert(updates, { onConflict: ['id'] });
 
       if (updateError) {
         console.error('Error updating goals:', updateError);
-      } else {
-        console.log('Goals updated successfully!');
+        return null;
       }
     }
 
+    return achievedGoal;  // Return the entire goal object instead of just goal_name
   } catch (error) {
     console.error('Error processing goals:', error);
+    return null;
   }
 };
