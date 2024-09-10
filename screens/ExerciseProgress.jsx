@@ -101,7 +101,7 @@ const ExerciseProgress = () => {
             exerciseProgress.map((set, index) => (
               <React.Fragment key={index}>
                 <LogContainer>
-                  <Text className="text-2xl text-SecAlter font-bold border-r-2 border-background">SET {index + 1}</Text>
+                  <Text className="text-2xl text-SecAlter font-bold border-r-2 border-background pr-2">SET {index + 1}</Text>
                   <View className="flex-row ml-4">
                     <LogText>Weight: <Text className='text-Alter'>{set.weight}</Text> kg</LogText>
                     <LogText className='ml-4'>Reps: <Text className='text-Primary'>{set.reps}</Text></LogText>
