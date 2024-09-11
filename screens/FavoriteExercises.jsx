@@ -8,6 +8,7 @@ import { styled } from 'nativewind';
 import LoadingScreen from '../components/LoadingScreen';
 import Button from '../components/Button';
 import CustomAlert from '../components/CustomAlert';
+import { useNavigation } from '@react-navigation/native';  // Import navigation
 
 const Item = styled(TouchableOpacity, 'flex-row justify-between text-capitalize items-center p-4 my-2 border-b border-gray-400 bg-background rounded-md w-full');
 const ItemText = styled(Text, 'text-Text text-base capitalize');
@@ -18,6 +19,7 @@ const FavoriteExercises = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedFavorite, setSelectedFavorite] = useState(null);
   const [alertVisible, setAlertVisible] = useState(false);
+  const navigation = useNavigation();  // Initialize navigation
 
   const toggleDeleteMode = () => {
     setDeleteMode(!deleteMode);
@@ -32,6 +34,10 @@ const FavoriteExercises = () => {
   const confirmDelete = (exerciseId) => {
     setSelectedFavorite(exerciseId);
     setAlertVisible(true);
+  };
+
+  const handleNavigateToDetails = (exerciseId) => {
+    navigation.navigate('ExerciseDetails', { exerciseId });
   };
 
   if (loading) {
@@ -56,7 +62,7 @@ const FavoriteExercises = () => {
           data={favorites}
           keyExtractor={(item) => item.exercise_id.toString()}
           renderItem={({ item }) => (
-            <Item onPress={() => deleteMode ? confirmDelete(item.exercise_id) : null}>
+            <Item onPress={() => deleteMode ? confirmDelete(item.exercise_id) : handleNavigateToDetails(item.exercise_id)}>
               <ItemText>{item.exercises.name}</ItemText>
               {deleteMode ? (
                 <Ionicons name="trash" size={24} color="red" />
