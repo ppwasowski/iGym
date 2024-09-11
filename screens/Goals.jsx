@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';  // Ensure TouchableOpacity is imported
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Container from '../components/Container';
@@ -11,9 +11,10 @@ import LoadingScreen from '@/components/LoadingScreen';
 import { checkAndUpdateGoals } from '../components/CheckAndUpdateGoals';
 import { UserContext } from '../context/UserContext';
 import { styled } from 'nativewind';
+import DropDownPicker from 'react-native-dropdown-picker';  // import the dropdown picker
 
 // Define your styled components
-const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-3 m-2 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
+const GoalBlock = styled(TouchableOpacity, 'bg-Secondary p-3 mr-6 mb-4 rounded-lg w-[47%] flex-row justify-between items-center');
 const GoalTitle = styled(Text, 'text-base text-Text font-bold capitalize');
 const GoalText = styled(Text, 'text-sm text-Text flex-1 capitalize');
 
@@ -25,6 +26,15 @@ const Goals = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState(null);
   const [isUpdatingGoals, setIsUpdatingGoals] = useState(false);
+
+  const [filterValue, setFilterValue] = useState('active');  // This state will manage which goals to show (active/achieved)
+  const [open, setOpen] = useState(false);  // Manages the dropdown visibility
+  
+  // Options for dropdown
+  const filterOptions = [
+    { label: 'Active Goals', value: 'active' },
+    { label: 'Achieved Goals', value: 'achieved' }
+  ];
 
   useEffect(() => {
     const updateGoalsOnLoad = async () => {
@@ -41,11 +51,11 @@ const Goals = () => {
   
     updateGoalsOnLoad();
   }, [profile.id]);
-  
+
   if (isUpdatingGoals || loading) {
     return <LoadingScreen message="Loading goals..." />;
   }
-  
+
   const handleGoalAdded = (newGoal) => {
     setGoals((prevGoals) => [...prevGoals, newGoal]);
     refreshGoals();
@@ -75,6 +85,10 @@ const Goals = () => {
     setAlertVisible(true);
   };
 
+  const filteredGoals = goals.filter(goal => {
+    return filterValue === 'active' ? !goal.achieved : goal.achieved;
+  });
+
   if (loading) {
     return <LoadingScreen message="Loading goals..." />;
   }
@@ -89,9 +103,18 @@ const Goals = () => {
 
   return (
     <Container className="flex-1 p-4">
-      <Text className='text-center text-Text text-xl font-bold mb-2'>Active Goals</Text>
+      <View className='w-full items-center justify-center mb-4'>
+      <DropDownPicker
+        open={open}
+        value={filterValue}
+        items={filterOptions}
+        setOpen={setOpen}
+        setValue={setFilterValue}
+        style={{ marginBottom: 20 }}
+      />
+      </View>
       <FlatList
-        data={goals}
+        data={filteredGoals}
         numColumns={2}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (

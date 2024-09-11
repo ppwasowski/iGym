@@ -10,7 +10,7 @@ import { UserContext } from '../context/UserContext';
 import { supabase } from '@/utility/supabase';
 
 const AddGoal = ({ navigation, route }) => {
-  const { session, onGoalAdded, refreshGoals } = route.params; // Destructure refreshGoals from route params
+  const { session, onGoalAdded, refreshGoals } = route.params;
   const [targetValue, setTargetValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedExercise, setSelectedExercise] = useState("");
@@ -32,7 +32,6 @@ const AddGoal = ({ navigation, route }) => {
   const isConsistencyOrCompletion = ['Consistency', 'Workout Completion'].includes(
     categories.find(category => category.id === selectedCategory)?.name
   );
-  // Close all dropdowns except the one
   const toggleDropdown = (dropdownKey) => {
     setDropdowns((prevState) => ({
       categoryOpen: false,
@@ -40,7 +39,7 @@ const AddGoal = ({ navigation, route }) => {
       exerciseOpen: false,
       workoutOpen: false,
       metricOpen: false,
-      [dropdownKey]: !prevState[dropdownKey], // Toggle the specific dropdown
+      [dropdownKey]: !prevState[dropdownKey],
     }));
   };
 
@@ -105,7 +104,6 @@ const AddGoal = ({ navigation, route }) => {
           listMode="SCROLLVIEW"
         />
 
-      {/* Consistency/Workout Completion*/}
       {isConsistencyOrCompletion && (
           <DropDownPicker
              style={{ zIndex: dropdowns.workoutOpen ? 3000 : 1 }}
@@ -123,7 +121,6 @@ const AddGoal = ({ navigation, route }) => {
           />
       )}
 
-      {/* Exercise */}
       {selectedCategory === exerciseCategoryId && (
         <>
             <DropDownPicker
@@ -177,7 +174,8 @@ const AddGoal = ({ navigation, route }) => {
         value={targetValue}
         onChangeText={setTargetValue}
         keyboardType="numeric"
-        className="mb-3 p-3 bg-gray-300 rounded-md"
+        className="mb-3 p-3 bg-white rounded-md "
+        placeholderTextColor="Black"
       />
 
       <View className="flex-row justify-between">
