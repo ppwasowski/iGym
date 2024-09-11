@@ -73,7 +73,7 @@ export const checkAndUpdateGoals = async (userId, progress) => {
       }
 
       if (goalAchieved && !achievedGoal) {
-        achievedGoal = goal;  // Return the entire goal object
+        achievedGoal = goal;  
       }
 
       if (updatedValue !== goal.current_value || goalAchieved) {
@@ -96,7 +96,7 @@ export const checkAndUpdateGoals = async (userId, progress) => {
       }
     }
 
-    return achievedGoal;  // Return the entire goal object instead of just goal_name
+    return achievedGoal;
   } catch (error) {
     console.error('Error processing goals:', error);
     return null;
