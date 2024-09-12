@@ -36,21 +36,28 @@ const ExerciseDetails = ({ route }) => {
   };
 
   const formatDescription = (desc) => {
-    const instructions = desc.match(/(\d+):"(.*?)"/g);
+    const instructions = desc.match(/(\d+):\s*(.*?)\s*(?=\d+:|$)/gs);
+  
     if (instructions) {
       return instructions.map((instruction, index) => {
-        const [_, number, text] = instruction.match(/(\d+):"(.*?)"/);
-        return (
-          <InstructionItem key={index}>
-            <Text className="text-white">
-              <Text className="text-Primary font-bold">{parseInt(number) + 1}.</Text> {text}
-            </Text>
-          </InstructionItem>
-        );
+        const [_, number, text] = instruction.match(/(\d+):\s*(.*)/) || [];
+        
+        if (number && text) {
+          return (
+            <InstructionItem key={index}>
+              <Text className="text-white">
+                <Text className="text-Primary font-bold">{parseInt(number) + 1}.</Text> {text.trim().replace(/"/g, '')}
+              </Text>
+            </InstructionItem>
+          );
+        }
+        return null;
       });
     }
     return <InstructionText>{desc}</InstructionText>;
   };
+  
+  
 
   if (loading) {
     return <LoadingScreen message="Loading exercise..." />;
