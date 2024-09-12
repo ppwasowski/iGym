@@ -11,7 +11,7 @@ import LoadingScreen from '../components/LoadingScreen';
 
 
 const ExerciseItem = styled(View, 'flex-row justify-between items-center p-4 border-b border-gray-400');
-const ExerciseText = styled(Text, 'capitalize text-lg text-white');
+const ExerciseText = styled(Text, 'capitalize text-lg text-white flex-1 flex-wrap');
 const AddText = styled(Text, 'text-Primary');
 
 const ExercisesList = ({ route }) => {
@@ -23,18 +23,18 @@ const ExercisesList = ({ route }) => {
 
   const renderItem = ({ item }) => {
     const isFavorite = favorites.some(fav => fav.exercise_id === item.id);
-
+  
     return (
       <ExerciseItem>
-        <Pressable onPress={() => navigation.navigate('ExerciseDetails', { exerciseId: item.id, workoutId })}>
-          <ExerciseText>{item.name}</ExerciseText>
+        <Pressable onPress={() => navigation.navigate('ExerciseDetails', { exerciseId: item.id, workoutId })} style={{ flex: 1 }}>
+          <ExerciseText numberOfLines={2} ellipsizeMode="tail">{item.name}</ExerciseText>
         </Pressable>
         {workoutId && (
-          <Pressable onPress={() => addExerciseToWorkout(workoutId, item.id, navigation)}>
+          <Pressable onPress={() => addExerciseToWorkout(workoutId, item.id, navigation)} style={{ marginRight: 10 }}>
             <AddText>Add to Workout</AddText>
           </Pressable>
         )}
-        <Pressable onPress={() => toggleFavorite(item.id)}>
+        <Pressable onPress={() => toggleFavorite(item.id)} style={{ marginLeft: 10 }}>
           <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color="#00C87C" />
         </Pressable>
       </ExerciseItem>

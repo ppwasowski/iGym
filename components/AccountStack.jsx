@@ -15,7 +15,6 @@ const AccountStack = ({ session }) => {
   return (
     <Stack.Navigator
       screenOptions={({ route }) => ({
-        // Pass the headerTitle dynamically to CustomHeader
         header: (props) => <CustomHeader {...props} title={props.options.headerTitle} />,
       })}
     >
