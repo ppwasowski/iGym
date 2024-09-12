@@ -13,6 +13,8 @@ const useStats = () => {
     maxRepsExercise: null,
     maxWeightSessionId: null,
     maxRepsSessionId: null,
+    maxWeightExerciseName: null,
+    maxRepsExerciseName: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +26,6 @@ const useStats = () => {
       try {
         setLoading(true);
         setError(null);
-
         const { data: weightData, error: weightError } = await supabase
           .from('workout_progress')
           .select('exercise_id, weight, reps, workout_session_id')
@@ -64,6 +65,32 @@ const useStats = () => {
         if (workoutError) throw workoutError;
 
         const numberOfWorkouts = workoutData.length;
+        let maxWeightExerciseName = null;
+        let maxRepsExerciseName = null;
+
+        if (maxWeightExercise) {
+          const { data: maxWeightExerciseData, error: maxWeightExerciseError } = await supabase
+            .from('exercises')
+            .select('name')
+            .eq('id', maxWeightExercise)
+            .single();
+
+          if (maxWeightExerciseError) throw maxWeightExerciseError;
+
+          maxWeightExerciseName = maxWeightExerciseData?.name || null;
+        }
+
+        if (maxRepsExercise) {
+          const { data: maxRepsExerciseData, error: maxRepsExerciseError } = await supabase
+            .from('exercises')
+            .select('name')
+            .eq('id', maxRepsExercise)
+            .single(); 
+
+          if (maxRepsExerciseError) throw maxRepsExerciseError;
+
+          maxRepsExerciseName = maxRepsExerciseData?.name || null;
+        }
 
         setStats({
           maxCarriedWeight,
@@ -74,6 +101,8 @@ const useStats = () => {
           maxRepsExercise,
           maxWeightSessionId,
           maxRepsSessionId,
+          maxWeightExerciseName,
+          maxRepsExerciseName,
         });
       } catch (err) {
         setError(err.message);

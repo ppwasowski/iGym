@@ -17,7 +17,7 @@ export default function StatsSection({ stats, handleNavigation }) {
             <StatTitle>Max Weight</StatTitle>
             <Icon name="analytics" color="Alter" style="mr-2" />
           </View>
-          <StatText>{stats?.maxCarriedWeight ? `${stats.maxCarriedWeight} kg` : 'N/A'}</StatText>
+          <StatText>{stats?.maxCarriedWeight ? `${stats.maxWeightExerciseName,stats.maxCarriedWeight} kg` : 'N/A'}</StatText>
         </StatBlock>
         <StatBlock>
           <View className='flex-row items-center justify-between'>

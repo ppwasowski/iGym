@@ -39,7 +39,6 @@ const useFetchGoals = () => {
     }
   }, [profile]);
 
-  // Fetch goals on component mount
   useEffect(() => {
     fetchGoals();
   }, [fetchGoals]);

@@ -36,18 +36,13 @@ const ExerciseProgress = () => {
   }
 
   if (error) {
-    Toast.show({
-      type: 'error',
-      text1: 'Error',
-      text2: error,
-    });
+    if (error) {
+      console.error("Error:", error);}
     return null;
   }
-
-  // Filter progress data for the selected exercise
+  
   const exerciseProgress = progress.filter(item => item.exercise_id === exerciseId);
 
-  // Process data for charts
   const weightData = exerciseProgress.map((item, index) => ({
     value: item.weight,
     label: `Set ${index + 1}`,
@@ -89,7 +84,7 @@ const ExerciseProgress = () => {
               </Text>
             )}
             customDataPoint={(props) => (
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#ff9a03', justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#ff9a03', justifyContent: 'center', alignItems: 'center', marginLeft: '10px' }}>
               </View>
             )}
           />
