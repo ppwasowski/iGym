@@ -21,8 +21,8 @@ const useAddWorkout = () => {
           { 
             name: workoutName, 
             user_id: user.id, 
-            icon_name: iconName,  // Include icon_name
-            icon_color: iconColor // Include icon_color
+            icon_name: iconName,
+            icon_color: iconColor
           }
         ])
         .single();

@@ -115,7 +115,7 @@ const WorkoutList = () => {
       {!deleteMode && (
         <View className="mb-4">
           <Button
-            title="Add New Workout"
+            title="Create Workout"
             customStyle='bg-SecAlter'  
             onPress={() => navigation.navigate('AddWorkout', { userId, refreshWorkouts: refresh })}
           />

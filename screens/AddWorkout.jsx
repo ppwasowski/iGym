@@ -97,7 +97,7 @@ const AddWorkout = ({ navigation, route }) => {
           listMode="SCROLLVIEW"
         />
 
-      <Button title="Add Workout" onPress={handleAddWorkout} disabled={loading} />
+      <Button title="Create Workout" onPress={handleAddWorkout} disabled={loading} />
       {loading && <ActivityIndicator size="large" color="#00C87C" />}
     </Container>
   );

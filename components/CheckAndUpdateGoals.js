@@ -12,7 +12,7 @@ export const checkAndUpdateGoals = async (userId, progress) => {
       console.error('Error fetching goals:', goalsError);
       return null;
     }
-    
+
     const { data: workoutProgress, error: workoutError } = await supabase
       .from('workout_progress')
       .select('*')
@@ -64,10 +64,11 @@ export const checkAndUpdateGoals = async (userId, progress) => {
           session => session.workout_id === goal.workout_id
         ).length;
 
+        // Ensure that the goal current_value reaches target_value exactly when the goal is achieved
         updatedValue = Math.min(completedSessions, goal.target_value);
 
-        if (updatedValue >= goal.target_value) {
-          updatedValue = goal.target_value;
+        if (completedSessions >= goal.target_value) {
+          updatedValue = goal.target_value; // Directly set to target_value when achieved
           goalAchieved = true;
         }
       }

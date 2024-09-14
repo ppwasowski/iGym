@@ -86,8 +86,8 @@ const GoalAchievedModal = ({ visible, onClose, goal }) => {
 
 
           <AlertMessage>
-            <MessageText className='text-center'>Progress</MessageText>
-            <BoldText className='text-center text-Primary'>{goal?.current_value || 0}/{goal?.target_value || 0}</BoldText>
+            <MessageText className='text-center'>Target</MessageText>
+            <BoldText className='text-center text-Primary'>{goal?.target_value || 0}</BoldText>
           </AlertMessage>
 
           <ButtonContainer>
